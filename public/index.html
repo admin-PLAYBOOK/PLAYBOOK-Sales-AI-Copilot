@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playbook AI Sales Copilot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+        }
+
+        /* Main Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.2);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 25px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header .emoji {
+            font-size: 1.5rem;
+        }
+
+        .card-content {
+            padding: 25px;
+        }
+
+        /* Chat Messages */
+        .chat-messages {
+            height: 450px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            justify-content: flex-end;
+        }
+
+        .ai-message {
+            justify-content: flex-start;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+
+        .user-message .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai-message .message-bubble {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 4px;
+        }
+
+        /* Input Area */
+        .input-area {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .input-area input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-area button {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .input-area button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Example Buttons */
+        .example-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .example-btn {
+            padding: 8px 16px;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .example-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        /* Analysis Panel */
+        .analysis-section {
+            margin-bottom: 25px;
+        }
+
+        .analysis-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .analysis-box {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .analysis-box pre {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            font-family: 'Courier New', monospace;
+            margin-top: 8px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar */
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Playbook AI Sales Copilot</h1>
+            <p>Capture, qualify, and route leads automatically with AI</p>
+        </div>
+
+        <div class="grid">
+            <!-- Chat Section -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="emoji">💬</span>
+                    <span>Lead Conversation</span>
+                </div>
+                <div class="card-content">
+                    <div class="chat-messages" id="messages">
+                        <div class="message ai-message">
+                            <div class="message-bubble">
+                                👋 Hi there! I'm your AI Sales Copilot.<br>
+                                Tell me what you're interested in:<br>
+                                • Joining Playbook<br>
+                                • Investing<br>
+                                • Bootcamps<br>
+                                • Partnerships
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-area">
+                        <input type="text" id="messageInput" placeholder="Type your message..." onkeypress="if(event.key==='Enter') sendMessage()">
+                        <button onclick="sendMessage()">Send →</button>
+                    </div>
+                    
+                    <div class="example-buttons">
+                        <button class="example-btn" onclick="setExample('I want to join Playbook as a member. My name is Sarah and email sarah@example.com')">📝 Join</button>
+                        <button class="example-btn" onclick="setExample('I\'m interested in investing in Playbook. Email: investor@example.com')">💰 Invest</button>
+                        <button class="example-btn" onclick="setExample('Tell me more about your bootcamps. Is there a schedule?')">🎓 Bootcamps</button>
+                        <button class="example-btn" onclick="setExample('I want to explore partnership opportunities for our company')">🤝 Partnership</button>
+                        <button class="example-btn" onclick="setExample('Just browsing, what is Playbook?')">🔍 Curious</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Section -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="emoji">📊</span>
+                    <span>AI Analysis & HubSpot</span>
+                </div>
+                <div class="card-content" id="analysisContent">
+                    <div class="analysis-section">
+                        <div class="analysis-title">
+                            <span>⏳</span>
+                            <span>Waiting for lead...</span>
+                        </div>
+                        <div class="analysis-box">
+                            <div style="text-align: center; color: #999; padding: 40px 20px;">
+                                Send a message to see AI extraction and sales recommendations
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Show loading in chat
+            const loadingId = addLoadingMessage();
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+                
+                const data = await response.json();
+                
+                // Remove loading message
+                removeLoadingMessage(loadingId);
+                
+                if (data.success) {
+                    addMessage('✅ Lead processed successfully! Check the analysis panel.', 'ai');
+                    displayAnalysis(data);
+                } else {
+                    addMessage(`❌ Error: ${data.error}`, 'ai');
+                    displayError(data.error);
+                }
+            } catch (error) {
+                removeLoadingMessage(loadingId);
+                addMessage(`❌ Connection error: ${error.message}`, 'ai');
+                displayError(error.message);
+            }
+        }
+        
+        function addMessage(text, sender) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender === 'user' ? 'user-message' : 'ai-message'}`;
+            messageDiv.innerHTML = `<div class="message-bubble">${escapeHtml(text)}</div>`;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            return messageDiv;
+        }
+        
+        function addLoadingMessage() {
+            const messagesDiv = document.getElementById('messages');
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message ai-message';
+            loadingDiv.id = 'loading-' + Date.now();
+            loadingDiv.innerHTML = `<div class="message-bubble"><div class="loading"></div> Analyzing with AI...</div>`;
+            messagesDiv.appendChild(loadingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            return loadingDiv.id;
+        }
+        
+        function removeLoadingMessage(id) {
+            const element = document.getElementById(id);
+            if (element) element.remove();
+        }
+        
+        function displayAnalysis(data) {
+            const analysisDiv = document.getElementById('analysisContent');
+            
+            let hubspotStatus = '';
+            if (data.hubspot.success) {
+                hubspotStatus = `<div class="status-badge status-success">✅ HubSpot: ${data.hubspot.message || 'Contact created'} (ID: ${data.hubspot.contactId || 'N/A'})</div>`;
+            } else if (data.hubspot.message === 'No email provided') {
+                hubspotStatus = `<div class="status-badge status-warning">⚠️ HubSpot: ${data.hubspot.message} - Add email to create contact</div>`;
+            } else {
+                hubspotStatus = `<div class="status-badge status-error">❌ HubSpot Error: ${data.hubspot.message}</div>`;
+            }
+            
+            const priorityColor = data.sales_output.priority === 'High' ? '🔴' : data.sales_output.priority === 'Medium' ? '🟡' : '🟢';
+            
+            analysisDiv.innerHTML = `
+                <div class="analysis-section">
+                    <div class="analysis-title">
+                        <span>📋</span>
+                        <span>Extracted Lead Data</span>
+                    </div>
+                    <div class="analysis-box">
+                        <pre>${JSON.stringify(data.lead_data, null, 2)}</pre>
+                    </div>
+                </div>
+                
+                <div class="analysis-section">
+                    <div class="analysis-title">
+                        <span>🎯</span>
+                        <span>Sales Copilot Recommendations</span>
+                    </div>
+                    <div class="analysis-box">
+                        <strong>Recommended Next Action:</strong>
+                        <div style="margin: 8px 0 12px 0; padding: 8px; background: white; border-radius: 8px;">
+                            ${escapeHtml(data.sales_output.recommended_next_action)}
+                        </div>
+                        
+                        <strong>Suggested Follow-up Message:</strong>
+                        <div style="margin: 8px 0 12px 0; padding: 8px; background: white; border-radius: 8px; font-style: italic;">
+                            "${escapeHtml(data.sales_output.follow_up_message)}"
+                        </div>
+                        
+                        <strong>Priority:</strong>
+                        <div style="margin-top: 8px;">
+                            <span class="status-badge" style="background: ${data.sales_output.priority === 'High' ? '#fee' : data.sales_output.priority === 'Medium' ? '#ffeaa7' : '#d4edda'}">
+                                ${priorityColor} ${data.sales_output.priority}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="analysis-section">
+                    <div class="analysis-title">
+                        <span>🔄</span>
+                        <span>HubSpot Integration</span>
+                    </div>
+                    <div class="analysis-box">
+                        ${hubspotStatus}
+                        <div class="status-badge status-success" style="margin-top: 10px; display: inline-block;">
+                            💡 Source: AI Sales Copilot
+                        </div>
+                        <div style="margin-top: 10px; font-size: 0.8rem; color: #666;">
+                            ${new Date().toLocaleString()}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function displayError(error) {
+            const analysisDiv = document.getElementById('analysisContent');
+            analysisDiv.innerHTML = `
+                <div class="analysis-section">
+                    <div class="analysis-title">
+                        <span>❌</span>
+                        <span>Error</span>
+                    </div>
+                    <div class="analysis-box">
+                        <div class="status-badge status-error">Error: ${escapeHtml(error)}</div>
+                        <div style="margin-top: 15px; font-size: 0.85rem; color: #666;">
+                            Check that:<br>
+                            • Server is running (npm start)<br>
+                            • Claude API key is valid<br>
+                            • HubSpot token has correct permissions
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function setExample(text) {
+            document.getElementById('messageInput').value = text;
+            sendMessage();
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
