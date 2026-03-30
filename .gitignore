@@ -1,21 +1,6 @@
-# Dependencies
 node_modules/
-npm-debug.log*
-
-# Environment variables (CRITICAL - hides your API keys)
 .env
-.env.local
-.env.*.local
-
-# OS files
 .DS_Store
-Thumbs.db
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-
-# Logs
-logs/
 *.log
+dist/
+.DS_Store
