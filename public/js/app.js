@@ -9,15 +9,12 @@ async function sendMessage() {
     
     if (!message) return;
     
-    // Disable button and show loading
     sendBtn.disabled = true;
     sendBtn.textContent = 'Sending...';
     
-    // Add user message
     addMessage(message, 'user');
     input.value = '';
     
-    // Show loading in chat
     const loadingId = addLoadingMessage();
     
     try {
@@ -33,7 +30,6 @@ async function sendMessage() {
         
         const data = await response.json();
         
-        // Remove loading message
         removeLoadingMessage(loadingId);
         
         if (data.success) {
@@ -51,13 +47,11 @@ async function sendMessage() {
         displayError(error.message);
         updateConnectionStatus(false);
     } finally {
-        // Re-enable button
         sendBtn.disabled = false;
         sendBtn.textContent = 'Send →';
     }
 }
 
-// Add message to chat
 function addMessage(text, sender) {
     const messagesDiv = document.getElementById('messages');
     const messageDiv = document.createElement('div');
@@ -68,7 +62,6 @@ function addMessage(text, sender) {
     return messageDiv;
 }
 
-// Add loading message
 function addLoadingMessage() {
     const messagesDiv = document.getElementById('messages');
     const loadingDiv = document.createElement('div');
@@ -80,15 +73,15 @@ function addLoadingMessage() {
     return loadingDiv.id;
 }
 
-// Remove loading message
 function removeLoadingMessage(id) {
     const element = document.getElementById(id);
     if (element) element.remove();
 }
 
-// Display analysis results
 function displayAnalysis(data) {
     const analysisDiv = document.getElementById('analysisContent');
+    const priorityClass = data.sales_output.priority === 'High' ? 'priority-high' : 
+                          data.sales_output.priority === 'Medium' ? 'priority-medium' : 'priority-low';
     
     let hubspotStatus = '';
     if (data.hubspot.success) {
@@ -100,7 +93,6 @@ function displayAnalysis(data) {
     }
     
     const priorityColor = data.sales_output.priority === 'High' ? '🔴' : data.sales_output.priority === 'Medium' ? '🟡' : '🟢';
-    const priorityBg = data.sales_output.priority === 'High' ? '#fee' : data.sales_output.priority === 'Medium' ? '#ffeaa7' : '#d4edda';
     
     analysisDiv.innerHTML = `
         <div class="analysis-section">
@@ -120,18 +112,18 @@ function displayAnalysis(data) {
             </div>
             <div class="analysis-box">
                 <strong>📌 Recommended Next Action:</strong>
-                <div style="margin: 8px 0 12px 0; padding: 8px; background: white; border-radius: 8px;">
+                <div class="recommendation-box">
                     ${escapeHtml(data.sales_output.recommended_next_action)}
                 </div>
                 
                 <strong>✉️ Suggested Follow-up Message:</strong>
-                <div style="margin: 8px 0 12px 0; padding: 8px; background: white; border-radius: 8px; font-style: italic;">
+                <div class="recommendation-box">
                     "${escapeHtml(data.sales_output.follow_up_message)}"
                 </div>
                 
                 <strong>⚡ Priority:</strong>
                 <div style="margin-top: 8px;">
-                    <span class="status-badge" style="background: ${priorityBg}">
+                    <span class="priority-badge ${priorityClass}">
                         ${priorityColor} ${data.sales_output.priority}
                     </span>
                 </div>
@@ -145,16 +137,15 @@ function displayAnalysis(data) {
             </div>
             <div class="analysis-box">
                 ${hubspotStatus}
-                <div style="margin-top: 10px; font-size: 0.8rem; color: #666;">
+                <div class="meta-text">
                     🕐 ${new Date(data.timestamp).toLocaleString()}
                 </div>
-                ${data.model_used ? `<div style="margin-top: 10px; font-size: 0.8rem; color: #666;">🤖 Model: ${data.model_used}</div>` : ''}
+                ${data.model_used ? `<div class="meta-text" style="margin-top: 8px;">🤖 Model: ${data.model_used}</div>` : ''}
             </div>
         </div>
     `;
 }
 
-// Display error message
 function displayError(error) {
     const analysisDiv = document.getElementById('analysisContent');
     analysisDiv.innerHTML = `
@@ -165,7 +156,7 @@ function displayError(error) {
             </div>
             <div class="analysis-box">
                 <div class="status-badge status-error">Error: ${escapeHtml(error)}</div>
-                <div style="margin-top: 15px; font-size: 0.85rem; color: #666;">
+                <div class="meta-text" style="margin-top: 15px;">
                     Troubleshooting:<br>
                     • Is the server running? Run <code>npm start</code><br>
                     • Check API keys in <code>.env</code> file<br>
@@ -176,32 +167,28 @@ function displayError(error) {
     `;
 }
 
-// Update connection status
 function updateConnectionStatus(connected) {
     const statusDiv = document.getElementById('connectionStatus');
     if (connected) {
-        statusDiv.innerHTML = '✅ Connected to server';
-        statusDiv.className = 'connection-status connected';
+        statusDiv.innerHTML = '✅ Connected';
+        statusDiv.classList.remove('disconnected');
     } else {
-        statusDiv.innerHTML = '❌ Disconnected - Check if server is running';
-        statusDiv.className = 'connection-status disconnected';
+        statusDiv.innerHTML = '❌ Disconnected';
+        statusDiv.classList.add('disconnected');
     }
 }
 
-// Set example message (without fake emails)
 function setExample(text) {
     document.getElementById('messageInput').value = text;
     sendMessage();
 }
 
-// Escape HTML
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
 
-// Test connection on page load
 async function testConnection() {
     try {
         const response = await fetch('/test');
@@ -215,5 +202,54 @@ async function testConnection() {
     }
 }
 
-// Test connection when page loads
-testConnection();
+// Theme Toggle
+function initTheme() {
+    const themeToggle = document.getElementById('themeToggle');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    function getInitialTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) return savedTheme;
+        return prefersDark.matches ? 'dark-mode' : 'light-mode';
+    }
+    
+    function setTheme(theme) {
+        document.body.className = theme;
+        localStorage.setItem('theme', theme);
+        if (themeToggle) {
+            themeToggle.textContent = theme === 'dark-mode' ? '☀️' : '🌙';
+        }
+    }
+    
+    function toggleTheme() {
+        const currentTheme = document.body.className;
+        const newTheme = currentTheme === 'dark-mode' ? 'light-mode' : 'dark-mode';
+        setTheme(newTheme);
+    }
+    
+    setTheme(getInitialTheme());
+    
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
+    
+    prefersDark.addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+            setTheme(e.matches ? 'dark-mode' : 'light-mode');
+        }
+    });
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    testConnection();
+    initTheme();
+    
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') {
+            e.preventDefault();
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) themeToggle.click();
+        }
+    });
+});
