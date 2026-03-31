@@ -148,6 +148,7 @@ function displayAnalysis(data) {
                 <div style="margin-top: 10px; font-size: 0.8rem; color: #666;">
                     🕐 ${new Date(data.timestamp).toLocaleString()}
                 </div>
+                ${data.model_used ? `<div style="margin-top: 10px; font-size: 0.8rem; color: #666;">🤖 Model: ${data.model_used}</div>` : ''}
             </div>
         </div>
     `;
@@ -187,7 +188,7 @@ function updateConnectionStatus(connected) {
     }
 }
 
-// Set example message
+// Set example message (without fake emails)
 function setExample(text) {
     document.getElementById('messageInput').value = text;
     sendMessage();
