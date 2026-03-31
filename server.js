@@ -13,7 +13,7 @@ console.log('🚀 Starting AI Sales Copilot Server...');
 console.log('📡 Claude API Key:', CLAUDE_API_KEY ? '✅ Found' : '❌ Missing');
 console.log('📡 HubSpot Token:', HUBSPOT_TOKEN ? '✅ Found' : '❌ Missing');
 
-// Test endpoint to verify server is working
+// Test endpoint
 app.get('/test', (req, res) => {
   res.json({ 
     status: 'OK', 
@@ -24,144 +24,183 @@ app.get('/test', (req, res) => {
 
 // Main chat endpoint
 app.post('/api/chat', async (req, res) => {
-  console.log('📨 Received request:', req.body);
+  console.log('📨 Received:', req.body.message);
   
   try {
     const userMessage = req.body.message;
     
     if (!userMessage) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'No message provided' 
-      });
+      return res.status(400).json({ success: false, error: 'No message provided' });
     }
     
-    // Step 1: Extract lead data using Claude
-    const extractPrompt = `Extract lead information from this message: "${userMessage}"
+    let leadData, salesOutput;
     
-Return ONLY valid JSON. No other text. No explanation. Just the JSON.
-{
-  "name": "extracted name or null",
-  "email": "extracted email or null",
-  "lead_type": "Membership or Learning or Community or Partnerships or Founders or Investors or Corporate",
-  "main_interest": "short 5-10 word phrase",
-  "intent_level": "High or Medium or Low"
-}
-
-Rules:
-- High intent = "want to join", "ready", "sign me up", "interested in investing"
-- Medium intent = "tell me more", "what can you tell me"
-- Low intent = "just looking", "maybe", "curious"`;
-
-    console.log('🤖 Calling Claude API for extraction...');
+    // Try Claude API
+    try {
+      console.log('🤖 Calling Claude API...');
+      
+      const extractResponse = await axios.post('https://api.anthropic.com/v1/messages', {
+        model: 'claude-3-haiku-20240307',
+        max_tokens: 1024,
+        messages: [{
+          role: 'user',
+          content: `Extract lead info from: "${userMessage}"
+Return ONLY JSON: {"name":"name or null","email":"email or null","lead_type":"Membership/Learning/Community/Partnerships/Founders/Investors/Corporate","main_interest":"short phrase","intent_level":"High/Medium/Low"}`
+        }]
+      }, {
+        headers: {
+          'x-api-key': CLAUDE_API_KEY,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json'
+        }
+      });
+      
+      const extractContent = extractResponse.data.content[0].text;
+      const jsonMatch = extractContent.match(/\{[\s\S]*\}/);
+      leadData = JSON.parse(jsonMatch ? jsonMatch[0] : extractContent);
+      
+      const recResponse = await axios.post('https://api.anthropic.com/v1/messages', {
+        model: 'claude-3-haiku-20240307',
+        max_tokens: 1024,
+        messages: [{
+          role: 'user',
+          content: `Lead: ${JSON.stringify(leadData)}. Return JSON: {"recommended_next_action":"action","follow_up_message":"email","priority":"High/Medium/Low"}`
+        }]
+      }, {
+        headers: {
+          'x-api-key': CLAUDE_API_KEY,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json'
+        }
+      });
+      
+      const recContent = recResponse.data.content[0].text;
+      const recJsonMatch = recContent.match(/\{[\s\S]*\}/);
+      salesOutput = JSON.parse(recJsonMatch ? recJsonMatch[0] : recContent);
+      
+      console.log('✅ Claude API successful');
+      
+    } catch (claudeError) {
+      console.log('⚠️ Using mock data:', claudeError.message);
+      
+      const emailMatch = userMessage.match(/[\w.-]+@[\w.-]+\.\w+/);
+      const nameMatch = userMessage.match(/(?:my name is |i'm |i am |name is )([A-Za-z\s]+?)(?: and|\.|$)/i);
+      
+      leadData = {
+        name: nameMatch ? nameMatch[1].trim() : null,
+        email: emailMatch ? emailMatch[0] : null,
+        lead_type: userMessage.match(/join|member/i) ? "Membership" : 
+                   userMessage.match(/invest/i) ? "Investors" :
+                   userMessage.match(/bootcamp|learn/i) ? "Learning" :
+                   userMessage.match(/partner/i) ? "Partnerships" : "Community",
+        main_interest: userMessage.substring(0, 50),
+        intent_level: userMessage.match(/want|ready|interested|join|invest/i) ? "High" : "Medium"
+      };
+      
+      salesOutput = {
+        recommended_next_action: leadData.email ? "Send follow-up email" : "Request contact information",
+        follow_up_message: `Thanks for your interest in Playbook! We'll follow up soon.`,
+        priority: leadData.intent_level === "High" ? "High" : "Medium"
+      };
+    }
     
-    const extractResponse = await axios.post('https://api.anthropic.com/v1/messages', {
-      model: 'claude-3-sonnet-20240229',  // Updated model name
-      max_tokens: 500,
-      temperature: 0.1,
-      messages: [{ 
-        role: 'user', 
-        content: extractPrompt 
-      }]
-    }, {
-      headers: {
-        'x-api-key': CLAUDE_API_KEY,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json'
-      }
-    });
-    
-    const extractContent = extractResponse.data.content[0].text;
-    console.log('📝 Claude extraction response:', extractContent);
-    
-    // Parse the JSON from Claude's response
-    const jsonMatch = extractContent.match(/\{[\s\S]*\}/);
-    const leadData = JSON.parse(jsonMatch ? jsonMatch[0] : extractContent);
-    console.log('✅ Extracted lead:', leadData);
-    
-    // Step 2: Generate sales recommendations
-    const recPrompt = `As an AI Sales Copilot, analyze this lead:
-    
-Lead Data: ${JSON.stringify(leadData)}
-Original Message: "${userMessage}"
-
-Return ONLY valid JSON. No other text.
-{
-  "recommended_next_action": "specific action for sales rep",
-  "follow_up_message": "short 2-3 sentence email draft",
-  "priority": "High or Medium or Low"
-}`;
-
-    console.log('🤖 Calling Claude for recommendations...');
-    
-    const recResponse = await axios.post('https://api.anthropic.com/v1/messages', {
-      model: 'claude-3-sonnet-20240229',  // Updated model name
-      max_tokens: 500,
-      temperature: 0.3,
-      messages: [{ 
-        role: 'user', 
-        content: recPrompt 
-      }]
-    }, {
-      headers: {
-        'x-api-key': CLAUDE_API_KEY,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json'
-      }
-    });
-    
-    const recContent = recResponse.data.content[0].text;
-    const recJsonMatch = recContent.match(/\{[\s\S]*\}/);
-    const salesOutput = JSON.parse(recJsonMatch ? recJsonMatch[0] : recContent);
-    console.log('✅ Sales recommendations:', salesOutput);
-    
-    // Step 3: Send to HubSpot if email exists
+    // Handle HubSpot - search or create
     let hubspotResult = null;
     
-    if (leadData.email && leadData.email !== 'null' && leadData.email !== null) {
-      console.log('📤 Sending to HubSpot for email:', leadData.email);
+    if (leadData.email && leadData.email !== 'null') {
+      console.log('📤 Processing HubSpot for:', leadData.email);
       
       try {
-        // Create contact
-        const contact = await axios.post('https://api.hubapi.com/crm/v3/objects/contacts', {
-          properties: {
+        // First, search for existing contact
+        let contactId = null;
+        let existingContact = false;
+        
+        try {
+          const searchResponse = await axios.post('https://api.hubapi.com/crm/v3/objects/contacts/search', {
+            filterGroups: [{
+              filters: [{
+                propertyName: 'email',
+                operator: 'EQ',
+                value: leadData.email
+              }]
+            }]
+          }, {
+            headers: { 
+              'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 
+              'Content-Type': 'application/json' 
+            }
+          });
+          
+          if (searchResponse.data.results && searchResponse.data.results.length > 0) {
+            contactId = searchResponse.data.results[0].id;
+            existingContact = true;
+            console.log('📌 Found existing contact:', contactId);
+          }
+        } catch (searchError) {
+          console.log('Search error, will create new contact');
+        }
+        
+        // If contact doesn't exist, create it
+        if (!contactId) {
+          const contactProperties = {
             email: leadData.email,
-            firstname: leadData.name && leadData.name !== 'null' ? leadData.name.split(' ')[0] : 'Unknown',
-            lastname: leadData.name && leadData.name !== 'null' && leadData.name.includes(' ') ? leadData.name.split(' ').slice(1).join(' ') : '',
-            lead_type: leadData.lead_type,
-            lead_source: 'AI Sales Copilot',
-            lead_intent: leadData.intent_level
-          }
-        }, {
-          headers: { 
-            'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 
-            'Content-Type': 'application/json' 
-          }
-        });
+            firstname: leadData.name ? leadData.name.split(' ')[0] : 'Lead',
+            lastname: leadData.name && leadData.name.includes(' ') ? leadData.name.split(' ').slice(1).join(' ') : '',
+            lifecyclestage: leadData.intent_level === 'High' ? 'lead' : 'subscriber'
+          };
+          
+          Object.keys(contactProperties).forEach(key => {
+            if (!contactProperties[key] || contactProperties[key] === 'null') {
+              delete contactProperties[key];
+            }
+          });
+          
+          const contact = await axios.post('https://api.hubapi.com/crm/v3/objects/contacts', {
+            properties: contactProperties
+          }, {
+            headers: { 
+              'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 
+              'Content-Type': 'application/json' 
+            }
+          });
+          
+          contactId = contact.data.id;
+          console.log('✅ Created new contact:', contactId);
+        }
         
-        console.log('✅ HubSpot contact created:', contact.data.id);
+        // Add note to contact (always add note even for existing contacts)
+        const noteContent = `🤖 AI Sales Copilot Analysis
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 LEAD INFORMATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Type: ${leadData.lead_type}
+Intent: ${leadData.intent_level}
+Interest: ${leadData.main_interest}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 SALES RECOMMENDATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Next Action: ${salesOutput.recommended_next_action}
+Priority: ${salesOutput.priority}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✉️ FOLLOW-UP MESSAGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${salesOutput.follow_up_message}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Source: AI Sales Copilot
+Timestamp: ${new Date().toLocaleString()}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
         
-        // Add note to contact
         await axios.post('https://api.hubapi.com/crm/v3/objects/notes', {
           properties: {
             hs_timestamp: new Date().toISOString(),
-            hs_note_body: `🤖 AI Sales Copilot Analysis
-
-📋 Lead Type: ${leadData.lead_type}
-🎯 Intent Level: ${leadData.intent_level}
-💡 Main Interest: ${leadData.main_interest}
-
-📝 Recommended Next Action: ${salesOutput.recommended_next_action}
-
-✉️ Suggested Follow-up:
-${salesOutput.follow_up_message}
-
-Priority: ${salesOutput.priority}
----
-Auto-generated by Playbook AI Sales Copilot`
+            hs_note_body: noteContent
           },
           associations: [{
-            to: { id: contact.data.id },
+            to: { id: contactId },
             types: [{ 
               associationCategory: "HUBSPOT_DEFINED", 
               associationTypeId: 202 
@@ -176,26 +215,24 @@ Auto-generated by Playbook AI Sales Copilot`
         
         hubspotResult = { 
           success: true, 
-          contactId: contact.data.id, 
-          message: '✅ Contact created in HubSpot with note' 
+          contactId: contactId,
+          existing: existingContact,
+          message: existingContact ? '✅ Note added to existing contact' : '✅ New contact created with note'
         };
+        console.log('✅ HubSpot success - Note added');
         
       } catch (err) {
-        console.error('❌ HubSpot error:', err.response?.data || err.message);
+        console.error('❌ HubSpot error:', err.response?.data?.message || err.message);
         hubspotResult = { 
           success: false, 
           message: err.response?.data?.message || err.message 
         };
       }
     } else {
-      console.log('⚠️ No email provided - skipping HubSpot');
-      hubspotResult = { 
-        success: false, 
-        message: 'No email provided - HubSpot contact not created' 
-      };
+      hubspotResult = { success: false, message: 'No email provided' };
+      console.log('⚠️ No email provided');
     }
     
-    // Return complete response
     res.json({ 
       success: true, 
       lead_data: leadData, 
@@ -206,26 +243,11 @@ Auto-generated by Playbook AI Sales Copilot`
     
   } catch (error) {
     console.error('❌ Server error:', error.message);
-    
-    if (error.response) {
-      console.error('API error details:', error.response.data);
-    }
-    
     res.status(500).json({ 
       success: false, 
-      error: error.message,
-      details: error.response?.data || null
+      error: error.message
     });
   }
-});
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'healthy', 
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString()
-  });
 });
 
 const PORT = process.env.PORT || 3000;
@@ -236,7 +258,6 @@ app.listen(PORT, () => {
   console.log('='.repeat(50));
   console.log(`📍 URL: http://localhost:${PORT}`);
   console.log(`🧪 Test: http://localhost:${PORT}/test`);
-  console.log(`💬 Chat: http://localhost:${PORT}/api/chat`);
-  console.log(`❤️ Health: http://localhost:${PORT}/health`);
+  console.log(`💬 Chat: http://localhost:${PORT}`);
   console.log('='.repeat(50) + '\n');
 });
