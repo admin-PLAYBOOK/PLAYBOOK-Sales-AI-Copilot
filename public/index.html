@@ -8,22 +8,19 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>✨ PLAYBOOK AI Sales Copilot</h1>
-            <p>Capture, qualify, and route leads automatically with AI</p>
-        </div>
-
-        <div class="status-bar">
-            <div class="status-indicator">
-                <div class="status-dot"></div>
-                <span>AI Sales Copilot Active</span>
-            </div>
+        <div class="left">
             <div id="connectionStatus" class="connection-status">
                 ✅ Connected
             </div>
         </div>
 
-        <div class="grid">
+        <div class="header">
+            <h1>✨ PLAYBOOK AI Sales Copilot</h1>
+            <p>Capture, qualify, and route leads automatically with AI</p>
+        </div>
+
+        <div class="center">
+            <div class="grid">
             <!-- Chat Section -->
             <div class="card">
                 <div class="card-header">
@@ -47,7 +44,8 @@
                     
                     <div class="input-area">
                         <input type="text" id="messageInput" placeholder="Type your message..." onkeypress="if(event.key==='Enter') sendMessage()">
-                        <button id="sendBtn" onclick="sendMessage()">Send →</button>
+                        <button id="sendBtn" class="noicon" onclick="sendMessage()">Send →</button>
+                        <button id="sendBtn" class="icon" onclick="sendMessage()">→</button>
                     </div>
                     
                     <div class="example-buttons">
@@ -71,6 +69,7 @@
                         💡 Send a message to see AI extraction and sales recommendations
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>
