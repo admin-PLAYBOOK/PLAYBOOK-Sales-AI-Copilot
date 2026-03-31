@@ -765,3 +765,20 @@ body.dark-mode .status-success {
     background: #f3e8ff;
     color: #8b5cf6;
 }
+
+.quick-answers-label {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+}
+
+body.dark-mode .quick-answers-label {
+    color: rgba(255,255,255,0.4);
+}
+
+.button-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
