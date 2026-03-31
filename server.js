@@ -9,22 +9,145 @@ app.use(express.static('public'));
 const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY;
 const HUBSPOT_TOKEN = process.env.HUBSPOT_ACCESS_TOKEN;
 
-// Claude model selection - try different ones if needed
-const CLAUDE_MODEL = process.env.CLAUDE_MODEL || 'claude-2.1'; // Options: claude-2.1, claude-instant-1.2
+// Playbook context from the website
+const PLAYBOOK_CONTEXT = `
+PLAYBOOK is a women's professional network focused on MENA region with:
+- 8,340+ members across 100+ countries
+- 170+ expert coaches and mentors
+- 15,819+ learning minutes of content
+
+Three core offerings:
+1. CONNECT: Find mentors and collaborators across 100+ countries
+2. LEARN: Masterclasses, bootcamps, and expert sessions
+3. INVEST: Investor education and startup opportunities through Women Spark
+
+Membership tiers:
+- PLAYBOOK Core: $45.84/month (VAT exclusive) includes 200+ masterclasses, bootcamps, community events, learning paths
+
+Key people:
+- Founded by Wafa AlObaidat and co-founders
+- Built for women, led by women
+
+Awards: Recognized as award-winning private network for women
+
+Testimonials mention: mentorship, career growth, connections, learning, personal development, investment opportunities
+`;
+
+// Claude models to try
+const CLAUDE_MODELS = [
+  'claude-haiku-4-5-20251001',
+  'claude-sonnet-4-5-20251001',
+  'claude-3-5-haiku-20241022',
+  'claude-2.1'
+];
 
 console.log('🚀 Starting AI Sales Copilot Server...');
 console.log('📡 Claude API Key:', CLAUDE_API_KEY ? '✅ Found' : '❌ Missing');
-console.log('📡 Claude Model:', CLAUDE_MODEL);
 console.log('📡 HubSpot Token:', HUBSPOT_TOKEN ? '✅ Found' : '❌ Missing');
 
 // Test endpoint
 app.get('/test', (req, res) => {
   res.json({ 
     status: 'OK', 
-    message: 'Server is running',
+    message: 'Server is running with Playbook context',
     time: new Date().toISOString()
   });
 });
+
+// Helper function to call Claude with Playbook context
+async function callClaudeWithContext(userMessage) {
+  let lastError = null;
+  
+  for (const model of CLAUDE_MODELS) {
+    try {
+      console.log(`   Trying model: ${model}...`);
+      
+      const extractResponse = await axios.post('https://api.anthropic.com/v1/messages', {
+        model: model,
+        max_tokens: 1024,
+        temperature: 0.1,
+        messages: [{
+          role: 'user',
+          content: `You are an AI Sales Copilot for PLAYBOOK (https://www.get-playbook.com). Here's what PLAYBOOK offers:
+
+${PLAYBOOK_CONTEXT}
+
+User message: "${userMessage}"
+
+Extract lead information. Return ONLY valid JSON:
+{
+  "name": "extracted name or null",
+  "email": "email or null",  
+  "lead_type": "Membership" or "Learning" or "Investing" or "Partnerships" or "Community" or "Mentorship",
+  "main_interest": "specific thing they want from PLAYBOOK",
+  "intent_level": "High/Medium/Low"
+}
+
+Example: {"name":"Sarah","email":"sarah@example.com","lead_type":"Membership","main_interest":"Join PLAYBOOK Core membership","intent_level":"High"}`
+        }]
+      }, {
+        headers: {
+          'x-api-key': CLAUDE_API_KEY,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json'
+        }
+      });
+      
+      const extractContent = extractResponse.data.content[0].text;
+      const jsonMatch = extractContent.match(/\{[\s\S]*\}/);
+      const leadData = JSON.parse(jsonMatch ? jsonMatch[0] : extractContent);
+      
+      // Second API call for personalized recommendations
+      const recResponse = await axios.post('https://api.anthropic.com/v1/messages', {
+        model: model,
+        max_tokens: 1024,
+        temperature: 0.3,
+        messages: [{
+          role: 'user',
+          content: `You are a sales representative for PLAYBOOK. Use this context:
+${PLAYBOOK_CONTEXT}
+
+Lead wants: ${leadData.main_interest}
+Lead type: ${leadData.lead_type}
+Original message: "${userMessage}"
+
+Return ONLY valid JSON:
+{
+  "recommended_next_action": "specific next step for sales team",
+  "follow_up_message": "personalized email draft referencing PLAYBOOK's offerings (pricing, features, benefits)",
+  "priority": "High/Medium/Low"
+}
+
+Make the follow-up message specific to PLAYBOOK's actual offerings (Core membership at $45.84, masterclasses, Women Spark investing, global community of 8,340+ members).`
+        }]
+      }, {
+        headers: {
+          'x-api-key': CLAUDE_API_KEY,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json'
+        }
+      });
+      
+      const recContent = recResponse.data.content[0].text;
+      const recJsonMatch = recContent.match(/\{[\s\S]*\}/);
+      const salesOutput = JSON.parse(recJsonMatch ? recJsonMatch[0] : recContent);
+      
+      console.log(`   ✅ SUCCESS with model: ${model}`);
+      return { leadData, salesOutput, model };
+      
+    } catch (error) {
+      lastError = error;
+      const errorMsg = error.response?.data?.error?.message || error.message;
+      console.log(`   ❌ Failed with ${model}: ${errorMsg}`);
+      
+      if (errorMsg.includes('authentication') || errorMsg.includes('api_key')) {
+        throw error;
+      }
+    }
+  }
+  
+  throw lastError || new Error('All Claude models failed');
+}
 
 // Main chat endpoint
 app.post('/api/chat', async (req, res) => {
@@ -39,91 +162,28 @@ app.post('/api/chat', async (req, res) => {
     
     let leadData, salesOutput;
     let usedClaude = false;
+    let modelUsed = null;
     
-    // Try Claude API if key exists
+    // Try Claude with Playbook context
     if (CLAUDE_API_KEY && CLAUDE_API_KEY !== 'sk-ant-your-working-key-here') {
       try {
-        console.log(`🤖 Calling Claude API (${CLAUDE_MODEL})...`);
+        console.log('🤖 Calling Claude API with PLAYBOOK context...');
+        const result = await callClaudeWithContext(userMessage);
+        leadData = result.leadData;
+        salesOutput = result.salesOutput;
+        modelUsed = result.model;
         usedClaude = true;
-        
-        // First API call - Extract lead data
-        const extractResponse = await axios.post('https://api.anthropic.com/v1/messages', {
-          model: CLAUDE_MODEL,
-          max_tokens: 1024,
-          temperature: 0.1,
-          messages: [{
-            role: 'user',
-            content: `Extract lead information from this message: "${userMessage}"
-            
-Return ONLY valid JSON. No other text. No markdown. Just the JSON object.
-Required fields:
-- name: string or null
-- email: string or null  
-- lead_type: "Membership" or "Learning" or "Community" or "Partnerships" or "Founders" or "Investors" or "Corporate"
-- main_interest: string (short phrase)
-- intent_level: "High" or "Medium" or "Low"
-
-Example: {"name":"John Doe","email":"john@example.com","lead_type":"Membership","main_interest":"joining Playbook","intent_level":"High"}`
-          }]
-        }, {
-          headers: {
-            'x-api-key': CLAUDE_API_KEY,
-            'anthropic-version': '2023-06-01',
-            'content-type': 'application/json'
-          }
-        });
-        
-        const extractContent = extractResponse.data.content[0].text;
-        console.log('📝 Claude extract:', extractContent.substring(0, 200));
-        
-        const jsonMatch = extractContent.match(/\{[\s\S]*\}/);
-        leadData = JSON.parse(jsonMatch ? jsonMatch[0] : extractContent);
-        
-        // Second API call - Generate recommendations
-        const recResponse = await axios.post('https://api.anthropic.com/v1/messages', {
-          model: CLAUDE_MODEL,
-          max_tokens: 1024,
-          temperature: 0.3,
-          messages: [{
-            role: 'user',
-            content: `As an AI Sales Copilot, analyze this lead:
-            
-Lead Data: ${JSON.stringify(leadData)}
-Original Message: "${userMessage}"
-
-Return ONLY valid JSON. No other text.
-Required fields:
-- recommended_next_action: string (specific action for sales rep)
-- follow_up_message: string (short 2-3 sentence email draft)
-- priority: "High" or "Medium" or "Low"
-
-Example: {"recommended_next_action":"Schedule discovery call","follow_up_message":"Thanks for your interest! Let's connect.","priority":"High"}`
-          }]
-        }, {
-          headers: {
-            'x-api-key': CLAUDE_API_KEY,
-            'anthropic-version': '2023-06-01',
-            'content-type': 'application/json'
-          }
-        });
-        
-        const recContent = recResponse.data.content[0].text;
-        const recJsonMatch = recContent.match(/\{[\s\S]*\}/);
-        salesOutput = JSON.parse(recJsonMatch ? recJsonMatch[0] : recContent);
-        
-        console.log('✅ REAL Claude API successful!');
+        console.log('✅ Claude API successful with Playbook context!');
         
       } catch (claudeError) {
-        console.log('⚠️ Claude API error, using mock data:', claudeError.response?.data?.error?.message || claudeError.message);
+        console.log('⚠️ Claude failed, using mock data:', claudeError.message);
         usedClaude = false;
-        
-        // Fall back to mock data
         const mockResult = generateMockData(userMessage);
         leadData = mockResult.leadData;
         salesOutput = mockResult.salesOutput;
       }
     } else {
-      console.log('📝 No valid Claude API key, using intelligent mock data');
+      console.log('📝 Using mock data');
       const mockResult = generateMockData(userMessage);
       leadData = mockResult.leadData;
       salesOutput = mockResult.salesOutput;
@@ -136,7 +196,6 @@ Example: {"recommended_next_action":"Schedule discovery call","follow_up_message
       console.log('📤 Processing HubSpot for:', leadData.email);
       
       try {
-        // Search for existing contact
         let contactId = null;
         let existingContact = false;
         
@@ -165,7 +224,6 @@ Example: {"recommended_next_action":"Schedule discovery call","follow_up_message
           console.log('Search error, will create new contact');
         }
         
-        // Create contact if doesn't exist
         if (!contactId) {
           const contactProperties = {
             email: leadData.email,
@@ -193,9 +251,8 @@ Example: {"recommended_next_action":"Schedule discovery call","follow_up_message
           console.log('✅ Created new contact:', contactId);
         }
         
-        // Add note
-        const aiSource = usedClaude ? `Claude AI (${CLAUDE_MODEL})` : 'Intelligent Mock Data';
-        const noteContent = `🤖 AI Sales Copilot Analysis (${aiSource})
+        const aiSource = usedClaude ? `Claude AI (${modelUsed})` : 'Mock Data';
+        const noteContent = `🤖 AI Sales Copilot Analysis (${aiSource}) - PLAYBOOK
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📋 LEAD INFORMATION
@@ -216,8 +273,7 @@ Priority: ${salesOutput.priority}
 ${salesOutput.follow_up_message}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Original Message: "${userMessage.substring(0, 200)}"
-Source: ${aiSource}
+Original: "${userMessage.substring(0, 200)}"
 Timestamp: ${new Date().toLocaleString()}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
         
@@ -257,7 +313,7 @@ Timestamp: ${new Date().toLocaleString()}
         };
       }
     } else {
-      hubspotResult = { success: false, message: 'No email provided - add email to create contact' };
+      hubspotResult = { success: false, message: 'No email provided' };
       console.log('⚠️ No email provided');
     }
     
@@ -267,7 +323,7 @@ Timestamp: ${new Date().toLocaleString()}
       sales_output: salesOutput, 
       hubspot: hubspotResult,
       used_claude: usedClaude,
-      model_used: usedClaude ? CLAUDE_MODEL : 'mock-data',
+      model_used: modelUsed || 'mock-data',
       timestamp: new Date().toISOString()
     });
     
@@ -280,15 +336,14 @@ Timestamp: ${new Date().toLocaleString()}
   }
 });
 
-// Mock data generator function
+// Mock data with Playbook context
 function generateMockData(userMessage) {
   const emailMatch = userMessage.match(/[\w.-]+@[\w.-]+\.\w+/);
   
   let name = null;
   const namePatterns = [
     /my name is ([A-Za-z\s]+?)(?:\.|,| and| my email|$)/i,
-    /i'm ([A-Za-z\s]+?)(?:\.|,| and| my email|$)/i,
-    /i am ([A-Za-z\s]+?)(?:\.|,| and| my email|$)/i
+    /i'm ([A-Za-z\s]+?)(?:\.|,| and| my email|$)/i
   ];
   
   for (const pattern of namePatterns) {
@@ -304,32 +359,37 @@ function generateMockData(userMessage) {
   let followUpMessage = "";
   let nextAction = "";
   
-  if (lowerMessage.match(/join|member/i)) {
+  if (lowerMessage.match(/join|member|core/i)) {
     leadType = "Membership";
-    followUpMessage = `Thanks ${name || 'there'} for your interest in joining Playbook! I'd love to schedule a quick call to walk you through membership benefits.`;
-    nextAction = "Schedule membership onboarding call";
+    followUpMessage = `Hi ${name || 'there'}! Thanks for your interest in PLAYBOOK Core membership ($$45.84/month). You'll get access to 200+ masterclasses, bootcamps, and our global community of 8,340+ women across 100+ countries. I'd love to schedule a quick call to walk you through the benefits!`;
+    nextAction = "Schedule membership onboarding call - highlight Core membership benefits";
   } 
-  else if (lowerMessage.match(/invest/i)) {
-    leadType = "Investors";
-    followUpMessage = `Thank you for your interest in investing! Our team would be happy to share our pitch deck.`;
-    nextAction = "Send investor deck and schedule call";
+  else if (lowerMessage.match(/invest|women spark|deal flow/i)) {
+    leadType = "Investing";
+    followUpMessage = `Thank you for your interest in Women Spark, PLAYBOOK's investment arm! We offer investor education, startup deal flow, and portfolio tracking. Our next investor session is coming up - would you like me to share the details?`;
+    nextAction = "Send Women Spark investor education package and session schedule";
   }
-  else if (lowerMessage.match(/bootcamp|learn/i)) {
+  else if (lowerMessage.match(/bootcamp|learn|masterclass/i)) {
     leadType = "Learning";
-    followUpMessage = `Thanks for your interest in our bootcamps! I'll send you our upcoming schedule.`;
-    nextAction = "Send bootcamp schedule";
+    followUpMessage = `Thanks for your interest in PLAYBOOK's learning programs! We offer 200+ expert-led masterclasses and bootcamps. The next bootcamp starts soon. Want me to send you the curriculum and schedule?`;
+    nextAction = "Send bootcamp schedule and masterclass catalog";
   }
-  else if (lowerMessage.match(/partner/i)) {
+  else if (lowerMessage.match(/partner|collaborat|corporate/i)) {
     leadType = "Partnerships";
-    followUpMessage = `Thanks for exploring partnerships! Let's set up a time to discuss.`;
-    nextAction = "Schedule partnership discovery call";
+    followUpMessage = `Thanks for exploring partnerships with PLAYBOOK! We work with 1,900+ companies. Let's set up a call to discuss how we can collaborate - whether it's corporate memberships, event sponsorships, or expert partnerships.`;
+    nextAction = "Schedule partnership discovery call with corporate team";
+  }
+  else if (lowerMessage.match(/mentor|connect|network/i)) {
+    leadType = "Mentorship";
+    followUpMessage = `PLAYBOOK's mentorship program connects you with 170+ experts across industries. Our smart matching system helps you find the right mentor. Would you like to learn more about how it works?`;
+    nextAction = "Share mentorship program details and matching process";
   }
   else {
-    followUpMessage = `Thanks ${name || 'for reaching out'}! Could you tell me more about what you're looking for?`;
-    nextAction = "Qualify lead with follow-up questions";
+    followUpMessage = `Thanks ${name || 'for reaching out'}! PLAYBOOK offers professional networking, masterclasses, and investment opportunities for women. Could you share what you're most interested in - connecting, learning, or investing?`;
+    nextAction = "Qualify lead on CONNECT/LEARN/INVEST priorities";
   }
   
-  const intentLevel = lowerMessage.match(/want|ready|interested|join|invest/i) ? "High" : "Medium";
+  const intentLevel = lowerMessage.match(/want|ready|interested|join|invest|sign up/i) ? "High" : "Medium";
   
   return {
     leadData: {
@@ -359,11 +419,10 @@ app.listen(PORT, () => {
   console.log('='.repeat(50));
   
   if (CLAUDE_API_KEY && CLAUDE_API_KEY !== 'sk-ant-your-working-key-here') {
-    console.log(`\n🌟 Claude API mode: ACTIVE (${CLAUDE_MODEL})`);
-    console.log('✅ Using Claude AI for lead extraction');
+    console.log(`\n🌟 Claude API mode: ACTIVE with PLAYBOOK context`);
+    console.log('✅ Using real PLAYBOOK data (8,340+ members, $45.84/month, Women Spark)');
   } else {
-    console.log('\n📝 Mock data mode: ACTIVE');
-    console.log('💡 To enable Claude AI, add a valid API key to .env');
+    console.log('\n📝 Mock data mode: ACTIVE with PLAYBOOK context');
   }
   console.log('✅ HubSpot integration: READY\n');
 });
