@@ -9,8 +9,12 @@ app.use(express.static('public'));
 const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY;
 const HUBSPOT_TOKEN = process.env.HUBSPOT_ACCESS_TOKEN;
 
+// Claude model selection - try different ones if needed
+const CLAUDE_MODEL = process.env.CLAUDE_MODEL || 'claude-2.1'; // Options: claude-2.1, claude-instant-1.2
+
 console.log('🚀 Starting AI Sales Copilot Server...');
 console.log('📡 Claude API Key:', CLAUDE_API_KEY ? '✅ Found' : '❌ Missing');
+console.log('📡 Claude Model:', CLAUDE_MODEL);
 console.log('📡 HubSpot Token:', HUBSPOT_TOKEN ? '✅ Found' : '❌ Missing');
 
 // Test endpoint
@@ -34,175 +38,98 @@ app.post('/api/chat', async (req, res) => {
     }
     
     let leadData, salesOutput;
+    let usedClaude = false;
     
-    // Try Claude API (currently failing, but will work when key is active)
-    try {
-      console.log('🤖 Attempting Claude API...');
-      
-      const extractResponse = await axios.post('https://api.anthropic.com/v1/messages', {
-        model: 'claude-3-haiku-20240307',
-        max_tokens: 1024,
-        messages: [{
-          role: 'user',
-          content: `Extract lead info from: "${userMessage}"
-Return ONLY JSON: {"name":"name or null","email":"email or null","lead_type":"Membership/Learning/Community/Partnerships/Founders/Investors/Corporate","main_interest":"short phrase","intent_level":"High/Medium/Low"}`
-        }]
-      }, {
-        headers: {
-          'x-api-key': CLAUDE_API_KEY,
-          'anthropic-version': '2023-06-01',
-          'content-type': 'application/json'
-        }
-      });
-      
-      const extractContent = extractResponse.data.content[0].text;
-      const jsonMatch = extractContent.match(/\{[\s\S]*\}/);
-      leadData = JSON.parse(jsonMatch ? jsonMatch[0] : extractContent);
-      
-      const recResponse = await axios.post('https://api.anthropic.com/v1/messages', {
-        model: 'claude-3-haiku-20240307',
-        max_tokens: 1024,
-        messages: [{
-          role: 'user',
-          content: `Lead: ${JSON.stringify(leadData)}. Original message: "${userMessage.substring(0, 100)}". Return JSON: {"recommended_next_action":"action","follow_up_message":"professional 2 sentence email","priority":"High/Medium/Low"}`
-        }]
-      }, {
-        headers: {
-          'x-api-key': CLAUDE_API_KEY,
-          'anthropic-version': '2023-06-01',
-          'content-type': 'application/json'
-        }
-      });
-      
-      const recContent = recResponse.data.content[0].text;
-      const recJsonMatch = recContent.match(/\{[\s\S]*\}/);
-      salesOutput = JSON.parse(recJsonMatch ? recJsonMatch[0] : recContent);
-      
-      console.log('✅ Claude API successful');
-      
-    } catch (claudeError) {
-      console.log('📝 Using intelligent mock data (Claude unavailable)');
-      
-      // Extract email - works for any message
-      const emailMatch = userMessage.match(/[\w.-]+@[\w.-]+\.\w+/);
-      
-      // Extract name - handles various formats
-      let name = null;
-      const namePatterns = [
-        /my name is ([A-Za-z\s]+?)(?:\.|,| and| my email|$)/i,
-        /i'm ([A-Za-z\s]+?)(?:\.|,| and| my email|$)/i,
-        /i am ([A-Za-z\s]+?)(?:\.|,| and| my email|$)/i,
-        /name is ([A-Za-z\s]+?)(?:\.|,| and| my email|$)/i,
-        /^([A-Za-z\s]+?) (?:is |wants |would like)/i,
-        /this is ([A-Za-z\s]+?)(?:\.|,| and|$)/i
-      ];
-      
-      for (const pattern of namePatterns) {
-        const match = userMessage.match(pattern);
-        if (match && match[1].trim().length < 30) {
-          name = match[1].trim();
-          break;
-        }
+    // Try Claude API if key exists
+    if (CLAUDE_API_KEY && CLAUDE_API_KEY !== 'sk-ant-your-working-key-here') {
+      try {
+        console.log(`🤖 Calling Claude API (${CLAUDE_MODEL})...`);
+        usedClaude = true;
+        
+        // First API call - Extract lead data
+        const extractResponse = await axios.post('https://api.anthropic.com/v1/messages', {
+          model: CLAUDE_MODEL,
+          max_tokens: 1024,
+          temperature: 0.1,
+          messages: [{
+            role: 'user',
+            content: `Extract lead information from this message: "${userMessage}"
+            
+Return ONLY valid JSON. No other text. No markdown. Just the JSON object.
+Required fields:
+- name: string or null
+- email: string or null  
+- lead_type: "Membership" or "Learning" or "Community" or "Partnerships" or "Founders" or "Investors" or "Corporate"
+- main_interest: string (short phrase)
+- intent_level: "High" or "Medium" or "Low"
+
+Example: {"name":"John Doe","email":"john@example.com","lead_type":"Membership","main_interest":"joining Playbook","intent_level":"High"}`
+          }]
+        }, {
+          headers: {
+            'x-api-key': CLAUDE_API_KEY,
+            'anthropic-version': '2023-06-01',
+            'content-type': 'application/json'
+          }
+        });
+        
+        const extractContent = extractResponse.data.content[0].text;
+        console.log('📝 Claude extract:', extractContent.substring(0, 200));
+        
+        const jsonMatch = extractContent.match(/\{[\s\S]*\}/);
+        leadData = JSON.parse(jsonMatch ? jsonMatch[0] : extractContent);
+        
+        // Second API call - Generate recommendations
+        const recResponse = await axios.post('https://api.anthropic.com/v1/messages', {
+          model: CLAUDE_MODEL,
+          max_tokens: 1024,
+          temperature: 0.3,
+          messages: [{
+            role: 'user',
+            content: `As an AI Sales Copilot, analyze this lead:
+            
+Lead Data: ${JSON.stringify(leadData)}
+Original Message: "${userMessage}"
+
+Return ONLY valid JSON. No other text.
+Required fields:
+- recommended_next_action: string (specific action for sales rep)
+- follow_up_message: string (short 2-3 sentence email draft)
+- priority: "High" or "Medium" or "Low"
+
+Example: {"recommended_next_action":"Schedule discovery call","follow_up_message":"Thanks for your interest! Let's connect.","priority":"High"}`
+          }]
+        }, {
+          headers: {
+            'x-api-key': CLAUDE_API_KEY,
+            'anthropic-version': '2023-06-01',
+            'content-type': 'application/json'
+          }
+        });
+        
+        const recContent = recResponse.data.content[0].text;
+        const recJsonMatch = recContent.match(/\{[\s\S]*\}/);
+        salesOutput = JSON.parse(recJsonMatch ? recJsonMatch[0] : recContent);
+        
+        console.log('✅ REAL Claude API successful!');
+        
+      } catch (claudeError) {
+        console.log('⚠️ Claude API error, using mock data:', claudeError.response?.data?.error?.message || claudeError.message);
+        usedClaude = false;
+        
+        // Fall back to mock data
+        const mockResult = generateMockData(userMessage);
+        leadData = mockResult.leadData;
+        salesOutput = mockResult.salesOutput;
       }
-      
-      // Intelligent lead type detection for ANY message
-      let leadType = "Community";
-      let mainInterest = "";
-      let followUpMessage = "";
-      let nextAction = "";
-      let intentLevel = "Medium";
-      
-      const lowerMessage = userMessage.toLowerCase();
-      
-      // Detect lead type with confidence scoring
-      const leadSignals = {
-        Membership: ['join', 'member', 'sign up', 'register', 'become a member'],
-        Investors: ['invest', 'investment', 'funding', 'capital', 'equity', 'valuation'],
-        Learning: ['bootcamp', 'learn', 'course', 'training', 'workshop', 'skill', 'education'],
-        Partnerships: ['partner', 'collaborate', 'alliance', 'integrate', 'strategic'],
-        Founders: ['founder', 'startup', 'ceo', 'cto', 'building', 'launching'],
-        Corporate: ['company', 'corporate', 'enterprise', 'business', 'team', 'organization']
-      };
-      
-      let bestMatch = { type: "Community", score: 0 };
-      for (const [type, keywords] of Object.entries(leadSignals)) {
-        const score = keywords.filter(kw => lowerMessage.includes(kw)).length;
-        if (score > bestMatch.score) {
-          bestMatch = { type, score };
-        }
-      }
-      leadType = bestMatch.type;
-      
-      // Extract main interest
-      if (bestMatch.score > 0) {
-        mainInterest = `User expressed interest in ${leadType.toLowerCase()}`;
-      } else {
-        // Extract key topics
-        const words = userMessage.split(' ').slice(0, 10);
-        mainInterest = `Interested in: ${words.join(' ')}...`;
-      }
-      
-      // Detect intent level
-      const highIntentWords = ['want', 'need', 'must', 'ready', 'urgent', 'asap', 'immediately', 'join', 'invest'];
-      const lowIntentWords = ['just', 'maybe', 'perhaps', 'curious', 'browsing', 'looking around'];
-      
-      const highCount = highIntentWords.filter(w => lowerMessage.includes(w)).length;
-      const lowCount = lowIntentWords.filter(w => lowerMessage.includes(w)).length;
-      
-      if (highCount > 0) intentLevel = "High";
-      if (lowCount > highCount) intentLevel = "Low";
-      
-      // Generate contextual follow-up based on what user said
-      const userName = name || "there";
-      
-      if (leadType === "Membership") {
-        followUpMessage = `Thanks ${userName} for your interest in joining Playbook! I'd love to schedule a quick 15-min call to walk you through membership benefits and get you started.`;
-        nextAction = "Schedule membership onboarding call";
-      } 
-      else if (leadType === "Investors") {
-        followUpMessage = `Thank you ${userName} for your interest in investing! Our team would be happy to share our pitch deck and discuss current opportunities.`;
-        nextAction = "Send investor deck and schedule call";
-      }
-      else if (leadType === "Learning") {
-        followUpMessage = `Thanks ${userName} for your interest in our bootcamps! I'll send you our upcoming schedule, curriculum details, and pricing information.`;
-        nextAction = "Send bootcamp schedule and materials";
-      }
-      else if (leadType === "Partnerships") {
-        followUpMessage = `Thanks ${userName} for exploring partnerships! Let's set up a time to discuss how we can collaborate and create mutual value.`;
-        nextAction = "Schedule partnership discovery call";
-      }
-      else if (leadType === "Founders") {
-        followUpMessage = `Hi ${userName}, thanks for reaching out! As a founder, you'll find great value in our community. Let me share some resources tailored for founders.`;
-        nextAction = "Send founder resources and schedule intro";
-      }
-      else if (leadType === "Corporate") {
-        followUpMessage = `Thank you ${userName} for your corporate inquiry! Our enterprise team would love to understand your organization's needs better.`;
-        nextAction = "Route to enterprise sales team";
-      }
-      else {
-        // Generic but helpful response for ANY other message
-        followUpMessage = `Thanks ${userName} for reaching out to Playbook! Could you tell me a bit more about what you're looking for? I'd love to point you in the right direction.`;
-        nextAction = "Qualify lead with follow-up questions";
-      }
-      
-      leadData = {
-        name: name,
-        email: emailMatch ? emailMatch[0] : null,
-        lead_type: leadType,
-        main_interest: mainInterest,
-        intent_level: intentLevel
-      };
-      
-      salesOutput = {
-        recommended_next_action: nextAction,
-        follow_up_message: followUpMessage,
-        priority: intentLevel === "High" ? "High" : "Medium"
-      };
-      
-      console.log('✅ Generated intelligent response for:', leadType);
+    } else {
+      console.log('📝 No valid Claude API key, using intelligent mock data');
+      const mockResult = generateMockData(userMessage);
+      leadData = mockResult.leadData;
+      salesOutput = mockResult.salesOutput;
     }
     
-    // Handle HubSpot
+    // Send to HubSpot
     let hubspotResult = null;
     
     if (leadData.email && leadData.email !== 'null') {
@@ -267,7 +194,8 @@ Return ONLY JSON: {"name":"name or null","email":"email or null","lead_type":"Me
         }
         
         // Add note
-        const noteContent = `🤖 AI Sales Copilot Analysis
+        const aiSource = usedClaude ? `Claude AI (${CLAUDE_MODEL})` : 'Intelligent Mock Data';
+        const noteContent = `🤖 AI Sales Copilot Analysis (${aiSource})
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📋 LEAD INFORMATION
@@ -289,7 +217,7 @@ ${salesOutput.follow_up_message}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Original Message: "${userMessage.substring(0, 200)}"
-Source: AI Sales Copilot
+Source: ${aiSource}
 Timestamp: ${new Date().toLocaleString()}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
         
@@ -316,6 +244,7 @@ Timestamp: ${new Date().toLocaleString()}
           success: true, 
           contactId: contactId,
           existing: existingContact,
+          usedClaude: usedClaude,
           message: existingContact ? '✅ Note added to existing contact' : '✅ New contact created with note'
         };
         console.log('✅ HubSpot success');
@@ -337,6 +266,8 @@ Timestamp: ${new Date().toLocaleString()}
       lead_data: leadData, 
       sales_output: salesOutput, 
       hubspot: hubspotResult,
+      used_claude: usedClaude,
+      model_used: usedClaude ? CLAUDE_MODEL : 'mock-data',
       timestamp: new Date().toISOString()
     });
     
@@ -349,17 +280,90 @@ Timestamp: ${new Date().toLocaleString()}
   }
 });
 
+// Mock data generator function
+function generateMockData(userMessage) {
+  const emailMatch = userMessage.match(/[\w.-]+@[\w.-]+\.\w+/);
+  
+  let name = null;
+  const namePatterns = [
+    /my name is ([A-Za-z\s]+?)(?:\.|,| and| my email|$)/i,
+    /i'm ([A-Za-z\s]+?)(?:\.|,| and| my email|$)/i,
+    /i am ([A-Za-z\s]+?)(?:\.|,| and| my email|$)/i
+  ];
+  
+  for (const pattern of namePatterns) {
+    const match = userMessage.match(pattern);
+    if (match && match[1].trim().length < 30) {
+      name = match[1].trim();
+      break;
+    }
+  }
+  
+  const lowerMessage = userMessage.toLowerCase();
+  let leadType = "Community";
+  let followUpMessage = "";
+  let nextAction = "";
+  
+  if (lowerMessage.match(/join|member/i)) {
+    leadType = "Membership";
+    followUpMessage = `Thanks ${name || 'there'} for your interest in joining Playbook! I'd love to schedule a quick call to walk you through membership benefits.`;
+    nextAction = "Schedule membership onboarding call";
+  } 
+  else if (lowerMessage.match(/invest/i)) {
+    leadType = "Investors";
+    followUpMessage = `Thank you for your interest in investing! Our team would be happy to share our pitch deck.`;
+    nextAction = "Send investor deck and schedule call";
+  }
+  else if (lowerMessage.match(/bootcamp|learn/i)) {
+    leadType = "Learning";
+    followUpMessage = `Thanks for your interest in our bootcamps! I'll send you our upcoming schedule.`;
+    nextAction = "Send bootcamp schedule";
+  }
+  else if (lowerMessage.match(/partner/i)) {
+    leadType = "Partnerships";
+    followUpMessage = `Thanks for exploring partnerships! Let's set up a time to discuss.`;
+    nextAction = "Schedule partnership discovery call";
+  }
+  else {
+    followUpMessage = `Thanks ${name || 'for reaching out'}! Could you tell me more about what you're looking for?`;
+    nextAction = "Qualify lead with follow-up questions";
+  }
+  
+  const intentLevel = lowerMessage.match(/want|ready|interested|join|invest/i) ? "High" : "Medium";
+  
+  return {
+    leadData: {
+      name: name,
+      email: emailMatch ? emailMatch[0] : null,
+      lead_type: leadType,
+      main_interest: userMessage.substring(0, 50),
+      intent_level: intentLevel
+    },
+    salesOutput: {
+      recommended_next_action: nextAction,
+      follow_up_message: followUpMessage,
+      priority: intentLevel === "High" ? "High" : "Medium"
+    }
+  };
+}
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log('\n' + '='.repeat(50));
   console.log('✅ AI Sales Copilot Server Running');
   console.log('='.repeat(50));
-  console.log(`📍 URL: http://localhost:$\{PORT\}`);
-  console.log(`🧪 Test: http://localhost:$\{PORT\}/test`);
-  console.log(`💬 Chat: http://localhost:$\{PORT\}`);
+  console.log(`📍 URL: http://localhost:${PORT}`);
+  console.log(`🧪 Test: http://localhost:${PORT}/test`);
+  console.log(`💬 Chat: http://localhost:${PORT}`);
   console.log('='.repeat(50));
-  console.log('\n📝 Status: Using intelligent mock data (Claude API not available)');
-  console.log('✅ Handles ANY user message intelligently');
-  console.log('✅ HubSpot integration fully functional\n');
+  
+  if (CLAUDE_API_KEY && CLAUDE_API_KEY !== 'sk-ant-your-working-key-here') {
+    console.log(`\n🌟 Claude API mode: ACTIVE (${CLAUDE_MODEL})`);
+    console.log('✅ Using Claude AI for lead extraction');
+  } else {
+    console.log('\n📝 Mock data mode: ACTIVE');
+    console.log('💡 To enable Claude AI, add a valid API key to .env');
+  }
+  console.log('✅ HubSpot integration: READY\n');
 });
