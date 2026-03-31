@@ -1,6 +1,23 @@
 // API endpoint
 const API_URL = '/api/chat';
 
+// Conversation history
+let conversationHistory = [];
+
+// Add to conversation history
+function addToHistory(role, content) {
+    conversationHistory.push({ role, content });
+    // Keep last 20 messages for context
+    if (conversationHistory.length > 20) {
+        conversationHistory = conversationHistory.slice(-20);
+    }
+}
+
+// Clear conversation history
+function clearConversationHistory() {
+    conversationHistory = [];
+}
+
 // Send message function
 async function sendMessage() {
     const input = document.getElementById('messageInput');
@@ -9,19 +26,32 @@ async function sendMessage() {
     
     if (!message) return;
     
+    // Check connection before sending
+    const isConnected = await checkConnectionBeforeSend();
+    if (!isConnected) {
+        addMessage('❌ Cannot send message: Server is disconnected. Please check if the server is running.', 'ai');
+        return;
+    }
+    
+    // Disable button and show loading
     sendBtn.disabled = true;
     sendBtn.textContent = 'Sending...';
     
+    // Add user message
     addMessage(message, 'user');
     input.value = '';
     
+    // Show loading in chat
     const loadingId = addLoadingMessage();
     
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: message })
+            body: JSON.stringify({ 
+                message: message,
+                history: conversationHistory 
+            })
         });
         
         if (!response.ok) {
@@ -30,9 +60,18 @@ async function sendMessage() {
         
         const data = await response.json();
         
+        // Remove loading message
         removeLoadingMessage(loadingId);
         
         if (data.success) {
+            // Add AI's conversational response
+            addMessage(data.response, 'ai');
+            
+            // Add to conversation history
+            addToHistory('user', message);
+            addToHistory('assistant', data.response);
+            
+            // Show the analysis summary
             addMessage('✅ Lead processed successfully! Check the analysis panel on the right.', 'ai');
             displayAnalysis(data);
             updateConnectionStatus(true);
@@ -47,11 +86,13 @@ async function sendMessage() {
         displayError(error.message);
         updateConnectionStatus(false);
     } finally {
+        // Re-enable button
         sendBtn.disabled = false;
         sendBtn.textContent = 'Send →';
     }
 }
 
+// Add message to chat
 function addMessage(text, sender) {
     const messagesDiv = document.getElementById('messages');
     const messageDiv = document.createElement('div');
@@ -62,6 +103,7 @@ function addMessage(text, sender) {
     return messageDiv;
 }
 
+// Add loading message
 function addLoadingMessage() {
     const messagesDiv = document.getElementById('messages');
     const loadingDiv = document.createElement('div');
@@ -73,15 +115,16 @@ function addLoadingMessage() {
     return loadingDiv.id;
 }
 
+// Remove loading message
 function removeLoadingMessage(id) {
     const element = document.getElementById(id);
     if (element) element.remove();
 }
 
+// Display analysis results
 function displayAnalysis(data) {
     const analysisDiv = document.getElementById('analysisContent');
-    const priorityClass = data.sales_output.priority === 'High' ? 'priority-high' : 
-                          data.sales_output.priority === 'Medium' ? 'priority-medium' : 'priority-low';
+    const isDarkMode = document.body.classList.contains('dark-mode');
     
     let hubspotStatus = '';
     if (data.hubspot.success) {
@@ -93,6 +136,8 @@ function displayAnalysis(data) {
     }
     
     const priorityColor = data.sales_output.priority === 'High' ? '🔴' : data.sales_output.priority === 'Medium' ? '🟡' : '🟢';
+    const priorityClass = data.sales_output.priority === 'High' ? 'priority-high' : 
+                          data.sales_output.priority === 'Medium' ? 'priority-medium' : 'priority-low';
     
     analysisDiv.innerHTML = `
         <div class="analysis-section">
@@ -146,8 +191,11 @@ function displayAnalysis(data) {
     `;
 }
 
+// Display error message
 function displayError(error) {
     const analysisDiv = document.getElementById('analysisContent');
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    
     analysisDiv.innerHTML = `
         <div class="analysis-section">
             <div class="analysis-title">
@@ -167,28 +215,93 @@ function displayError(error) {
     `;
 }
 
+// Update connection status
 function updateConnectionStatus(connected) {
     const statusDiv = document.getElementById('connectionStatus');
+    const statusIndicator = document.querySelector('.status-indicator span');
+    
     if (connected) {
         statusDiv.innerHTML = '✅ Connected';
         statusDiv.classList.remove('disconnected');
+        
+        // Update the main status indicator text
+        if (statusIndicator) {
+            statusIndicator.textContent = 'AI Sales Copilot Active';
+        }
+        
+        // Change status dot color to green
+        const statusDot = document.querySelector('.status-dot');
+        if (statusDot) {
+            statusDot.style.background = '#D1FC51';
+            statusDot.style.boxShadow = '0 0 8px #D1FC51';
+        }
     } else {
         statusDiv.innerHTML = '❌ Disconnected';
         statusDiv.classList.add('disconnected');
+        
+        // Update the main status indicator text
+        if (statusIndicator) {
+            statusIndicator.textContent = 'Disconnected - Check Server';
+        }
+        
+        // Change status dot color to red
+        const statusDot = document.querySelector('.status-dot');
+        if (statusDot) {
+            statusDot.style.background = '#EF4444';
+            statusDot.style.boxShadow = '0 0 8px #EF4444';
+        }
     }
 }
 
+// Check connection before sending
+async function checkConnectionBeforeSend() {
+    try {
+        const response = await fetch('/test');
+        if (!response.ok) {
+            updateConnectionStatus(false);
+            return false;
+        }
+        updateConnectionStatus(true);
+        return true;
+    } catch (error) {
+        updateConnectionStatus(false);
+        return false;
+    }
+}
+
+// Set example message
 function setExample(text) {
     document.getElementById('messageInput').value = text;
     sendMessage();
 }
 
+// Clear chat
+function clearChat() {
+    const messagesDiv = document.getElementById('messages');
+    messagesDiv.innerHTML = `
+        <div class="message ai-message">
+            <div class="message-bubble">
+                👋 Welcome to PLAYBOOK! I'm your AI Sales Copilot.<br><br>
+                Tell me what brings you here today:<br>
+                • ✨ Join as a member<br>
+                • 💰 Invest through Women Spark<br>
+                • 📚 Learn via masterclasses<br>
+                • 🤝 Explore partnerships<br><br>
+                <span style="font-size: 0.85rem; opacity: 0.7;">↓ Type your message below ↓</span>
+            </div>
+        </div>
+    `;
+    clearConversationHistory();
+}
+
+// Escape HTML
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
 
+// Test connection on page load
 async function testConnection() {
     try {
         const response = await fetch('/test');
@@ -198,41 +311,79 @@ async function testConnection() {
             updateConnectionStatus(false);
         }
     } catch (error) {
+        console.error('Connection test failed:', error);
         updateConnectionStatus(false);
     }
 }
 
-// Theme Toggle
+// Connection monitoring
+let connectionInterval;
+
+function startConnectionMonitoring() {
+    testConnection();
+    connectionInterval = setInterval(() => {
+        testConnection();
+    }, 30000);
+}
+
+function stopConnectionMonitoring() {
+    if (connectionInterval) {
+        clearInterval(connectionInterval);
+    }
+}
+
+// ============================================
+// THEME TOGGLE FUNCTIONALITY
+// ============================================
+
+// Theme toggle function
 function initTheme() {
     const themeToggle = document.getElementById('themeToggle');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
     
+    // Check saved theme or system preference
     function getInitialTheme() {
         const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) return savedTheme;
+        if (savedTheme) {
+            return savedTheme;
+        }
         return prefersDark.matches ? 'dark-mode' : 'light-mode';
     }
     
+    // Apply theme
     function setTheme(theme) {
         document.body.className = theme;
         localStorage.setItem('theme', theme);
+        
+        // Update button icon
         if (themeToggle) {
             themeToggle.textContent = theme === 'dark-mode' ? '☀️' : '🌙';
         }
+        
+        // Refresh analysis display colors if there's data
+        const analysisContent = document.getElementById('analysisContent');
+        if (analysisContent && analysisContent.innerHTML && !analysisContent.innerHTML.includes('empty-state')) {
+            // The displayAnalysis function will handle colors on next message
+            console.log('Theme changed');
+        }
     }
     
+    // Toggle theme
     function toggleTheme() {
         const currentTheme = document.body.className;
         const newTheme = currentTheme === 'dark-mode' ? 'light-mode' : 'dark-mode';
         setTheme(newTheme);
     }
     
+    // Initialize theme
     setTheme(getInitialTheme());
     
+    // Listen for theme toggle click
     if (themeToggle) {
         themeToggle.addEventListener('click', toggleTheme);
     }
     
+    // Listen for system preference changes
     prefersDark.addEventListener('change', (e) => {
         if (!localStorage.getItem('theme')) {
             setTheme(e.matches ? 'dark-mode' : 'light-mode');
@@ -240,16 +391,46 @@ function initTheme() {
     });
 }
 
-// Initialize
+// ============================================
+// INITIALIZATION
+// ============================================
+
+// Run everything when page loads
 document.addEventListener('DOMContentLoaded', () => {
     testConnection();
+    startConnectionMonitoring();
     initTheme();
     
+    // Add keyboard shortcuts
     document.addEventListener('keydown', (e) => {
+        // Ctrl/Cmd + Shift + D for theme toggle
         if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') {
             e.preventDefault();
             const themeToggle = document.getElementById('themeToggle');
             if (themeToggle) themeToggle.click();
         }
+        
+        // Ctrl/Cmd + K to clear chat
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            clearChat();
+        }
+        
+        // Ctrl/Cmd + L to focus input
+        if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
+            e.preventDefault();
+            document.getElementById('messageInput').focus();
+        }
+        
+        // Ctrl/Cmd + Enter to send
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            sendMessage();
+        }
     });
+});
+
+// Clean up interval when page unloads
+window.addEventListener('beforeunload', () => {
+    stopConnectionMonitoring();
 });

@@ -52,9 +52,20 @@ app.get('/test', (req, res) => {
   });
 });
 
-// Helper function to call Claude with Playbook context
-async function callClaudeWithContext(userMessage) {
+// Helper function to call Claude with Playbook context (CONVERSATIONAL)
+async function callClaudeWithContext(userMessage, conversationHistory = []) {
   let lastError = null;
+  
+  // Build conversation context
+  let conversationContext = '';
+  if (conversationHistory && conversationHistory.length > 0) {
+    conversationContext = '\n\nPrevious conversation:\n';
+    const lastMessages = conversationHistory.slice(-6);
+    for (const msg of lastMessages) {
+      conversationContext += `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}\n`;
+    }
+    conversationContext += '\n';
+  }
   
   for (const model of CLAUDE_MODELS) {
     try {
@@ -62,23 +73,33 @@ async function callClaudeWithContext(userMessage) {
       
       const extractResponse = await axios.post('https://api.anthropic.com/v1/messages', {
         model: model,
-        max_tokens: 1024,
-        temperature: 0.1,
+        max_tokens: 1500,
+        temperature: 0.7,
         messages: [{
           role: 'user',
-          content: `You are an AI Sales Copilot for PLAYBOOK (https://www.get-playbook.com). Here's what PLAYBOOK offers:
+          content: `You are an AI Sales Copilot for PLAYBOOK (https://www.get-playbook.com). Be conversational, friendly, and helpful. Here's what PLAYBOOK offers:
 
 ${PLAYBOOK_CONTEXT}
 
-User message: "${userMessage}"
+${conversationContext}Current user message: "${userMessage}"
 
-Extract lead information. Return ONLY valid JSON. No other text, no explanation.
+First, respond conversationally to the user. Be warm, helpful, and answer their question naturally. Then, extract lead information.
+
+Return ONLY valid JSON with this structure:
 {
-  "name": "extracted name or null",
-  "email": "email address or null",  
-  "lead_type": "Membership" or "Learning" or "Investing" or "Partnerships" or "Community" or "Mentorship",
-  "main_interest": "specific thing they want from PLAYBOOK based on their message",
-  "intent_level": "High" or "Medium" or "Low"
+  "response": "your friendly conversational response to the user",
+  "lead_data": {
+    "name": "extracted name or null",
+    "email": "email address or null",  
+    "lead_type": "Membership" or "Learning" or "Investing" or "Partnerships" or "Community" or "Mentorship",
+    "main_interest": "specific thing they want from PLAYBOOK based on their message",
+    "intent_level": "High" or "Medium" or "Low"
+  },
+  "sales_recommendations": {
+    "recommended_next_action": "specific, actionable next step for the sales team",
+    "follow_up_message": "personalized email draft that references PLAYBOOK's actual offerings",
+    "priority": "High" or "Medium" or "Low"
+  }
 }`
         }]
       }, {
@@ -91,52 +112,21 @@ Extract lead information. Return ONLY valid JSON. No other text, no explanation.
       
       const extractContent = extractResponse.data.content[0].text;
       const jsonMatch = extractContent.match(/\{[\s\S]*\}/);
-      const leadData = JSON.parse(jsonMatch ? jsonMatch[0] : extractContent);
-      
-      // Second API call for personalized sales recommendations
-      const recResponse = await axios.post('https://api.anthropic.com/v1/messages', {
-        model: model,
-        max_tokens: 1024,
-        temperature: 0.3,
-        messages: [{
-          role: 'user',
-          content: `You are a sales representative for PLAYBOOK. Use this REAL context about PLAYBOOK:
-${PLAYBOOK_CONTEXT}
-
-Lead wants: ${leadData.main_interest}
-Lead type: ${leadData.lead_type}
-Original message: "${userMessage}"
-
-Return ONLY valid JSON. No other text.
-{
-  "recommended_next_action": "specific, actionable next step for the sales team",
-  "follow_up_message": "personalized email draft that references PLAYBOOK's actual offerings (use real data: 8,340+ members, $45.84/month for Core, Women Spark, 200+ masterclasses, etc.)",
-  "priority": "High" or "Medium" or "Low"
-}
-
-The follow_up_message should be professional, warm, and specific to PLAYBOOK.`
-        }]
-      }, {
-        headers: {
-          'x-api-key': CLAUDE_API_KEY,
-          'anthropic-version': '2023-06-01',
-          'content-type': 'application/json'
-        }
-      });
-      
-      const recContent = recResponse.data.content[0].text;
-      const recJsonMatch = recContent.match(/\{[\s\S]*\}/);
-      const salesOutput = JSON.parse(recJsonMatch ? recJsonMatch[0] : recContent);
+      const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : extractContent);
       
       console.log(`   ✅ Success with model: ${model}`);
-      return { leadData, salesOutput, model };
+      return { 
+        response: parsed.response || "Thanks for your message! I'm processing your request.",
+        leadData: parsed.lead_data,
+        salesOutput: parsed.sales_recommendations,
+        model 
+      };
       
     } catch (error) {
       lastError = error;
       const errorMsg = error.response?.data?.error?.message || error.message;
       console.log(`   ❌ Failed with ${model}: ${errorMsg}`);
       
-      // If authentication error, stop trying
       if (errorMsg.includes('authentication') || errorMsg.includes('api_key')) {
         throw error;
       }
@@ -152,6 +142,7 @@ app.post('/api/chat', async (req, res) => {
   
   try {
     const userMessage = req.body.message;
+    const conversationHistory = req.body.history || [];
     
     if (!userMessage) {
       return res.status(400).json({ success: false, error: 'No message provided' });
@@ -165,9 +156,10 @@ app.post('/api/chat', async (req, res) => {
     }
     
     console.log('🤖 Calling Claude API with PLAYBOOK context...');
-    const result = await callClaudeWithContext(userMessage);
+    const result = await callClaudeWithContext(userMessage, conversationHistory);
     
     console.log('✅ Claude API successful!');
+    console.log('💬 Response:', result.response);
     console.log('📊 Extracted:', result.leadData);
     console.log('💡 Recommendations:', result.salesOutput);
     
@@ -216,7 +208,6 @@ app.post('/api/chat', async (req, res) => {
             lifecyclestage: result.leadData.intent_level === 'High' ? 'lead' : 'subscriber'
           };
           
-          // Remove empty values
           Object.keys(contactProperties).forEach(key => {
             if (!contactProperties[key] || contactProperties[key] === 'null') {
               delete contactProperties[key];
@@ -240,6 +231,12 @@ app.post('/api/chat', async (req, res) => {
         const noteContent = `🤖 AI Sales Copilot Analysis (Claude AI - ${result.model})
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💬 CONVERSATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+User: ${userMessage}
+AI Response: ${result.response}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📋 LEAD INFORMATION
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Type: ${result.leadData.lead_type}
@@ -258,7 +255,6 @@ Priority: ${result.salesOutput.priority}
 ${result.salesOutput.follow_up_message}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Original Message: "${userMessage.substring(0, 300)}"
 Source: Claude AI (${result.model})
 Timestamp: ${new Date().toLocaleString()}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
@@ -304,6 +300,7 @@ Timestamp: ${new Date().toLocaleString()}
     
     res.json({ 
       success: true, 
+      response: result.response,
       lead_data: result.leadData, 
       sales_output: result.salesOutput, 
       hubspot: hubspotResult,
@@ -336,7 +333,7 @@ app.listen(PORT, () => {
   console.log(`💬 Chat: http://localhost:${PORT}`);
   console.log('='.repeat(50));
   console.log('\n🌟 Claude API Mode: ACTIVE');
-  console.log('✅ Using REAL Claude AI with PLAYBOOK context');
-  console.log('❌ No mock data - everything comes from Claude');
+  console.log('✅ Conversational AI with PLAYBOOK context');
+  console.log('✅ Lead extraction and sales recommendations');
   console.log('✅ HubSpot integration: READY\n');
 });
