@@ -9,99 +9,85 @@ app.use(express.static('public'));
 const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY;
 const HUBSPOT_TOKEN = process.env.HUBSPOT_ACCESS_TOKEN;
 
-// Real Playbook context from website
-const PLAYBOOK_CONTEXT = `
-PLAYBOOK is a women's professional network focused on MENA region with:
+// ─────────────────────────────────────────────
+// SYSTEM PROMPT — defines personality & memory
+// ─────────────────────────────────────────────
+const SYSTEM_PROMPT = `You are Raya, a warm and knowledgeable community guide for PLAYBOOK — an award-winning private network for professional women in the MENA region and beyond.
+
+About PLAYBOOK:
 - 8,340+ members across 100+ countries
-- 170+ expert coaches and mentors
+- 170+ expert coaches and mentors  
 - 15,819+ learning minutes of content
-
-Three core offerings:
-1. CONNECT: Find mentors and collaborators across 100+ countries
-2. LEARN: Masterclasses, bootcamps, and expert sessions
-3. INVEST: Investor education and startup opportunities through Women Spark
-
-Membership tiers:
-- PLAYBOOK Core: $45.84/month (VAT exclusive) includes 200+ masterclasses, bootcamps, community events, learning paths
-
-Key people:
 - Founded by Wafa AlObaidat and co-founders
 - Built for women, led by women
 
-Awards: Recognized as award-winning private network for women
-`;
+What PLAYBOOK offers:
+1. CONNECT — Find mentors and collaborators across 100+ countries
+2. LEARN — Masterclasses, bootcamps, and expert sessions
+3. INVEST — Investor education and startup opportunities through Women Spark
 
-// Claude models to try (in order of preference)
-const CLAUDE_MODELS = [
-  'claude-haiku-4-5-20251001',
-  'claude-sonnet-4-5-20251001',
-  'claude-3-5-haiku-20241022',
-  'claude-2.1'
-];
+Membership: PLAYBOOK Core at $45.84/month (VAT exclusive) — includes 200+ masterclasses, bootcamps, community events, and learning paths.
 
-console.log('🚀 Starting AI Sales Copilot Server...');
-console.log('📡 Claude API Key:', CLAUDE_API_KEY ? '✅ Found' : '❌ Missing');
-console.log('📡 HubSpot Token:', HUBSPOT_TOKEN ? '✅ Found' : '❌ Missing');
+Your personality:
+- Warm, encouraging, and genuinely curious about the person you're talking to
+- You remember everything said earlier in the conversation and reference it naturally
+- You ask one thoughtful follow-up question at a time — never fire multiple questions at once
+- If someone is just chatting (small talk, venting, off-topic), engage warmly before gently steering back
+- You never sound like a script or a chatbot. You sound like a smart friend who happens to know everything about PLAYBOOK
+- Keep responses concise — 2–4 sentences max unless more detail is clearly needed
+- Never repeat yourself or summarise what the user just said back to them
 
-// Test endpoint
-app.get('/test', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    message: 'Server is running with Claude API',
-    time: new Date().toISOString()
-  });
-});
+Lead capture behaviour:
+- Collect name, email, interest area, and intent naturally through conversation — never ask for all of them at once
+- If you already have their name from earlier in the conversation, use it
+- Only ask for email when there's a natural reason (e.g. "I'd love to send you more details — what's your email?")
+- Never say things like "I've noted your interest" or "I'll pass this on to the team" — just be human`;
 
-// Helper function to call Claude with Playbook context (CONVERSATIONAL)
-async function callClaudeWithContext(userMessage, conversationHistory = []) {
-  let lastError = null;
-  
-  // Build conversation context
-  let conversationContext = '';
-  if (conversationHistory && conversationHistory.length > 0) {
-    conversationContext = '\n\nPrevious conversation:\n';
-    const lastMessages = conversationHistory.slice(-6);
-    for (const msg of lastMessages) {
-      conversationContext += `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}\n`;
-    }
-    conversationContext += '\n';
-  }
-  
-  for (const model of CLAUDE_MODELS) {
-    try {
-      console.log(`   🤖 Trying model: ${model}...`);
-      
-      const extractResponse = await axios.post('https://api.anthropic.com/v1/messages', {
-        model: model,
-        max_tokens: 1500,
-        temperature: 0.7,
-        messages: [{
-          role: 'user',
-          content: `You are an AI Sales Copilot for PLAYBOOK (https://www.get-playbook.com). Be conversational, friendly, and helpful. Here's what PLAYBOOK offers:
+// ─────────────────────────────────────────────
+// EXTRACTION PROMPT — silent, separate API call
+// ─────────────────────────────────────────────
+const EXTRACTION_SYSTEM = `You are a silent data extractor. Given a conversation, extract lead data as JSON only. No extra text, no markdown fences.`;
 
-${PLAYBOOK_CONTEXT}
+function buildExtractionPrompt(conversationHistory, latestMessage) {
+  const transcript = conversationHistory
+    .map(m => `${m.role === 'user' ? 'User' : 'Raya'}: ${m.content}`)
+    .join('\n');
 
-${conversationContext}Current user message: "${userMessage}"
+  return `Based on this conversation, extract the lead data.
 
-First, respond conversationally to the user. Be warm, helpful, and answer their question naturally. Then, extract lead information.
+Conversation:
+${transcript}
+User: ${latestMessage}
 
-Return ONLY valid JSON with this structure:
+Return ONLY valid JSON:
 {
-  "response": "your friendly conversational response to the user",
-  "lead_data": {
-    "name": "extracted name or null",
-    "email": "email address or null",  
-    "lead_type": "Membership" or "Learning" or "Investing" or "Partnerships" or "Community" or "Mentorship",
-    "main_interest": "specific thing they want from PLAYBOOK based on their message",
-    "intent_level": "High" or "Medium" or "Low"
-  },
-  "sales_recommendations": {
-    "recommended_next_action": "specific, actionable next step for the sales team",
-    "follow_up_message": "personalized email draft that references PLAYBOOK's actual offerings",
-    "priority": "High" or "Medium" or "Low"
-  }
-}`
-        }]
+  "name": "full name or null",
+  "email": "email or null",
+  "lead_type": "Membership" | "Learning" | "Investing" | "Partnerships" | "Community" | "Mentorship",
+  "main_interest": "specific interest based on conversation or null",
+  "intent_level": "High" | "Medium" | "Low",
+  "recommended_next_action": "specific next step for sales team",
+  "follow_up_message": "short personalised email draft referencing PLAYBOOK offerings",
+  "priority": "High" | "Medium" | "Low"
+}`;
+}
+
+// ─────────────────────────────────────────────
+// CLAUDE API CALL — proper multi-turn messages
+// ─────────────────────────────────────────────
+const CLAUDE_MODEL = 'claude-haiku-4-5-20251001';
+const FALLBACK_MODELS = ['claude-3-5-haiku-20241022', 'claude-sonnet-4-5-20251001'];
+
+async function callClaude(systemPrompt, messages, maxTokens = 600) {
+  const models = [CLAUDE_MODEL, ...FALLBACK_MODELS];
+
+  for (const model of models) {
+    try {
+      const response = await axios.post('https://api.anthropic.com/v1/messages', {
+        model,
+        max_tokens: maxTokens,
+        system: systemPrompt,  // ← system prompt in the correct field
+        messages               // ← proper multi-turn array
       }, {
         headers: {
           'x-api-key': CLAUDE_API_KEY,
@@ -109,231 +95,198 @@ Return ONLY valid JSON with this structure:
           'content-type': 'application/json'
         }
       });
-      
-      const extractContent = extractResponse.data.content[0].text;
-      const jsonMatch = extractContent.match(/\{[\s\S]*\}/);
-      const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : extractContent);
-      
-      console.log(`   ✅ Success with model: ${model}`);
-      return { 
-        response: parsed.response || "Thanks for your message! I'm processing your request.",
-        leadData: parsed.lead_data,
-        salesOutput: parsed.sales_recommendations,
-        model 
-      };
-      
+
+      return { text: response.data.content[0].text, model };
     } catch (error) {
-      lastError = error;
-      const errorMsg = error.response?.data?.error?.message || error.message;
-      console.log(`   ❌ Failed with ${model}: ${errorMsg}`);
-      
-      if (errorMsg.includes('authentication') || errorMsg.includes('api_key')) {
-        throw error;
-      }
+      const msg = error.response?.data?.error?.message || error.message;
+      console.log(`   ❌ ${model}: ${msg}`);
+      if (msg.includes('authentication') || msg.includes('api_key')) throw error;
     }
   }
-  
-  throw lastError || new Error('All Claude models failed');
+
+  throw new Error('All Claude models failed');
 }
 
-// Main chat endpoint
+// ─────────────────────────────────────────────
+// MAIN CHAT ENDPOINT
+// ─────────────────────────────────────────────
 app.post('/api/chat', async (req, res) => {
-  console.log('\n📨 Received message:', req.body.message);
-  
+  const { message, history = [] } = req.body;
+
+  console.log('\n📨 User:', message);
+  console.log(`📚 History length: ${history.length} messages`);
+
+  if (!message) return res.status(400).json({ success: false, error: 'No message provided' });
+  if (!CLAUDE_API_KEY) return res.status(500).json({ success: false, error: 'Claude API key not configured' });
+
   try {
-    const userMessage = req.body.message;
-    const conversationHistory = req.body.history || [];
-    
-    if (!userMessage) {
-      return res.status(400).json({ success: false, error: 'No message provided' });
+    // ── Step 1: Conversational reply using full history ──
+    // Build the messages array Claude expects: [{role, content}, ...]
+    const conversationMessages = [
+      ...history.map(m => ({ role: m.role, content: m.content })),
+      { role: 'user', content: message }
+    ];
+
+    const { text: botReply, model } = await callClaude(SYSTEM_PROMPT, conversationMessages, 600);
+    console.log('💬 Raya:', botReply);
+
+    // ── Step 2: Silent extraction call (separate, doesn't affect conversation) ──
+    let leadData = null;
+    let salesOutput = null;
+
+    try {
+      const extractionPrompt = buildExtractionPrompt(history, message);
+      const { text: extractionText } = await callClaude(
+        EXTRACTION_SYSTEM,
+        [{ role: 'user', content: extractionPrompt }],
+        500
+      );
+
+      const jsonMatch = extractionText.match(/\{[\s\S]*\}/);
+      const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : extractionText);
+
+      leadData = {
+        name: parsed.name || null,
+        email: parsed.email || null,
+        lead_type: parsed.lead_type || 'Community',
+        main_interest: parsed.main_interest || null,
+        intent_level: parsed.intent_level || 'Low'
+      };
+
+      salesOutput = {
+        recommended_next_action: parsed.recommended_next_action || '',
+        follow_up_message: parsed.follow_up_message || '',
+        priority: parsed.priority || 'Low'
+      };
+
+      console.log('📊 Extracted:', leadData);
+    } catch (extractErr) {
+      console.warn('⚠️ Extraction failed (non-fatal):', extractErr.message);
+      leadData = { name: null, email: null, lead_type: 'Community', main_interest: null, intent_level: 'Low' };
+      salesOutput = { recommended_next_action: 'Review conversation manually', follow_up_message: '', priority: 'Low' };
     }
-    
-    if (!CLAUDE_API_KEY || CLAUDE_API_KEY === 'sk-ant-your-working-key-here') {
-      return res.status(500).json({ 
-        success: false, 
-        error: 'Claude API key not configured. Please add your API key to .env file.' 
-      });
-    }
-    
-    console.log('🤖 Calling Claude API with PLAYBOOK context...');
-    const result = await callClaudeWithContext(userMessage, conversationHistory);
-    
-    console.log('✅ Claude API successful!');
-    console.log('💬 Response:', result.response);
-    console.log('📊 Extracted:', result.leadData);
-    console.log('💡 Recommendations:', result.salesOutput);
-    
-    // Send to HubSpot if email exists
-    let hubspotResult = null;
-    
-    if (result.leadData.email && result.leadData.email !== 'null') {
-      console.log('📤 Sending to HubSpot for:', result.leadData.email);
-      
+
+    // ── Step 3: HubSpot sync (only if email captured) ──
+    let hubspotResult = { success: false, message: 'No email yet — continuing conversation' };
+
+    if (leadData.email) {
+      console.log('📤 Syncing to HubSpot:', leadData.email);
+
       try {
-        // Search for existing contact
         let contactId = null;
         let existingContact = false;
-        
+
+        // Search for existing contact
         try {
-          const searchResponse = await axios.post('https://api.hubapi.com/crm/v3/objects/contacts/search', {
-            filterGroups: [{
-              filters: [{
-                propertyName: 'email',
-                operator: 'EQ',
-                value: result.leadData.email
-              }]
-            }]
-          }, {
-            headers: { 
-              'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 
-              'Content-Type': 'application/json' 
-            }
-          });
-          
-          if (searchResponse.data.results && searchResponse.data.results.length > 0) {
-            contactId = searchResponse.data.results[0].id;
+          const searchRes = await axios.post('https://api.hubapi.com/crm/v3/objects/contacts/search', {
+            filterGroups: [{ filters: [{ propertyName: 'email', operator: 'EQ', value: leadData.email }] }]
+          }, { headers: { 'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' } });
+
+          if (searchRes.data.results?.length > 0) {
+            contactId = searchRes.data.results[0].id;
             existingContact = true;
-            console.log('📌 Found existing contact:', contactId);
           }
-        } catch (searchError) {
-          console.log('Searching for existing contact...');
-        }
-        
-        // Create contact if doesn't exist
+        } catch (_) {}
+
+        // Create contact if new
         if (!contactId) {
-          const contactProperties = {
-            email: result.leadData.email,
-            firstname: result.leadData.name ? result.leadData.name.split(' ')[0] : 'Lead',
-            lastname: result.leadData.name && result.leadData.name.includes(' ') ? result.leadData.name.split(' ').slice(1).join(' ') : '',
-            lifecyclestage: result.leadData.intent_level === 'High' ? 'lead' : 'subscriber'
-          };
-          
-          Object.keys(contactProperties).forEach(key => {
-            if (!contactProperties[key] || contactProperties[key] === 'null') {
-              delete contactProperties[key];
-            }
-          });
-          
-          const contact = await axios.post('https://api.hubapi.com/crm/v3/objects/contacts', {
-            properties: contactProperties
-          }, {
-            headers: { 
-              'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 
-              'Content-Type': 'application/json' 
-            }
-          });
-          
-          contactId = contact.data.id;
-          console.log('✅ Created new contact:', contactId);
+          const props = { email: leadData.email };
+          if (leadData.name) {
+            props.firstname = leadData.name.split(' ')[0];
+            props.lastname = leadData.name.split(' ').slice(1).join(' ') || '';
+          }
+          props.lifecyclestage = leadData.intent_level === 'High' ? 'lead' : 'subscriber';
+
+          const contactRes = await axios.post('https://api.hubapi.com/crm/v3/objects/contacts',
+            { properties: props },
+            { headers: { 'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' } }
+          );
+          contactId = contactRes.data.id;
         }
-        
-        // Add detailed note with Claude's analysis
-        const noteContent = `🤖 AI Sales Copilot Analysis (Claude AI - ${result.model})
+
+        // Build full conversation transcript for the note
+        const transcript = [
+          ...history.map(m => `${m.role === 'user' ? 'User' : 'Raya'}: ${m.content}`),
+          `User: ${message}`,
+          `Raya: ${botReply}`
+        ].join('\n');
+
+        const noteContent = `🤖 AI Sales Copilot — Raya (${model})
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💬 CONVERSATION
+💬 FULL CONVERSATION TRANSCRIPT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-User: ${userMessage}
-AI Response: ${result.response}
+${transcript}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 LEAD INFORMATION
+📋 LEAD INTELLIGENCE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Type: ${result.leadData.lead_type}
-Intent: ${result.leadData.intent_level}
-Interest: ${result.leadData.main_interest}
+Type: ${leadData.lead_type}
+Intent: ${leadData.intent_level}
+Interest: ${leadData.main_interest || 'Not yet determined'}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🎯 SALES RECOMMENDATIONS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Next Action: ${result.salesOutput.recommended_next_action}
-Priority: ${result.salesOutput.priority}
+Next Action: ${salesOutput.recommended_next_action}
+Priority: ${salesOutput.priority}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✉️ SUGGESTED FOLLOW-UP EMAIL
+✉️ SUGGESTED FOLLOW-UP
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-${result.salesOutput.follow_up_message}
+${salesOutput.follow_up_message}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Source: Claude AI (${result.model})
-Timestamp: ${new Date().toLocaleString()}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
-        
+Timestamp: ${new Date().toLocaleString()}`;
+
         await axios.post('https://api.hubapi.com/crm/v3/objects/notes', {
-          properties: {
-            hs_timestamp: new Date().toISOString(),
-            hs_note_body: noteContent
-          },
-          associations: [{
-            to: { id: contactId },
-            types: [{ 
-              associationCategory: "HUBSPOT_DEFINED", 
-              associationTypeId: 202 
-            }]
-          }]
-        }, {
-          headers: { 
-            'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 
-            'Content-Type': 'application/json' 
-          }
-        });
-        
-        hubspotResult = { 
-          success: true, 
-          contactId: contactId,
+          properties: { hs_timestamp: new Date().toISOString(), hs_note_body: noteContent },
+          associations: [{ to: { id: contactId }, types: [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: 202 }] }]
+        }, { headers: { 'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' } });
+
+        hubspotResult = {
+          success: true,
+          contactId,
           existing: existingContact,
-          message: existingContact ? '✅ Note added to existing contact' : '✅ New contact created with note'
+          message: existingContact ? '✅ Note added to existing contact' : '✅ New contact created'
         };
-        console.log('✅ HubSpot sync complete');
-        
-      } catch (err) {
-        console.error('❌ HubSpot error:', err.response?.data?.message || err.message);
-        hubspotResult = { 
-          success: false, 
-          message: err.response?.data?.message || err.message 
-        };
+        console.log('✅ HubSpot synced');
+
+      } catch (hsErr) {
+        console.error('❌ HubSpot error:', hsErr.response?.data?.message || hsErr.message);
+        hubspotResult = { success: false, message: hsErr.response?.data?.message || hsErr.message };
       }
-    } else {
-      hubspotResult = { success: false, message: 'No email provided - HubSpot contact not created' };
-      console.log('⚠️ No email found in message');
     }
-    
-    res.json({ 
-      success: true, 
-      response: result.response,
-      lead_data: result.leadData, 
-      sales_output: result.salesOutput, 
+
+    res.json({
+      success: true,
+      response: botReply,
+      lead_data: leadData,
+      sales_output: salesOutput,
       hubspot: hubspotResult,
-      model_used: result.model,
+      model_used: model,
       timestamp: new Date().toISOString()
     });
-    
+
   } catch (error) {
     console.error('❌ Server error:', error.message);
-    if (error.response?.data) {
-      console.error('API Error Details:', JSON.stringify(error.response.data, null, 2));
-    }
-    
-    res.status(500).json({ 
-      success: false, 
+    res.status(500).json({
+      success: false,
       error: error.message,
       details: error.response?.data?.error?.message || null
     });
   }
 });
 
-const PORT = process.env.PORT || 3000;
+// Test endpoint
+app.get('/test', (req, res) => {
+  res.json({ status: 'OK', message: 'Raya is online', time: new Date().toISOString() });
+});
 
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log('\n' + '='.repeat(50));
-  console.log('✅ AI Sales Copilot Server Running');
+  console.log('✅ PLAYBOOK AI Copilot — Raya');
   console.log('='.repeat(50));
-  console.log(`📍 URL: http://localhost:${PORT}`);
-  console.log(`🧪 Test: http://localhost:${PORT}/test`);
-  console.log(`💬 Chat: http://localhost:${PORT}`);
+  console.log(`📍 http://localhost:${PORT}`);
   console.log('='.repeat(50));
-  console.log('\n🌟 Claude API Mode: ACTIVE');
-  console.log('✅ Conversational AI with PLAYBOOK context');
-  console.log('✅ Lead extraction and sales recommendations');
-  console.log('✅ HubSpot integration: READY\n');
 });
