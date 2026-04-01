@@ -7,7 +7,6 @@ let conversationHistory = [];
 
 function addToHistory(role, content) {
     conversationHistory.push({ role, content });
-    // Keep last 20 messages (10 turns)
     if (conversationHistory.length > 20) {
         conversationHistory = conversationHistory.slice(-20);
     }
@@ -28,8 +27,6 @@ async function sendMessage() {
 
     if (!message) return;
 
-    // Add to history BEFORE sending so server gets full context
-    // (user message goes in now, assistant reply added after)
     addToHistory('user', message);
 
     sendBtn.disabled = true;
@@ -37,7 +34,7 @@ async function sendMessage() {
     input.value = '';
 
     addMessage(message, 'user');
-    const loadingId = addTypingIndicator(); // ← looks like real typing, not "Analyzing with AI..."
+    const loadingId = addTypingIndicator();
 
     try {
         const response = await fetch(API_URL, {
@@ -45,8 +42,7 @@ async function sendMessage() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 message,
-                history: conversationHistory.slice(0, -1) // send history *before* this message
-                // server.js appends the current message itself
+                history: conversationHistory.slice(0, -1)
             })
         });
 
@@ -56,17 +52,11 @@ async function sendMessage() {
         removeTypingIndicator(loadingId);
 
         if (data.success) {
-            // Add assistant reply to history
             addToHistory('assistant', data.response);
-
-            // Show Raya's conversational reply — nothing else in chat
             addMessage(data.response, 'ai');
-
-            // Update side panel silently
             displayAnalysis(data);
             updateConnectionStatus(true);
         } else {
-            // Remove the user message we added to history since it failed
             conversationHistory.pop();
             addMessage('Something went wrong — please try again.', 'ai');
             displayError(data.error);
@@ -75,7 +65,7 @@ async function sendMessage() {
     } catch (error) {
         console.error('Error:', error);
         removeTypingIndicator(loadingId);
-        conversationHistory.pop(); // roll back failed message
+        conversationHistory.pop();
         addMessage('I lost connection for a moment — please try again.', 'ai');
         displayError(error.message);
         updateConnectionStatus(false);
@@ -94,20 +84,19 @@ function addMessage(text, sender) {
     const messagesDiv = document.getElementById('messages');
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${sender === 'user' ? 'user-message' : 'ai-message'}`;
- 
+
     const senderLabel = sender === 'user' ? 'You' : 'Raya';
     const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
- 
+
     messageDiv.innerHTML = `
         <div class="message-sender">${senderLabel}</div>
         <div class="message-bubble">${escapeHtml(text)}</div>
         <div class="message-time">${time}</div>`;
- 
+
     messagesDiv.appendChild(messageDiv);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
     return messageDiv;
 }
- 
 
 function addTypingIndicator() {
     const messagesDiv = document.getElementById('messages');
@@ -116,6 +105,7 @@ function addTypingIndicator() {
     div.className = 'message ai-message';
     div.id = id;
     div.innerHTML = `
+        <div class="message-sender">Raya</div>
         <div class="message-bubble typing-indicator">
             <span></span><span></span><span></span>
         </div>`;
@@ -130,18 +120,22 @@ function removeTypingIndicator(id) {
 }
 
 function clearChat() {
-    document.getElementById('messages').innerHTML = `
-        <div class="message ai-message">
-            <div class="message-bubble">
-                Hey! 👋 I'm Raya, your PLAYBOOK guide.<br><br>
-                What brings you here today? Whether you're looking to join, learn, invest, or connect — I'm here to help.
-            </div>
-        </div>`;
+    document.getElementById('messages').innerHTML = buildWelcomeMessage();
     clearConversationHistory();
-
     document.getElementById('analysisContent').innerHTML = `
         <div class="empty-state">
             💡 Send a message to see AI extraction and sales recommendations
+        </div>`;
+}
+
+// ── Opening message ──
+function buildWelcomeMessage() {
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `
+        <div class="message ai-message">
+            <div class="message-sender">Raya</div>
+            <div class="message-bubble">Hi, I'm Raya — your guide to PLAYBOOK. What are you looking to get out of the network?</div>
+            <div class="message-time">${time}</div>
         </div>`;
 }
 
@@ -155,9 +149,24 @@ function escapeHtml(text) {
 // ANALYSIS PANEL
 // ─────────────────────────────────────────────
 
+const VIBE_EMOJI = {
+    serious:     '🎯',
+    excited:     '🔥',
+    curious:     '🤔',
+    skeptical:   '🧐',
+    funny:       '😄',
+    annoyed:     '😤',
+    trolling:    '🧌',
+    distracted:  '💭',
+    overwhelmed: '😰',
+    cold:        '🧊'
+};
+
 function displayAnalysis(data) {
     const analysisDiv = document.getElementById('analysisContent');
+    const { lead_data: lead, sales_output: sales } = data;
 
+    // HubSpot status
     let hubspotStatus = '';
     if (data.hubspot.success) {
         hubspotStatus = `<div class="status-badge status-success">✅ ${data.hubspot.message || 'HubSpot synced'}</div>`;
@@ -167,15 +176,58 @@ function displayAnalysis(data) {
         hubspotStatus = `<div class="status-badge status-error">❌ ${data.hubspot.message || 'HubSpot error'}</div>`;
     }
 
-    const priorityColor = data.sales_output.priority === 'High' ? '🔴'
-        : data.sales_output.priority === 'Medium' ? '🟡' : '🟢';
-    const priorityClass = `priority-${data.sales_output.priority?.toLowerCase() || 'low'}`;
+    // Priority
+    const priorityColor = sales.priority === 'High' ? '🔴' : sales.priority === 'Medium' ? '🟡' : '🟢';
+    const priorityClass = `priority-${sales.priority?.toLowerCase() || 'low'}`;
+
+    // Intent badge colour
+    const intentClass = lead.intent_level === 'High' ? 'status-success'
+        : lead.intent_level === 'Medium' ? 'status-warning' : 'status-error';
+
+    // Vibe
+    const vibeEmoji = VIBE_EMOJI[lead.conversation_vibe] || '💬';
+    const vibeLabel = lead.conversation_vibe
+        ? lead.conversation_vibe.charAt(0).toUpperCase() + lead.conversation_vibe.slice(1)
+        : 'Unknown';
 
     analysisDiv.innerHTML = `
         <div class="analysis-section">
             <div class="analysis-title"><span>📋</span><span>Lead Data</span></div>
             <div class="analysis-box">
-                <pre>${JSON.stringify(data.lead_data, null, 2)}</pre>
+                <div class="lead-grid">
+                    <div class="lead-field">
+                        <span class="lead-label">Name</span>
+                        <span class="lead-value">${escapeHtml(lead.name || '—')}</span>
+                    </div>
+                    <div class="lead-field">
+                        <span class="lead-label">Email</span>
+                        <span class="lead-value">${escapeHtml(lead.email || '—')}</span>
+                    </div>
+                    <div class="lead-field">
+                        <span class="lead-label">Type</span>
+                        <span class="lead-value">${escapeHtml(lead.lead_type || '—')}</span>
+                    </div>
+                    <div class="lead-field">
+                        <span class="lead-label">Interest</span>
+                        <span class="lead-value">${escapeHtml(lead.main_interest || '—')}</span>
+                    </div>
+                </div>
+
+                <div class="intent-row">
+                    <span class="lead-label">Intent</span>
+                    <span class="status-badge ${intentClass}" style="margin-top:0; font-size:0.75rem; padding: 3px 10px;">
+                        ${lead.intent_level || 'Low'}
+                    </span>
+                </div>
+                ${lead.intent_signals ? `<div class="vibe-note">${escapeHtml(lead.intent_signals)}</div>` : ''}
+            </div>
+        </div>
+
+        <div class="analysis-section">
+            <div class="analysis-title"><span>🎭</span><span>Conversation Vibe</span></div>
+            <div class="analysis-box">
+                <div class="vibe-badge">${vibeEmoji} ${vibeLabel}</div>
+                ${lead.vibe_note ? `<div class="vibe-note">${escapeHtml(lead.vibe_note)}</div>` : ''}
             </div>
         </div>
 
@@ -183,14 +235,14 @@ function displayAnalysis(data) {
             <div class="analysis-title"><span>🎯</span><span>Sales Recommendations</span></div>
             <div class="analysis-box">
                 <strong>Next Action</strong>
-                <div class="recommendation-box">${escapeHtml(data.sales_output.recommended_next_action)}</div>
+                <div class="recommendation-box">${escapeHtml(sales.recommended_next_action)}</div>
 
                 <strong>Suggested Follow-up</strong>
-                <div class="recommendation-box">${escapeHtml(data.sales_output.follow_up_message)}</div>
+                <div class="recommendation-box">${escapeHtml(sales.follow_up_message)}</div>
 
                 <strong>Priority</strong>
                 <div style="margin-top: 8px;">
-                    <span class="priority-badge ${priorityClass}">${priorityColor} ${data.sales_output.priority}</span>
+                    <span class="priority-badge ${priorityClass}">${priorityColor} ${sales.priority}</span>
                 </div>
             </div>
         </div>
@@ -232,18 +284,12 @@ function updateConnectionStatus(connected) {
         statusDiv.innerHTML = '✅ Connected';
         statusDiv.classList.remove('disconnected');
         if (statusIndicator) statusIndicator.textContent = 'AI Sales Copilot Active';
-        if (statusDot) {
-            statusDot.style.background = '#D1FC51';
-            statusDot.style.boxShadow = '0 0 8px #D1FC51';
-        }
+        if (statusDot) { statusDot.style.background = '#D1FC51'; statusDot.style.boxShadow = '0 0 8px #D1FC51'; }
     } else {
         statusDiv.innerHTML = '❌ Disconnected';
         statusDiv.classList.add('disconnected');
         if (statusIndicator) statusIndicator.textContent = 'Disconnected — Check Server';
-        if (statusDot) {
-            statusDot.style.background = '#EF4444';
-            statusDot.style.boxShadow = '0 0 8px #EF4444';
-        }
+        if (statusDot) { statusDot.style.background = '#EF4444'; statusDot.style.boxShadow = '0 0 8px #EF4444'; }
     }
 }
 
@@ -297,11 +343,13 @@ function initTheme() {
 // ─────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Render welcome message with correct timestamp
+    document.getElementById('messages').innerHTML = buildWelcomeMessage();
+
     testConnection();
     setInterval(testConnection, 30000);
     initTheme();
 
-    // Keyboard shortcuts
     document.addEventListener('keydown', e => {
         if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') { e.preventDefault(); document.getElementById('themeToggle')?.click(); }
         if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); clearChat(); }

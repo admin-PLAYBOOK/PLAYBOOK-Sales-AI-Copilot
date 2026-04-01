@@ -10,7 +10,7 @@ const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY;
 const HUBSPOT_TOKEN = process.env.HUBSPOT_ACCESS_TOKEN;
 
 // ─────────────────────────────────────────────
-// SYSTEM PROMPT — defines personality & memory
+// SYSTEM PROMPT
 // ─────────────────────────────────────────────
 const SYSTEM_PROMPT = `You are Raya, a warm and knowledgeable community guide for PLAYBOOK — an award-winning private network for professional women in the MENA region and beyond.
 
@@ -38,13 +38,17 @@ Your personality:
 - Never repeat yourself or summarise what the user just said back to them
 
 Lead capture behaviour:
-- Collect name, email, interest area, and intent naturally through conversation — never ask for all of them at once
-- If you already have their name from earlier in the conversation, use it
-- Only ask for email when there's a natural reason (e.g. "I'd love to send you more details — what's your email?")
-- Never say things like "I've noted your interest" or "I'll pass this on to the team" — just be human`;
+- You are always privately tracking whether you have the user's name and email
+- For the first 1–2 messages, focus entirely on understanding what they need — do not ask for any personal info yet
+- Once someone has shown clear interest or intent (they want to join, learn, invest, partner, or get more info), ask for their name and email together in a single natural sentence — e.g. "I'd love to get you more details — what's your name and email?" or "Let me make sure the right person follows up with you — can I grab your name and email?"
+- Do not ask for name/email if they are clearly just browsing, testing, or haven't shown real interest yet
+- Once you have their name, use it naturally in the conversation — do not keep repeating it
+- If you already have their email from earlier in the conversation, never ask for it again
+- Never say things like "I've noted your interest" or "I'll pass this on to the team" — just be human
+- Never ask for name and email on separate turns — always ask for both together in one message`;
 
 // ─────────────────────────────────────────────
-// EXTRACTION PROMPT — silent, separate API call
+// EXTRACTION PROMPT — includes vibe + intent signals
 // ─────────────────────────────────────────────
 const EXTRACTION_SYSTEM = `You are a silent data extractor. Given a conversation, extract lead data as JSON only. No extra text, no markdown fences.`;
 
@@ -66,17 +70,20 @@ Return ONLY valid JSON:
   "lead_type": "Membership" | "Learning" | "Investing" | "Partnerships" | "Community" | "Mentorship",
   "main_interest": "specific interest based on conversation or null",
   "intent_level": "High" | "Medium" | "Low",
+  "intent_signals": "1-sentence explanation of why you assessed this intent level, quoting specific things they said",
+  "conversation_vibe": "serious" | "excited" | "curious" | "skeptical" | "funny" | "annoyed" | "trolling" | "distracted" | "overwhelmed" | "cold",
+  "vibe_note": "1-sentence observation about tone that would help a sales rep prepare — be specific and direct",
   "recommended_next_action": "specific next step for sales team",
-  "follow_up_message": "short personalised email draft referencing PLAYBOOK offerings",
+  "follow_up_message": "short personalised email draft referencing PLAYBOOK offerings, tone-matched to the conversation vibe",
   "priority": "High" | "Medium" | "Low"
 }`;
 }
 
 // ─────────────────────────────────────────────
-// CLAUDE API CALL — proper multi-turn messages
+// CLAUDE API CALL
 // ─────────────────────────────────────────────
 const CLAUDE_MODEL = 'claude-haiku-4-5-20251001';
-const FALLBACK_MODELS = ['claude-3-5-haiku-20241022', 'claude-sonnet-4-5-20251001'];
+const FALLBACK_MODELS = ['claude-sonnet-4-6', 'claude-opus-4-6'];
 
 async function callClaude(systemPrompt, messages, maxTokens = 600) {
   const models = [CLAUDE_MODEL, ...FALLBACK_MODELS];
@@ -86,8 +93,8 @@ async function callClaude(systemPrompt, messages, maxTokens = 600) {
       const response = await axios.post('https://api.anthropic.com/v1/messages', {
         model,
         max_tokens: maxTokens,
-        system: systemPrompt,  // ← system prompt in the correct field
-        messages               // ← proper multi-turn array
+        system: systemPrompt,
+        messages
       }, {
         headers: {
           'x-api-key': CLAUDE_API_KEY,
@@ -120,8 +127,7 @@ app.post('/api/chat', async (req, res) => {
   if (!CLAUDE_API_KEY) return res.status(500).json({ success: false, error: 'Claude API key not configured' });
 
   try {
-    // ── Step 1: Conversational reply using full history ──
-    // Build the messages array Claude expects: [{role, content}, ...]
+    // ── Step 1: Conversational reply ──
     const conversationMessages = [
       ...history.map(m => ({ role: m.role, content: m.content })),
       { role: 'user', content: message }
@@ -130,7 +136,7 @@ app.post('/api/chat', async (req, res) => {
     const { text: botReply, model } = await callClaude(SYSTEM_PROMPT, conversationMessages, 600);
     console.log('💬 Raya:', botReply);
 
-    // ── Step 2: Silent extraction call (separate, doesn't affect conversation) ──
+    // ── Step 2: Silent extraction ──
     let leadData = null;
     let salesOutput = null;
 
@@ -139,7 +145,7 @@ app.post('/api/chat', async (req, res) => {
       const { text: extractionText } = await callClaude(
         EXTRACTION_SYSTEM,
         [{ role: 'user', content: extractionPrompt }],
-        500
+        600
       );
 
       const jsonMatch = extractionText.match(/\{[\s\S]*\}/);
@@ -150,7 +156,10 @@ app.post('/api/chat', async (req, res) => {
         email: parsed.email || null,
         lead_type: parsed.lead_type || 'Community',
         main_interest: parsed.main_interest || null,
-        intent_level: parsed.intent_level || 'Low'
+        intent_level: parsed.intent_level || 'Low',
+        intent_signals: parsed.intent_signals || null,
+        conversation_vibe: parsed.conversation_vibe || 'curious',
+        vibe_note: parsed.vibe_note || null
       };
 
       salesOutput = {
@@ -159,14 +168,19 @@ app.post('/api/chat', async (req, res) => {
         priority: parsed.priority || 'Low'
       };
 
-      console.log('📊 Extracted:', leadData);
+      console.log('📊 Lead:', leadData);
+      console.log(`🎭 Vibe: ${leadData.conversation_vibe} — ${leadData.vibe_note}`);
     } catch (extractErr) {
       console.warn('⚠️ Extraction failed (non-fatal):', extractErr.message);
-      leadData = { name: null, email: null, lead_type: 'Community', main_interest: null, intent_level: 'Low' };
+      leadData = {
+        name: null, email: null, lead_type: 'Community',
+        main_interest: null, intent_level: 'Low',
+        intent_signals: null, conversation_vibe: 'curious', vibe_note: null
+      };
       salesOutput = { recommended_next_action: 'Review conversation manually', follow_up_message: '', priority: 'Low' };
     }
 
-    // ── Step 3: HubSpot sync (only if email captured) ──
+    // ── Step 3: HubSpot sync ──
     let hubspotResult = { success: false, message: 'No email yet — continuing conversation' };
 
     if (leadData.email) {
@@ -176,7 +190,6 @@ app.post('/api/chat', async (req, res) => {
         let contactId = null;
         let existingContact = false;
 
-        // Search for existing contact
         try {
           const searchRes = await axios.post('https://api.hubapi.com/crm/v3/objects/contacts/search', {
             filterGroups: [{ filters: [{ propertyName: 'email', operator: 'EQ', value: leadData.email }] }]
@@ -188,7 +201,6 @@ app.post('/api/chat', async (req, res) => {
           }
         } catch (_) {}
 
-        // Create contact if new
         if (!contactId) {
           const props = { email: leadData.email };
           if (leadData.name) {
@@ -204,12 +216,17 @@ app.post('/api/chat', async (req, res) => {
           contactId = contactRes.data.id;
         }
 
-        // Build full conversation transcript for the note
         const transcript = [
           ...history.map(m => `${m.role === 'user' ? 'User' : 'Raya'}: ${m.content}`),
           `User: ${message}`,
           `Raya: ${botReply}`
         ].join('\n');
+
+        const vibeEmoji = {
+          serious: '🎯', excited: '🔥', curious: '🤔', skeptical: '🧐',
+          funny: '😄', annoyed: '😤', trolling: '🧌', distracted: '💭',
+          overwhelmed: '😰', cold: '🧊'
+        }[leadData.conversation_vibe] || '💬';
 
         const noteContent = `🤖 AI Sales Copilot — Raya (${model})
 
@@ -223,7 +240,11 @@ ${transcript}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Type: ${leadData.lead_type}
 Intent: ${leadData.intent_level}
+Intent signals: ${leadData.intent_signals || 'N/A'}
 Interest: ${leadData.main_interest || 'Not yet determined'}
+
+${vibeEmoji} CONVERSATION VIBE: ${leadData.conversation_vibe?.toUpperCase()}
+${leadData.vibe_note || ''}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🎯 SALES RECOMMENDATIONS
@@ -244,9 +265,7 @@ Timestamp: ${new Date().toLocaleString()}`;
         }, { headers: { 'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' } });
 
         hubspotResult = {
-          success: true,
-          contactId,
-          existing: existingContact,
+          success: true, contactId, existing: existingContact,
           message: existingContact ? '✅ Note added to existing contact' : '✅ New contact created'
         };
         console.log('✅ HubSpot synced');
@@ -277,7 +296,6 @@ Timestamp: ${new Date().toLocaleString()}`;
   }
 });
 
-// Test endpoint
 app.get('/test', (req, res) => {
   res.json({ status: 'OK', message: 'Raya is online', time: new Date().toISOString() });
 });
