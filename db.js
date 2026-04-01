@@ -1,17 +1,50 @@
 const { Pool } = require('pg');
 
-// Create connection pool for Neon
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false, 
-    },
+    ssl: { rejectUnauthorized: false },
     connectionTimeoutMillis: 5000,
     idleTimeoutMillis: 30000,
     max: 20,
 });
 
-// Test connection
+// ─────────────────────────────────────────────
+// SCHEMA INIT — runs on startup, safe to re-run
+// ─────────────────────────────────────────────
+async function initSchema() {
+    const client = await pool.connect();
+    try {
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS conversations (
+                id          TEXT PRIMARY KEY,
+                timestamp   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                history     JSONB NOT NULL DEFAULT '[]',
+                lead_data   JSONB NOT NULL DEFAULT '{}',
+                sales_output JSONB NOT NULL DEFAULT '{}',
+                hubspot     JSONB NOT NULL DEFAULT '{}',
+                model_used  TEXT,
+                updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_conversations_timestamp
+                ON conversations (timestamp DESC);
+
+            CREATE INDEX IF NOT EXISTS idx_conversations_intent
+                ON conversations ((lead_data->>'intent_level'));
+
+            CREATE INDEX IF NOT EXISTS idx_conversations_email
+                ON conversations ((lead_data->>'email'))
+                WHERE lead_data->>'email' IS NOT NULL;
+        `);
+        console.log('✅ Database schema ready');
+    } catch (err) {
+        console.error('❌ Schema init error:', err.message);
+        throw err;
+    } finally {
+        client.release();
+    }
+}
+
 async function testConnection() {
     let client;
     try {
@@ -19,34 +52,30 @@ async function testConnection() {
         const result = await client.query('SELECT NOW() as time');
         console.log('✅ Connected to Neon PostgreSQL');
         console.log(`   Server time: ${result.rows[0].time}`);
-        client.release();
         return true;
     } catch (err) {
         console.error('❌ Database connection error:', err.message);
-        if (client) client.release();
         return false;
+    } finally {
+        if (client) client.release();
     }
 }
 
-// Save or update conversation
 async function saveConversation(data) {
     const client = await pool.connect();
     try {
-        const query = `
+        await client.query(`
             INSERT INTO conversations (id, timestamp, history, lead_data, sales_output, hubspot, model_used)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
             ON CONFLICT (id) DO UPDATE SET
-                timestamp = EXCLUDED.timestamp,
-                history = EXCLUDED.history,
-                lead_data = EXCLUDED.lead_data,
+                timestamp    = EXCLUDED.timestamp,
+                history      = EXCLUDED.history,
+                lead_data    = EXCLUDED.lead_data,
                 sales_output = EXCLUDED.sales_output,
-                hubspot = EXCLUDED.hubspot,
-                model_used = EXCLUDED.model_used,
-                updated_at = NOW()
-            RETURNING *
-        `;
-        
-        const result = await client.query(query, [
+                hubspot      = EXCLUDED.hubspot,
+                model_used   = EXCLUDED.model_used,
+                updated_at   = NOW()
+        `, [
             data.id,
             data.timestamp,
             JSON.stringify(data.history),
@@ -55,9 +84,7 @@ async function saveConversation(data) {
             JSON.stringify(data.hubspot),
             data.model_used
         ]);
-        
-        console.log(`💾 Saved conversation ${data.id} to database`);
-        return result.rows[0];
+        console.log(`💾 Saved conversation ${data.id}`);
     } catch (err) {
         console.error('Error saving conversation:', err.message);
         throw err;
@@ -66,89 +93,80 @@ async function saveConversation(data) {
     }
 }
 
-// Get recent conversations
 async function getConversations(limit = 200, offset = 0, filters = {}) {
     const client = await pool.connect();
     try {
         let query = `SELECT * FROM conversations WHERE 1=1`;
         const params = [];
-        let paramIndex = 1;
-        
+        let i = 1;
+
         if (filters.intent_level) {
-            query += ` AND lead_data->>'intent_level' = $${paramIndex}`;
+            query += ` AND lead_data->>'intent_level' = $${i++}`;
             params.push(filters.intent_level);
-            paramIndex++;
         }
-        
+
         if (filters.has_email) {
             query += ` AND lead_data->>'email' IS NOT NULL`;
         }
-        
-        query += ` ORDER BY timestamp DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+
+        query += ` ORDER BY timestamp DESC LIMIT $${i++} OFFSET $${i++}`;
         params.push(limit, offset);
-        
+
         const result = await client.query(query, params);
-        
-        return result.rows.map(row => ({
-            ...row,
-            history: typeof row.history === 'string' ? JSON.parse(row.history) : row.history,
-            lead_data: typeof row.lead_data === 'string' ? JSON.parse(row.lead_data) : row.lead_data,
-            sales_output: typeof row.sales_output === 'string' ? JSON.parse(row.sales_output) : row.sales_output,
-            hubspot: typeof row.hubspot === 'string' ? JSON.parse(row.hubspot) : row.hubspot
-        }));
+        return result.rows.map(parseRow);
     } finally {
         client.release();
     }
 }
 
-// Get single conversation
 async function getConversation(id) {
     const client = await pool.connect();
     try {
         const result = await client.query(
-            'SELECT * FROM conversations WHERE id = $1',
-            [id]
+            'SELECT * FROM conversations WHERE id = $1', [id]
         );
-        
-        if (result.rows.length === 0) return null;
-        
-        const row = result.rows[0];
-        return {
-            ...row,
-            history: JSON.parse(row.history),
-            lead_data: JSON.parse(row.lead_data),
-            sales_output: JSON.parse(row.sales_output),
-            hubspot: JSON.parse(row.hubspot)
-        };
+        return result.rows.length ? parseRow(result.rows[0]) : null;
     } finally {
         client.release();
     }
 }
 
-// Get conversation statistics
 async function getStats() {
     const client = await pool.connect();
     try {
         const result = await client.query(`
-            SELECT 
-                COUNT(*) as total,
-                COUNT(CASE WHEN lead_data->>'intent_level' = 'High' THEN 1 END) as high_intent,
-                COUNT(CASE WHEN lead_data->>'intent_level' = 'Medium' THEN 1 END) as medium_intent,
-                COUNT(CASE WHEN lead_data->>'intent_level' = 'Low' THEN 1 END) as low_intent,
-                COUNT(CASE WHEN lead_data->>'email' IS NOT NULL THEN 1 END) as emails_captured
+            SELECT
+                COUNT(*)::int                                                          AS total,
+                COUNT(CASE WHEN lead_data->>'intent_level' = 'High'   THEN 1 END)::int AS high_intent,
+                COUNT(CASE WHEN lead_data->>'intent_level' = 'Medium' THEN 1 END)::int AS medium_intent,
+                COUNT(CASE WHEN lead_data->>'intent_level' = 'Low'    THEN 1 END)::int AS low_intent,
+                COUNT(CASE WHEN lead_data->>'email' IS NOT NULL        THEN 1 END)::int AS emails_captured,
+                COUNT(CASE WHEN hubspot->>'success' = 'true'           THEN 1 END)::int AS hubspot_synced
             FROM conversations
         `);
-        
         return result.rows[0];
     } finally {
         client.release();
     }
 }
 
+// ── helper: parse JSONB fields that may already be objects ──
+function parseRow(row) {
+    const parse = v => (typeof v === 'string' ? JSON.parse(v) : v);
+    return {
+        ...row,
+        history:      parse(row.history),
+        lead_data:    parse(row.lead_data),
+        sales_output: parse(row.sales_output),
+        hubspot:      parse(row.hubspot),
+    };
+}
+
 module.exports = {
+    initSchema,
     testConnection,
     saveConversation,
     getConversations,
     getConversation,
-    getStats
+    getStats,
 };

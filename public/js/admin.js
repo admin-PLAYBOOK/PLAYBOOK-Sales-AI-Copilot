@@ -1,24 +1,66 @@
 const POLL_INTERVAL = 8000;
 
 let selectedConvId = null;
-let conversations = [];
-let pollTimer = null;
+let conversations  = [];
+let pollTimer      = null;
+let isLoggedIn     = false;
 
 // ─────────────────────────────────────────────
-// INITIALIZATION
+// LOGIN — posts password to server, gets httpOnly cookie back
+// Token never touches the browser JS environment
 // ─────────────────────────────────────────────
 
-function initAdmin() {
-    const loginGate = document.getElementById('loginGate');
-    const adminDash = document.getElementById('adminDash');
-    if (loginGate) loginGate.style.display = 'none';
-    if (adminDash) adminDash.style.display = 'flex';
-    startPolling();
-    updateLiveStatus();
+async function attemptLogin() {
+    const password = document.getElementById('passwordInput').value;
+    const loginBtn = document.getElementById('loginBtn');
+    const errEl    = document.getElementById('loginError');
+
+    loginBtn.disabled    = true;
+    loginBtn.textContent = 'Signing in…';
+    errEl.style.display  = 'none';
+
+    try {
+        const res = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password }),
+            credentials: 'same-origin', // include cookies
+        });
+
+        if (res.ok) {
+            showDashboard();
+        } else {
+            errEl.style.display  = 'block';
+            loginBtn.disabled    = false;
+            loginBtn.textContent = 'Sign in →';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
+        }
+    } catch (err) {
+        errEl.textContent   = 'Connection error — is the server running?';
+        errEl.style.display = 'block';
+        loginBtn.disabled   = false;
+        loginBtn.textContent = 'Sign in →';
+    }
 }
 
-function logout() {
-    window.location.reload();
+async function logout() {
+    await fetch('/api/admin/logout', { method: 'POST', credentials: 'same-origin' });
+    isLoggedIn = false;
+    stopPolling();
+    document.getElementById('adminDash').style.display  = 'none';
+    document.getElementById('loginGate').style.display  = 'flex';
+    document.getElementById('passwordInput').value      = '';
+    selectedConvId = null;
+    conversations  = [];
+}
+
+function showDashboard() {
+    isLoggedIn = true;
+    document.getElementById('loginGate').style.display = 'none';
+    document.getElementById('adminDash').style.display = 'flex';
+    startPolling();
+    fetchStats();
 }
 
 // ─────────────────────────────────────────────
@@ -28,7 +70,10 @@ function logout() {
 function startPolling() {
     fetchConversations();
     if (pollTimer) clearInterval(pollTimer);
-    pollTimer = setInterval(fetchConversations, POLL_INTERVAL);
+    pollTimer = setInterval(() => {
+        fetchConversations();
+        fetchStats();
+    }, POLL_INTERVAL);
 }
 
 function stopPolling() {
@@ -37,48 +82,47 @@ function stopPolling() {
 
 async function fetchConversations() {
     try {
-        // FIX: Token now read from meta tag instead of hardcoded in JS
-        const tokenMeta = document.querySelector('meta[name="admin-token"]');
-        const token = tokenMeta ? tokenMeta.getAttribute('content') : '';
+        const res = await fetch('/api/admin/conversations', { credentials: 'same-origin' });
 
-        const res = await fetch('/api/admin/conversations', {
-            headers: { 'x-admin-token': token }
-        });
-        
-        if (!res.ok) {
-            console.error('Failed to fetch conversations:', res.status);
-            return;
-        }
-        
-        const data = await res.json();
+        if (res.status === 401) { logout(); return; }
+        if (!res.ok) return;
+
+        const data    = await res.json();
         conversations = data.conversations || [];
+
         renderFeed();
-        
+
         const countText = document.getElementById('countText');
-        if (countText) {
-            countText.textContent = `${conversations.length} conversation${conversations.length !== 1 ? 's' : ''}`;
-        }
-        
-        if (selectedConvId) {
-            const stillExists = conversations.some(c => c.id === selectedConvId);
-            if (stillExists) {
-                selectConversation(selectedConvId);
-            } else {
-                selectedConvId = null;
-                showEmptyState();
-                renderFeed();
-            }
+        if (countText) countText.textContent =
+            `${conversations.length} conversation${conversations.length !== 1 ? 's' : ''}`;
+
+        // Re-render detail if selected convo was updated
+        if (selectedConvId && conversations.some(c => c.id === selectedConvId)) {
+            selectConversation(selectedConvId);
         }
     } catch (err) {
         console.error('Poll error:', err);
     }
 }
 
-function showEmptyState() {
-    const emptyState = document.getElementById('emptyState');
-    const convDetail = document.getElementById('convDetail');
-    if (emptyState) emptyState.style.display = 'flex';
-    if (convDetail) convDetail.style.display = 'none';
+async function fetchStats() {
+    try {
+        const res = await fetch('/api/admin/stats', { credentials: 'same-origin' });
+        if (!res.ok) return;
+        const s = await res.json();
+        setText('statTotal',  s.total            ?? '—');
+        setText('statHigh',   s.high_intent       ?? '—');
+        setText('statMedium', s.medium_intent      ?? '—');
+        setText('statLow',    s.low_intent         ?? '—');
+        setText('statEmails', s.emails_captured    ?? '—');
+    } catch (err) {
+        console.error('Stats error:', err);
+    }
+}
+
+function setText(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
 }
 
 // ─────────────────────────────────────────────
@@ -94,27 +138,29 @@ function renderFeed() {
         return;
     }
 
+    // Build HTML — use data-conv-id + event delegation, no inline onclick
     feed.innerHTML = conversations
-        .slice()
-        .reverse()
+        .slice().reverse()
         .map(conv => {
-            const lead = conv.lead_data || {};
-            const name = lead.name || 'Anonymous';
-            const vibe = lead.conversation_vibe || 'curious';
+            const lead  = conv.lead_data || {};
+            const name  = lead.name || 'Anonymous';
+            const vibe  = lead.conversation_vibe || 'curious';
             const intent = lead.intent_level || 'Low';
-            const time = conv.timestamp
+            const time  = conv.timestamp
                 ? new Date(conv.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 : '';
             const intentClass = intent === 'High' ? 'intent-high'
                 : intent === 'Medium' ? 'intent-medium' : 'intent-low';
-            const isSelected = conv.id === selectedConvId ? 'feed-item-active' : '';
+            const isActive  = conv.id === selectedConvId ? 'feed-item-active' : '';
             const vibeEmoji = VIBE_EMOJI[vibe] || '💬';
-            const hasEmail = lead.email ? '📧' : '';
+            const emailBadge = lead.email ? '📧 ' : '';
 
-            // FIX: use data attribute + event delegation instead of inline onclick with raw id
-            return `<div class="feed-item ${isSelected}" data-conv-id="${escapeAttr(conv.id)}" tabindex="0" role="button" aria-label="View conversation with ${escapeHtml(name)}">
+            return `<div class="feed-item ${isActive}"
+                        data-conv-id="${escapeAttr(conv.id)}"
+                        tabindex="0" role="button"
+                        aria-label="View conversation with ${escapeHtml(name)}">
                 <div class="feed-item-top">
-                    <span class="feed-name">${escapeHtml(name)} ${hasEmail}</span>
+                    <span class="feed-name">${emailBadge}${escapeHtml(name)}</span>
                     <span class="feed-time">${escapeHtml(time)}</span>
                 </div>
                 <div class="feed-item-bottom">
@@ -132,106 +178,98 @@ function renderFeed() {
 
 function selectConversation(id) {
     selectedConvId = id;
-    renderFeed();
+    renderFeed(); // update active state
 
     const conv = conversations.find(c => c.id === id);
     if (!conv) return;
 
-    const emptyState = document.getElementById('emptyState');
-    const convDetail = document.getElementById('convDetail');
-    if (emptyState) emptyState.style.display = 'none';
-    if (convDetail) convDetail.style.display = 'block';
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('convDetail').style.display = 'block';
 
-    const lead = conv.lead_data || {};
+    const lead  = conv.lead_data   || {};
     const sales = conv.sales_output || {};
 
-    const detailName = document.getElementById('detailName');
-    const detailMeta = document.getElementById('detailMeta');
-    if (detailName) detailName.textContent = lead.name || 'Anonymous';
-    if (detailMeta) {
-        detailMeta.textContent = [lead.email, lead.lead_type]
-            .filter(Boolean).join(' · ') || 'No contact info yet';
-    }
+    // Header
+    setText('detailName', lead.name || 'Anonymous');
+    setText('detailMeta',
+        [lead.email, lead.lead_type].filter(Boolean).join(' · ') || 'No contact info yet');
 
+    // Vibe badge
     const vibeEmoji = VIBE_EMOJI[lead.conversation_vibe] || '💬';
     const vibeLabel = lead.conversation_vibe
         ? lead.conversation_vibe.charAt(0).toUpperCase() + lead.conversation_vibe.slice(1)
         : '—';
-    const detailVibeBadge = document.getElementById('detailVibeBadge');
-    if (detailVibeBadge) detailVibeBadge.textContent = `${vibeEmoji} ${vibeLabel}`;
+    setText('detailVibeBadge', `${vibeEmoji} ${vibeLabel}`);
 
-    const priorityEl = document.getElementById('detailPriority');
+    // Priority badge
+    const priority    = (sales.priority || 'Low').toLowerCase();
+    const priorityEl  = document.getElementById('detailPriority');
     if (priorityEl) {
-        const priority = (sales.priority || 'Low').toLowerCase();
         priorityEl.textContent = `${sales.priority || 'Low'} Priority`;
-        priorityEl.className = `priority-badge priority-${priority}`;
+        priorityEl.className   = `priority-badge priority-${priority}`;
     }
 
+    // Lead grid
     const leadGrid = document.getElementById('leadGrid');
     if (leadGrid) {
         leadGrid.innerHTML = [
-            { label: 'Name', value: lead.name },
-            { label: 'Email', value: lead.email },
-            { label: 'Type', value: lead.lead_type },
-            { label: 'Interest', value: lead.main_interest }
+            { label: 'Name',     value: lead.name },
+            { label: 'Email',    value: lead.email },
+            { label: 'Type',     value: lead.lead_type },
+            { label: 'Interest', value: lead.main_interest },
         ].map(f => `
             <div class="lead-field">
-                <span class="lead-label">${escapeHtml(f.label)}</span>
+                <span class="lead-label">${f.label}</span>
                 <span class="lead-value">${escapeHtml(f.value || '—')}</span>
-            </div>
-        `).join('');
+            </div>`).join('');
     }
 
-    const intentClass = lead.intent_level === 'High' ? 'status-success'
+    // Intent row
+    const intentClass = lead.intent_level === 'High'   ? 'status-success'
         : lead.intent_level === 'Medium' ? 'status-warning' : 'status-error';
     const intentRow = document.getElementById('intentRow');
     if (intentRow) {
         intentRow.innerHTML = `
             <span class="lead-label">Intent</span>
-            <span class="status-badge ${intentClass}" style="font-size:0.75rem; padding:3px 10px; margin-top:0">
+            <span class="status-badge ${intentClass}" style="font-size:0.75rem;padding:3px 10px;margin-top:0">
                 ${escapeHtml(lead.intent_level || 'Low')}
-            </span>
-        `;
+            </span>`;
     }
-    
-    const intentSignals = document.getElementById('intentSignals');
-    if (intentSignals) intentSignals.textContent = lead.intent_signals || '';
+    setText('intentSignals', lead.intent_signals || '');
 
+    // Vibe detail
     const vibeDetail = document.getElementById('vibeDetail');
     if (vibeDetail) {
         vibeDetail.innerHTML = `
             <div class="vibe-badge-large">${vibeEmoji} ${escapeHtml(vibeLabel)}</div>
-            <div class="vibe-note">${escapeHtml(lead.vibe_note || '—')}</div>
-        `;
+            <div class="vibe-note">${escapeHtml(lead.vibe_note || '—')}</div>`;
     }
 
-    const nextAction = document.getElementById('nextAction');
-    const followUp = document.getElementById('followUp');
-    if (nextAction) nextAction.textContent = sales.recommended_next_action || '—';
-    if (followUp) followUp.textContent = sales.follow_up_message || '—';
+    // Sales recs
+    setText('nextAction', sales.recommended_next_action || '—');
+    setText('followUp',   sales.follow_up_message       || '—');
 
+    // HubSpot
     const hs = conv.hubspot || {};
     const hubspotStatus = document.getElementById('hubspotStatus');
     if (hubspotStatus) {
-        let hsHtml = '';
         if (hs.success) {
-            hsHtml = `<div class="status-badge status-success">✅ ${escapeHtml(hs.message || 'Synced')}</div>`;
-            if (hs.contactId) hsHtml += `<div class="rec-label" style="margin-top:8px">Contact ID: ${escapeHtml(hs.contactId)}</div>`;
+            hubspotStatus.innerHTML = `
+                <div class="status-badge status-success">✅ ${escapeHtml(hs.message || 'Synced')}</div>
+                ${hs.contactId ? `<div class="rec-label" style="margin-top:8px">Contact ID: ${escapeHtml(String(hs.contactId))}</div>` : ''}`;
         } else {
-            const statusClass = hs.message?.includes('email') ? 'status-warning' : 'status-error';
-            hsHtml = `<div class="status-badge ${statusClass}">
-                ${hs.message?.includes('email') ? '⚠️ Waiting for email' : `❌ ${escapeHtml(hs.message || 'Error')}`}
-            </div>`;
+            const sc = hs.message?.includes('email') ? 'status-warning' : 'status-error';
+            hubspotStatus.innerHTML = `
+                <div class="status-badge ${sc}">
+                    ${hs.message?.includes('email') ? '⚠️ Waiting for email' : `❌ ${escapeHtml(hs.message || 'Error')}`}
+                </div>`;
         }
-        hubspotStatus.innerHTML = hsHtml;
     }
-    
-    const convTimestamp = document.getElementById('convTimestamp');
-    if (convTimestamp) convTimestamp.textContent = conv.timestamp ? '🕐 ' + new Date(conv.timestamp).toLocaleString() : '';
-    
-    const convModel = document.getElementById('convModel');
-    if (convModel) convModel.textContent = conv.model_used ? `🤖 ${conv.model_used}` : '';
 
+    setText('convTimestamp', conv.timestamp ? '🕐 ' + new Date(conv.timestamp).toLocaleString() : '');
+    setText('convModel',     conv.model_used ? `🤖 ${conv.model_used}` : '');
+
+    // Transcript
     const transcriptEl = document.getElementById('transcript');
     if (transcriptEl) {
         const history = conv.history || [];
@@ -240,14 +278,17 @@ function selectConversation(id) {
         } else {
             transcriptEl.innerHTML = history.map(m => `
                 <div class="transcript-msg ${m.role === 'user' ? 'transcript-user' : 'transcript-ai'}">
-                    <span class="transcript-sender">${m.role === 'user' ? 'User' : 'Raya'}</span>
+                    <span class="transcript-sender">${m.role === 'user' ? 'User' : 'Layla'}</span>
                     <span class="transcript-text">${escapeHtml(m.content)}</span>
-                </div>
-            `).join('');
-            // FIX: auto-scroll transcript to bottom so latest message is visible
+                </div>`).join('');
             transcriptEl.scrollTop = transcriptEl.scrollHeight;
         }
     }
+}
+
+function showEmptyState() {
+    document.getElementById('emptyState').style.display = 'flex';
+    document.getElementById('convDetail').style.display = 'none';
 }
 
 // ─────────────────────────────────────────────
@@ -255,52 +296,22 @@ function selectConversation(id) {
 // ─────────────────────────────────────────────
 
 const VIBE_EMOJI = {
-    serious: '🎯', excited: '🔥', curious: '🤔', skeptical: '🧐',
-    funny: '😄', annoyed: '😤', trolling: '🧌', distracted: '💭',
-    overwhelmed: '😰', cold: '🧊'
+    serious:'🎯', excited:'🔥', curious:'🤔', skeptical:'🧐',
+    funny:'😄', annoyed:'😤', trolling:'🧌', distracted:'💭',
+    overwhelmed:'😰', cold:'🧊'
 };
 
 function escapeHtml(text) {
     if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = String(text);
-    return div.innerHTML;
+    const d = document.createElement('div');
+    d.textContent = String(text);
+    return d.innerHTML;
 }
 
-// FIX: separate escaper for HTML attribute values (handles quotes)
 function escapeAttr(text) {
-    if (!text) return '';
-    return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-}
-
-// ─────────────────────────────────────────────
-// KEYBOARD SHORTCUTS
-// ─────────────────────────────────────────────
-
-function handleKeyboardShortcuts(e) {
-    if (e.key === 'Escape' && selectedConvId) {
-        e.preventDefault();
-        selectedConvId = null;
-        showEmptyState();
-        renderFeed();
-    }
-}
-
-// ─────────────────────────────────────────────
-// AUTO-REFRESH STATUS
-// ─────────────────────────────────────────────
-
-function updateLiveStatus() {
-    const liveCount = document.getElementById('liveCount');
-    if (liveCount) {
-        const dot = liveCount.querySelector('.status-dot');
-        if (dot) dot.style.animation = 'pulse 2s infinite';
-    }
+    return String(text || '')
+        .replace(/&/g,'&amp;').replace(/"/g,'&quot;')
+        .replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 // ─────────────────────────────────────────────
@@ -308,42 +319,62 @@ function updateLiveStatus() {
 // ─────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
-    initAdmin();
-    document.addEventListener('keydown', handleKeyboardShortcuts);
 
-    // FIX: event delegation on the feed instead of inline onclick per item
+    // ── Login button (no form, no default submit) ──
+    document.getElementById('loginBtn').addEventListener('click', attemptLogin);
+    document.getElementById('passwordInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); attemptLogin(); }
+    });
+
+    // ── Logout / refresh ──
+    document.getElementById('logoutBtn').addEventListener('click', e => {
+        e.preventDefault(); logout();
+    });
+    document.getElementById('refreshBtn').addEventListener('click', e => {
+        e.preventDefault(); fetchConversations(); fetchStats();
+    });
+
+    // ── Feed: event delegation — FIX for the refresh-on-click bug ──
+    // The bug: clicking a feed item was bubbling up to a parent with a page reload.
+    // Fix: use stopPropagation and handle both click and keyboard activation here.
     const feed = document.getElementById('conversationFeed');
     if (feed) {
-        feed.addEventListener('click', (e) => {
+        feed.addEventListener('click', e => {
+            e.preventDefault();      // stop any accidental link/form behaviour
+            e.stopPropagation();
             const item = e.target.closest('[data-conv-id]');
             if (item) selectConversation(item.dataset.convId);
         });
-        // Keyboard accessibility: Enter/Space activates item
-        feed.addEventListener('keydown', (e) => {
+        feed.addEventListener('keydown', e => {
             if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
                 const item = e.target.closest('[data-conv-id]');
-                if (item) { e.preventDefault(); selectConversation(item.dataset.convId); }
+                if (item) selectConversation(item.dataset.convId);
             }
         });
     }
 
-    const sidebarFooter = document.querySelector('.sidebar-footer');
-    if (sidebarFooter && !document.getElementById('refreshBtn')) {
-        const refreshBtn = document.createElement('button');
-        refreshBtn.id = 'refreshBtn';
-        refreshBtn.className = 'refresh-btn';
-        refreshBtn.textContent = '⟳ Refresh';
-        refreshBtn.onclick = (e) => { e.preventDefault(); fetchConversations(); };
-        const logoutBtn = sidebarFooter.querySelector('.logout-btn');
-        if (logoutBtn) sidebarFooter.insertBefore(refreshBtn, logoutBtn);
-    }
-});
+    // ── Keyboard shortcut: Escape deselects ──
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && selectedConvId) {
+            selectedConvId = null;
+            showEmptyState();
+            renderFeed();
+        }
+    });
 
-if (typeof window !== 'undefined') {
-    window.admin = {
-        refresh: fetchConversations,
-        logout: logout,
-        selectConversation: selectConversation,
-        getConversations: () => conversations
-    };
-}
+    // ── Check if we already have a valid session (cookie) ──
+    // Try fetching stats — if it returns 401, show login gate; otherwise go straight to dashboard
+    fetch('/api/admin/stats', { credentials: 'same-origin' })
+        .then(res => {
+            if (res.ok) {
+                showDashboard();
+            } else {
+                document.getElementById('loginGate').style.display = 'flex';
+                document.getElementById('passwordInput').focus();
+            }
+        })
+        .catch(() => {
+            document.getElementById('loginGate').style.display = 'flex';
+        });
+});

@@ -4,26 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PLAYBOOK — Admin</title>
-    <meta name="admin-token" content="__ADMIN_TOKEN__">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body class="dark-mode admin-page">
 
-    <!-- Login Gate (hidden immediately by JS — kept for future auth) -->
-    <div id="loginGate" class="login-gate" style="display:none">
+    <!-- ── Login Gate ── -->
+    <div id="loginGate" class="login-gate">
         <div class="login-card">
             <div class="login-logo">PLAYBOOK</div>
             <div class="login-title">Admin Access</div>
             <div class="login-subtitle">Sales Copilot Dashboard</div>
-            <input type="password" id="passwordInput" placeholder="Enter password" autocomplete="off">
+            <input type="password" id="passwordInput" placeholder="Enter password" autocomplete="current-password">
             <div id="loginError" class="login-error" style="display:none">Incorrect password</div>
-            <button>Sign in →</button>
+            <button id="loginBtn">Sign in →</button>
         </div>
     </div>
 
-    <!-- Admin Dashboard -->
-    <div id="adminDash" class="admin-dash" style="display:flex">
+    <!-- ── Admin Dashboard ── -->
+    <div id="adminDash" class="admin-dash" style="display:none">
 
         <div class="admin-sidebar">
             <div class="sidebar-header">
@@ -31,28 +30,51 @@
                 <div class="sidebar-label">Sales Copilot</div>
             </div>
 
-            <div class="sidebar-section-label">Live Conversations</div>
-            <div id="conversationFeed" class="conversation-feed" role="list">
-                <div class="feed-empty">Loading conversations...</div>
+            <!-- Stats bar -->
+            <div class="stats-bar" id="statsBar">
+                <div class="stat-item">
+                    <span class="stat-value" id="statTotal">—</span>
+                    <span class="stat-label">Total</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value stat-high" id="statHigh">—</span>
+                    <span class="stat-label">High</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value stat-medium" id="statMedium">—</span>
+                    <span class="stat-label">Medium</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value stat-low" id="statLow">—</span>
+                    <span class="stat-label">Low</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value stat-email" id="statEmails">—</span>
+                    <span class="stat-label">Emails</span>
+                </div>
             </div>
+
+            <div class="sidebar-section-label">Live Conversations</div>
+            <div id="conversationFeed" class="conversation-feed" role="list"></div>
 
             <div class="sidebar-footer">
                 <div id="liveCount" class="live-count">
-                    <span class="status-dot"></span> 
+                    <span class="status-dot"></span>
                     <span id="countText">0 conversations</span>
                 </div>
-                <button class="logout-btn" onclick="logout()">Sign out</button>
+                <button class="refresh-btn" id="refreshBtn" type="button">⟳</button>
+                <button class="logout-btn" id="logoutBtn" type="button">Sign out</button>
             </div>
         </div>
 
         <div class="admin-main">
-            <div id="emptyState" class="admin-empty-state" role="status" aria-live="polite">
+            <div id="emptyState" class="admin-empty-state" role="status">
                 <div class="empty-icon">📊</div>
                 <div class="empty-title">Select a conversation</div>
-                <div class="empty-sub">Click any conversation on the left to see full analysis</div>
+                <div class="empty-sub">Click any entry on the left to see full analysis</div>
             </div>
 
-            <div id="convDetail" class="conv-detail" style="display:none" role="region" aria-label="Conversation detail">
+            <div id="convDetail" class="conv-detail" style="display:none">
 
                 <div class="detail-header">
                     <div class="detail-header-left">
@@ -66,8 +88,6 @@
                 </div>
 
                 <div class="detail-grid">
-
-                    <!-- Lead Data Card -->
                     <div class="detail-card">
                         <div class="detail-card-title">📋 Lead Data</div>
                         <div class="lead-grid" id="leadGrid"></div>
@@ -75,13 +95,11 @@
                         <div class="vibe-note" id="intentSignals"></div>
                     </div>
 
-                    <!-- Vibe Card -->
                     <div class="detail-card">
                         <div class="detail-card-title">🎭 Conversation Vibe</div>
                         <div id="vibeDetail"></div>
                     </div>
 
-                    <!-- Sales Recommendations Card (spans 2 columns) -->
                     <div class="detail-card span-2">
                         <div class="detail-card-title">🎯 Sales Recommendations</div>
                         <div class="rec-grid">
@@ -96,7 +114,6 @@
                         </div>
                     </div>
 
-                    <!-- HubSpot Card -->
                     <div class="detail-card">
                         <div class="detail-card-title">🔄 HubSpot</div>
                         <div id="hubspotStatus"></div>
@@ -104,12 +121,10 @@
                         <div class="rec-label" id="convModel" style="margin-top:4px"></div>
                     </div>
 
-                    <!-- Transcript Card -->
                     <div class="detail-card">
                         <div class="detail-card-title">💬 Conversation Transcript</div>
-                        <div class="transcript" id="transcript" role="log" aria-live="polite"></div>
+                        <div class="transcript" id="transcript" role="log"></div>
                     </div>
-
                 </div>
             </div>
         </div>

@@ -146,7 +146,7 @@ function escapeHtml(text) {
 // ─────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
-    addMessage("Hi, I'm Raya — your guide to PLAYBOOK. What are you looking to get out of the network?", 'ai');
+    addMessage("Hi, I'm Layla — your guide to PLAYBOOK. What are you looking to get out of the network?", 'ai');
 
     const input = document.getElementById('messageInput');
     input.focus();

@@ -3,21 +3,21 @@ const express = require('express');
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const db = require('./db');
-const app = express();
 const fs = require('fs');
 const path = require('path');
 
+const app = express();
 app.use(express.json());
 app.use(express.static('public'));
 
-const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY;
-const HUBSPOT_TOKEN = process.env.HUBSPOT_ACCESS_TOKEN;
-const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'playbook2024';
+const CLAUDE_API_KEY  = process.env.CLAUDE_API_KEY;
+const HUBSPOT_TOKEN   = process.env.HUBSPOT_ACCESS_TOKEN;
+const ADMIN_TOKEN     = process.env.ADMIN_TOKEN || 'playbook2024';
 
 // ─────────────────────────────────────────────
 // SYSTEM PROMPT
 // ─────────────────────────────────────────────
-const SYSTEM_PROMPT = `You are Raya, a warm and knowledgeable community guide for PLAYBOOK — an award-winning private network for professional women in the MENA region and beyond.
+const SYSTEM_PROMPT = `You are Layla, a warm and knowledgeable community guide for PLAYBOOK — an award-winning private network for professional women in the MENA region and beyond.
 
 About PLAYBOOK:
 - 8,340+ members across 100+ countries
@@ -59,9 +59,8 @@ const EXTRACTION_SYSTEM = `You are a silent data extractor. Given a conversation
 
 function buildExtractionPrompt(conversationHistory, latestMessage) {
     const transcript = conversationHistory
-        .map(m => `${m.role === 'user' ? 'User' : 'Raya'}: ${m.content}`)
+        .map(m => `${m.role === 'user' ? 'User' : 'Layla'}: ${m.content}`)
         .join('\n');
-
     return `Based on this conversation, extract the lead data.
 
 Conversation:
@@ -87,12 +86,11 @@ Return ONLY valid JSON:
 // ─────────────────────────────────────────────
 // CLAUDE API
 // ─────────────────────────────────────────────
-const CLAUDE_MODEL = 'claude-haiku-4-5-20251001';
+const CLAUDE_MODEL    = 'claude-haiku-4-5-20251001';
 const FALLBACK_MODELS = ['claude-sonnet-4-6', 'claude-opus-4-6'];
 
 async function callClaude(systemPrompt, messages, maxTokens = 600) {
-    const models = [CLAUDE_MODEL, ...FALLBACK_MODELS];
-    for (const model of models) {
+    for (const model of [CLAUDE_MODEL, ...FALLBACK_MODELS]) {
         try {
             const response = await axios.post('https://api.anthropic.com/v1/messages', {
                 model, max_tokens: maxTokens, system: systemPrompt, messages
@@ -118,7 +116,7 @@ async function callClaude(systemPrompt, messages, maxTokens = 600) {
 // ─────────────────────────────────────────────
 function sanitizeMessage(msg) {
     if (typeof msg !== 'string') return '';
-    return msg.trim().slice(0, 2000); // cap message length
+    return msg.trim().slice(0, 2000);
 }
 
 function isValidHistory(history) {
@@ -130,28 +128,71 @@ function isValidHistory(history) {
 }
 
 // ─────────────────────────────────────────────
-// RATE LIMITING (simple in-memory)
+// RATE LIMITING
 // ─────────────────────────────────────────────
 const rateLimitMap = new Map();
 function checkRateLimit(ip) {
     const now = Date.now();
-    const windowMs = 60 * 1000; // 1 minute
+    const windowMs = 60 * 1000;
     const maxRequests = 20;
     const entry = rateLimitMap.get(ip) || { count: 0, resetAt: now + windowMs };
-    if (now > entry.resetAt) {
-        entry.count = 0;
-        entry.resetAt = now + windowMs;
-    }
+    if (now > entry.resetAt) { entry.count = 0; entry.resetAt = now + windowMs; }
     entry.count++;
     rateLimitMap.set(ip, entry);
     return entry.count <= maxRequests;
 }
 
 // ─────────────────────────────────────────────
+// ADMIN AUTH — session cookie (token never in HTML)
+// ─────────────────────────────────────────────
+
+// Simple signed-session store (in-memory; survives deploys fine for single-instance)
+const adminSessions = new Set();
+
+// POST /api/admin/login — validates password, sets httpOnly cookie
+app.post('/api/admin/login', express.json(), (req, res) => {
+    const { password } = req.body || {};
+    if (!password || password !== ADMIN_TOKEN) {
+        return res.status(401).json({ error: 'Incorrect password' });
+    }
+    const sessionId = uuidv4();
+    adminSessions.add(sessionId);
+    // httpOnly + SameSite so the cookie can't be read by JS or sent cross-site
+    res.cookie('admin_session', sessionId, {
+        httpOnly: true,
+        sameSite: 'strict',
+        maxAge: 8 * 60 * 60 * 1000, // 8 hours
+        path: '/',
+    });
+    res.json({ success: true });
+});
+
+// POST /api/admin/logout
+app.post('/api/admin/logout', (req, res) => {
+    const sid = req.cookies?.admin_session;
+    if (sid) adminSessions.delete(sid);
+    res.clearCookie('admin_session');
+    res.json({ success: true });
+});
+
+// Middleware — protects all /api/admin/* routes except login
+function requireAdminSession(req, res, next) {
+    // Parse cookies manually (no cookie-parser dep needed)
+    const cookieHeader = req.headers.cookie || '';
+    const cookies = Object.fromEntries(
+        cookieHeader.split(';').map(c => c.trim().split('=').map(decodeURIComponent))
+    );
+    const sid = cookies['admin_session'];
+    if (!sid || !adminSessions.has(sid)) {
+        return res.status(401).json({ error: 'Unauthorised — please log in' });
+    }
+    next();
+}
+
+// ─────────────────────────────────────────────
 // CHAT ENDPOINT
 // ─────────────────────────────────────────────
 app.post('/api/chat', async (req, res) => {
-    // Rate limit by IP
     const ip = req.ip || req.connection.remoteAddress;
     if (!checkRateLimit(ip)) {
         return res.status(429).json({ success: false, error: 'Too many requests. Please wait a moment.' });
@@ -164,24 +205,22 @@ app.post('/api/chat', async (req, res) => {
     if (!isValidHistory(history)) return res.status(400).json({ success: false, error: 'Invalid history format' });
     if (!CLAUDE_API_KEY) return res.status(500).json({ success: false, error: 'Claude API key not configured' });
 
-    // Validate/sanitize conversationId — must be UUID or generate a new one
     const convId = (typeof conversationId === 'string' && /^[0-9a-f-]{36}$/i.test(conversationId))
-        ? conversationId
-        : uuidv4();
+        ? conversationId : uuidv4();
 
     console.log('\n📨 User:', message);
 
     try {
-        // Step 1: Conversational reply
+        // Step 1: conversational reply
         const conversationMessages = [
-            ...history.slice(-18).map(m => ({ role: m.role, content: m.content })), // cap history to last 18 turns
+            ...history.slice(-18).map(m => ({ role: m.role, content: m.content })),
             { role: 'user', content: message }
         ];
         const { text: botReply, model } = await callClaude(SYSTEM_PROMPT, conversationMessages, 600);
-        console.log('💬 Raya:', botReply);
+        console.log('💬 Layla:', botReply);
 
-        // Step 2: Extraction
-        let leadData = { name: null, email: null, lead_type: 'Community', main_interest: null, intent_level: 'Low', intent_signals: null, conversation_vibe: 'curious', vibe_note: null };
+        // Step 2: extraction
+        let leadData    = { name: null, email: null, lead_type: 'Community', main_interest: null, intent_level: 'Low', intent_signals: null, conversation_vibe: 'curious', vibe_note: null };
         let salesOutput = { recommended_next_action: 'Review conversation manually', follow_up_message: '', priority: 'Low' };
 
         try {
@@ -191,21 +230,21 @@ app.post('/api/chat', async (req, res) => {
                 600
             );
             const jsonMatch = extractionText.match(/\{[\s\S]*\}/);
-            const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : extractionText);
+            const parsed   = JSON.parse(jsonMatch ? jsonMatch[0] : extractionText);
             leadData = {
-                name: parsed.name || null,
-                email: parsed.email || null,
-                lead_type: parsed.lead_type || 'Community',
-                main_interest: parsed.main_interest || null,
-                intent_level: parsed.intent_level || 'Low',
-                intent_signals: parsed.intent_signals || null,
-                conversation_vibe: parsed.conversation_vibe || 'curious',
-                vibe_note: parsed.vibe_note || null
+                name:               parsed.name              || null,
+                email:              parsed.email             || null,
+                lead_type:          parsed.lead_type         || 'Community',
+                main_interest:      parsed.main_interest     || null,
+                intent_level:       parsed.intent_level      || 'Low',
+                intent_signals:     parsed.intent_signals    || null,
+                conversation_vibe:  parsed.conversation_vibe || 'curious',
+                vibe_note:          parsed.vibe_note         || null,
             };
             salesOutput = {
                 recommended_next_action: parsed.recommended_next_action || '',
-                follow_up_message: parsed.follow_up_message || '',
-                priority: parsed.priority || 'Low'
+                follow_up_message:       parsed.follow_up_message       || '',
+                priority:                parsed.priority                || 'Low',
             };
             console.log(`🎭 Vibe: ${leadData.conversation_vibe} | Intent: ${leadData.intent_level}`);
         } catch (e) {
@@ -221,23 +260,30 @@ app.post('/api/chat', async (req, res) => {
                     const searchRes = await axios.post('https://api.hubapi.com/crm/v3/objects/contacts/search', {
                         filterGroups: [{ filters: [{ propertyName: 'email', operator: 'EQ', value: leadData.email }] }]
                     }, { headers: { 'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' } });
-                    if (searchRes.data.results?.length > 0) { contactId = searchRes.data.results[0].id; existingContact = true; }
+                    if (searchRes.data.results?.length > 0) {
+                        contactId = searchRes.data.results[0].id;
+                        existingContact = true;
+                    }
                 } catch (_) {}
 
                 if (!contactId) {
                     const props = { email: leadData.email };
-                    if (leadData.name) { props.firstname = leadData.name.split(' ')[0]; props.lastname = leadData.name.split(' ').slice(1).join(' ') || ''; }
+                    if (leadData.name) {
+                        props.firstname = leadData.name.split(' ')[0];
+                        props.lastname  = leadData.name.split(' ').slice(1).join(' ') || '';
+                    }
                     props.lifecyclestage = leadData.intent_level === 'High' ? 'lead' : 'subscriber';
-                    const contactRes = await axios.post('https://api.hubapi.com/crm/v3/objects/contacts', { properties: props },
-                        { headers: { 'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' } });
+                    const contactRes = await axios.post('https://api.hubapi.com/crm/v3/objects/contacts',
+                        { properties: props },
+                        { headers: { 'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' } }
+                    );
                     contactId = contactRes.data.id;
                 }
 
                 const vibeEmoji = { serious:'🎯',excited:'🔥',curious:'🤔',skeptical:'🧐',funny:'😄',annoyed:'😤',trolling:'🧌',distracted:'💭',overwhelmed:'😰',cold:'🧊' }[leadData.conversation_vibe] || '💬';
                 const fullHistory = [...history, { role: 'user', content: message }, { role: 'assistant', content: botReply }];
-                const transcript = fullHistory.map(m => `${m.role === 'user' ? 'User' : 'Raya'}: ${m.content}`).join('\n');
-
-                const noteContent = `🤖 PLAYBOOK AI Copilot — Raya (${model})\n\n${'━'.repeat(35)}\n💬 TRANSCRIPT\n${'━'.repeat(35)}\n${transcript}\n\n${'━'.repeat(35)}\n📋 LEAD INTELLIGENCE\n${'━'.repeat(35)}\nType: ${leadData.lead_type}\nIntent: ${leadData.intent_level}\nIntent signals: ${leadData.intent_signals || 'N/A'}\nInterest: ${leadData.main_interest || 'N/A'}\n\n${vibeEmoji} VIBE: ${leadData.conversation_vibe?.toUpperCase()}\n${leadData.vibe_note || ''}\n\n${'━'.repeat(35)}\n🎯 SALES RECOMMENDATIONS\n${'━'.repeat(35)}\nNext Action: ${salesOutput.recommended_next_action}\nPriority: ${salesOutput.priority}\n\n${'━'.repeat(35)}\n✉️ FOLLOW-UP\n${'━'.repeat(35)}\n${salesOutput.follow_up_message}\n\nTimestamp: ${new Date().toLocaleString()}`;
+                const transcript  = fullHistory.map(m => `${m.role === 'user' ? 'User' : 'Layla'}: ${m.content}`).join('\n');
+                const noteContent = `🤖 PLAYBOOK AI Copilot — Layla (${model})\n\n${'━'.repeat(35)}\n💬 TRANSCRIPT\n${'━'.repeat(35)}\n${transcript}\n\n${'━'.repeat(35)}\n📋 LEAD INTELLIGENCE\n${'━'.repeat(35)}\nType: ${leadData.lead_type}\nIntent: ${leadData.intent_level}\nIntent signals: ${leadData.intent_signals || 'N/A'}\nInterest: ${leadData.main_interest || 'N/A'}\n\n${vibeEmoji} VIBE: ${leadData.conversation_vibe?.toUpperCase()}\n${leadData.vibe_note || ''}\n\n${'━'.repeat(35)}\n🎯 SALES RECOMMENDATIONS\n${'━'.repeat(35)}\nNext Action: ${salesOutput.recommended_next_action}\nPriority: ${salesOutput.priority}\n\n${'━'.repeat(35)}\n✉️ FOLLOW-UP\n${'━'.repeat(35)}\n${salesOutput.follow_up_message}\n\nTimestamp: ${new Date().toLocaleString()}`;
 
                 await axios.post('https://api.hubapi.com/crm/v3/objects/notes', {
                     properties: { hs_timestamp: new Date().toISOString(), hs_note_body: noteContent },
@@ -250,30 +296,22 @@ app.post('/api/chat', async (req, res) => {
             }
         }
 
-        // Step 4: Save to database
+        // Step 4: save to DB
         const fullHistory = [...history, { role: 'user', content: message }, { role: 'assistant', content: botReply }];
-        
         try {
             await db.saveConversation({
-                id: convId,
-                timestamp: new Date().toISOString(),
-                history: fullHistory,
-                lead_data: leadData,
-                sales_output: salesOutput,
-                hubspot: hubspotResult,
-                model_used: model
+                id: convId, timestamp: new Date().toISOString(),
+                history: fullHistory, lead_data: leadData,
+                sales_output: salesOutput, hubspot: hubspotResult, model_used: model
             });
-            console.log('💾 Conversation saved to database');
         } catch (dbError) {
-            console.error('❌ Failed to save to database:', dbError.message);
+            console.error('❌ Failed to save to DB:', dbError.message);
         }
 
+        // Never expose lead/sales/hubspot data to the client
         res.json({
             success: true,
             response: botReply,
-            // FIX: Don't expose lead_data, sales_output, hubspot to the client frontend
-            // These are internal — only admin should see them
-            model_used: model,
             conversation_id: convId,
             timestamp: new Date().toISOString()
         });
@@ -285,120 +323,84 @@ app.post('/api/chat', async (req, res) => {
 });
 
 // ─────────────────────────────────────────────
-// ADMIN MIDDLEWARE
+// ADMIN API ROUTES (all protected by session)
 // ─────────────────────────────────────────────
-function requireAdminToken(req, res, next) {
-    const token = req.headers['x-admin-token'];
-    if (!token || token !== ADMIN_TOKEN) {
-        return res.status(401).json({ error: 'Unauthorised' });
-    }
-    next();
-}
-
-// ─────────────────────────────────────────────
-// ADMIN ENDPOINTS
-// ─────────────────────────────────────────────
-
-app.get('/api/admin/conversations', requireAdminToken, async (req, res) => {
+app.get('/api/admin/conversations', requireAdminSession, async (req, res) => {
     try {
-        const limit = Math.min(parseInt(req.query.limit) || 200, 500); // cap at 500
-        const offset = Math.max(parseInt(req.query.offset) || 0, 0);
-        const { intent_level, has_email } = req.query;
-
-        // Validate intent_level if provided
+        const limit      = Math.min(parseInt(req.query.limit)  || 200, 500);
+        const offset     = Math.max(parseInt(req.query.offset) || 0,   0);
         const validIntents = ['High', 'Medium', 'Low'];
-        const safeIntent = validIntents.includes(intent_level) ? intent_level : undefined;
-
+        const safeIntent = validIntents.includes(req.query.intent_level) ? req.query.intent_level : undefined;
         const conversations = await db.getConversations(limit, offset, {
             intent_level: safeIntent,
-            has_email: has_email === 'true'
+            has_email: req.query.has_email === 'true',
         });
-        
         res.json({ conversations, total: conversations.length });
     } catch (err) {
-        console.error('Database error:', err);
+        console.error('DB error:', err);
         res.status(500).json({ error: 'Failed to fetch conversations' });
     }
 });
 
-app.get('/api/admin/stats', requireAdminToken, async (req, res) => {
+app.get('/api/admin/stats', requireAdminSession, async (req, res) => {
     try {
         const stats = await db.getStats();
         res.json(stats);
     } catch (err) {
-        console.error('Database error:', err);
+        console.error('DB error:', err);
         res.status(500).json({ error: 'Failed to fetch stats' });
     }
 });
 
-app.get('/api/admin/conversations/:id', requireAdminToken, async (req, res) => {
-    // FIX: validate that :id is a UUID before hitting the DB
+app.get('/api/admin/conversations/:id', requireAdminSession, async (req, res) => {
     const { id } = req.params;
-    if (!/^[0-9a-f-]{36}$/i.test(id)) {
-        return res.status(400).json({ error: 'Invalid conversation ID' });
-    }
+    if (!/^[0-9a-f-]{36}$/i.test(id)) return res.status(400).json({ error: 'Invalid conversation ID' });
     try {
         const conversation = await db.getConversation(id);
-        if (!conversation) return res.status(404).json({ error: 'Conversation not found' });
+        if (!conversation) return res.status(404).json({ error: 'Not found' });
         res.json({ conversation });
     } catch (err) {
-        console.error('Database error:', err);
         res.status(500).json({ error: 'Failed to fetch conversation' });
     }
 });
 
-// Health check endpoint
-app.get('/test', (req, res) => res.json({ 
-    status: 'OK', 
-    message: 'Raya is online', 
+// Health check
+app.get('/test', (req, res) => res.json({
+    status: 'OK', message: 'Layla is online',
     time: new Date().toISOString(),
     database: process.env.DATABASE_URL ? 'configured' : 'not configured'
 }));
 
-// Serve admin page
+// Serve admin page — just the static HTML, no token injection needed anymore
 app.get('/admin', (req, res) => {
-    try {
-        const adminHtmlPath = path.join(__dirname, 'public', 'admin.html');
-        let html = fs.readFileSync(adminHtmlPath, 'utf8');
-        
-        // Replace the token placeholder with actual token from environment
-        html = html.replace('__ADMIN_TOKEN__', ADMIN_TOKEN);
-        
-        res.send(html);
-    } catch (err) {
-        console.error('Error serving admin page:', err);
-        res.status(500).send('Error loading admin page');
-    }
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
+
 // ─────────────────────────────────────────────
-// START SERVER
+// START
 // ─────────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
 
 async function startServer() {
     console.log('\n🚀 Starting PLAYBOOK AI Copilot...');
-    
+
     if (process.env.DATABASE_URL) {
         try {
-            const connected = await db.testConnection();
-            if (connected) {
-                console.log('✅ Database: Connected to PostgreSQL');
-            } else {
-                console.warn('⚠️ Database: Connection failed - using in-memory fallback');
-            }
+            const ok = await db.testConnection();
+            if (ok) await db.initSchema(); // ← creates table + indexes if missing
         } catch (err) {
-            console.error('❌ Database error:', err.message);
+            console.error('❌ Database startup error:', err.message);
         }
     } else {
-        console.log('ℹ️  Database: No DATABASE_URL provided - using in-memory storage');
+        console.log('ℹ️  DATABASE_URL not set — no persistence');
     }
-    
-    if (!CLAUDE_API_KEY) console.warn('⚠️  CLAUDE_API_KEY not set - chat functionality will not work');
-    if (!HUBSPOT_TOKEN) console.warn('⚠️  HUBSPOT_ACCESS_TOKEN not set - HubSpot integration disabled');
-    
+
+    if (!CLAUDE_API_KEY) console.warn('⚠️  CLAUDE_API_KEY not set');
+    if (!HUBSPOT_TOKEN)  console.warn('⚠️  HUBSPOT_ACCESS_TOKEN not set');
+
     app.listen(PORT, () => {
         console.log('\n' + '='.repeat(50));
-        console.log('✅ PLAYBOOK AI Copilot — Raya');
+        console.log('✅ PLAYBOOK AI Copilot — Layla');
         console.log('='.repeat(50));
         console.log(`📍 Chat:  http://localhost:${PORT}`);
         console.log(`🔐 Admin: http://localhost:${PORT}/admin`);
