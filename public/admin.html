@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PLAYBOOK — Admin</title>
-    <!-- FIX: Admin token injected server-side into meta tag, NOT hardcoded in JS -->
-    <!-- In server.js, render this template and replace __ADMIN_TOKEN__ with the real value -->
-    <!-- e.g. res.send(html.replace('__ADMIN_TOKEN__', ADMIN_TOKEN)) -->
-    <!-- For now this is left as a placeholder — see audit notes -->
     <meta name="admin-token" content="__ADMIN_TOKEN__">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/admin.css">
@@ -36,14 +32,14 @@
             </div>
 
             <div class="sidebar-section-label">Live Conversations</div>
-            <!-- FIX: feed uses event delegation (see admin.js), no inline onclick per item -->
             <div id="conversationFeed" class="conversation-feed" role="list">
                 <div class="feed-empty">Loading conversations...</div>
             </div>
 
             <div class="sidebar-footer">
                 <div id="liveCount" class="live-count">
-                    <span class="status-dot"></span> <span id="countText">0 conversations</span>
+                    <span class="status-dot"></span> 
+                    <span id="countText">0 conversations</span>
                 </div>
                 <button class="logout-btn" onclick="logout()">Sign out</button>
             </div>
@@ -71,6 +67,7 @@
 
                 <div class="detail-grid">
 
+                    <!-- Lead Data Card -->
                     <div class="detail-card">
                         <div class="detail-card-title">📋 Lead Data</div>
                         <div class="lead-grid" id="leadGrid"></div>
@@ -78,11 +75,13 @@
                         <div class="vibe-note" id="intentSignals"></div>
                     </div>
 
+                    <!-- Vibe Card -->
                     <div class="detail-card">
                         <div class="detail-card-title">🎭 Conversation Vibe</div>
                         <div id="vibeDetail"></div>
                     </div>
 
+                    <!-- Sales Recommendations Card (spans 2 columns) -->
                     <div class="detail-card span-2">
                         <div class="detail-card-title">🎯 Sales Recommendations</div>
                         <div class="rec-grid">
@@ -97,6 +96,7 @@
                         </div>
                     </div>
 
+                    <!-- HubSpot Card -->
                     <div class="detail-card">
                         <div class="detail-card-title">🔄 HubSpot</div>
                         <div id="hubspotStatus"></div>
@@ -104,6 +104,7 @@
                         <div class="rec-label" id="convModel" style="margin-top:4px"></div>
                     </div>
 
+                    <!-- Transcript Card -->
                     <div class="detail-card">
                         <div class="detail-card-title">💬 Conversation Transcript</div>
                         <div class="transcript" id="transcript" role="log" aria-live="polite"></div>

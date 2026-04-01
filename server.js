@@ -4,6 +4,8 @@ const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const db = require('./db');
 const app = express();
+const fs = require('fs');
+const path = require('path');
 
 app.use(express.json());
 app.use(express.static('public'));
@@ -354,8 +356,20 @@ app.get('/test', (req, res) => res.json({
 }));
 
 // Serve admin page
-app.get('/admin', (req, res) => res.sendFile('admin.html', { root: './public' }));
-
+app.get('/admin', (req, res) => {
+    try {
+        const adminHtmlPath = path.join(__dirname, 'public', 'admin.html');
+        let html = fs.readFileSync(adminHtmlPath, 'utf8');
+        
+        // Replace the token placeholder with actual token from environment
+        html = html.replace('__ADMIN_TOKEN__', ADMIN_TOKEN);
+        
+        res.send(html);
+    } catch (err) {
+        console.error('Error serving admin page:', err);
+        res.status(500).send('Error loading admin page');
+    }
+});
 // ─────────────────────────────────────────────
 // START SERVER
 // ─────────────────────────────────────────────
