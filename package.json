@@ -1,6 +1,6 @@
 {
   "name": "ai-sales-copilot",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "AI Sales Copilot with Claude AI and HubSpot integration",
   "main": "server.js",
   "scripts": {
@@ -18,12 +18,5 @@
   "devDependencies": {
     "nodemon": "^3.0.1"
   },
-  "keywords": [
-    "ai",
-    "sales",
-    "claude",
-    "hubspot"
-  ],
-  "author": "Your Name",
-  "license": "MIT"
+  "author": "ALya M, PLAYBOOK"
 }
