@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PLAYBOOK — Admin</title>
+    <!-- FIX: Admin token injected server-side into meta tag, NOT hardcoded in JS -->
+    <!-- In server.js, render this template and replace __ADMIN_TOKEN__ with the real value -->
+    <!-- e.g. res.send(html.replace('__ADMIN_TOKEN__', ADMIN_TOKEN)) -->
+    <!-- For now this is left as a placeholder — see audit notes -->
+    <meta name="admin-token" content="__ADMIN_TOKEN__">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body class="dark-mode admin-page">
 
-    <!-- ── Login Gate (kept but will be hidden by JS) ── -->
+    <!-- Login Gate (hidden immediately by JS — kept for future auth) -->
     <div id="loginGate" class="login-gate" style="display:none">
         <div class="login-card">
             <div class="login-logo">PLAYBOOK</div>
@@ -21,7 +26,7 @@
         </div>
     </div>
 
-    <!-- ── Admin Dashboard ── -->
+    <!-- Admin Dashboard -->
     <div id="adminDash" class="admin-dash" style="display:flex">
 
         <div class="admin-sidebar">
@@ -31,7 +36,8 @@
             </div>
 
             <div class="sidebar-section-label">Live Conversations</div>
-            <div id="conversationFeed" class="conversation-feed">
+            <!-- FIX: feed uses event delegation (see admin.js), no inline onclick per item -->
+            <div id="conversationFeed" class="conversation-feed" role="list">
                 <div class="feed-empty">Loading conversations...</div>
             </div>
 
@@ -44,13 +50,13 @@
         </div>
 
         <div class="admin-main">
-            <div id="emptyState" class="admin-empty-state">
+            <div id="emptyState" class="admin-empty-state" role="status" aria-live="polite">
                 <div class="empty-icon">📊</div>
                 <div class="empty-title">Select a conversation</div>
                 <div class="empty-sub">Click any conversation on the left to see full analysis</div>
             </div>
 
-            <div id="convDetail" class="conv-detail" style="display:none">
+            <div id="convDetail" class="conv-detail" style="display:none" role="region" aria-label="Conversation detail">
 
                 <div class="detail-header">
                     <div class="detail-header-left">
@@ -65,7 +71,6 @@
 
                 <div class="detail-grid">
 
-                    <!-- Lead Data -->
                     <div class="detail-card">
                         <div class="detail-card-title">📋 Lead Data</div>
                         <div class="lead-grid" id="leadGrid"></div>
@@ -73,13 +78,11 @@
                         <div class="vibe-note" id="intentSignals"></div>
                     </div>
 
-                    <!-- Vibe -->
                     <div class="detail-card">
                         <div class="detail-card-title">🎭 Conversation Vibe</div>
                         <div id="vibeDetail"></div>
                     </div>
 
-                    <!-- Sales Recommendations -->
                     <div class="detail-card span-2">
                         <div class="detail-card-title">🎯 Sales Recommendations</div>
                         <div class="rec-grid">
@@ -94,7 +97,6 @@
                         </div>
                     </div>
 
-                    <!-- HubSpot -->
                     <div class="detail-card">
                         <div class="detail-card-title">🔄 HubSpot</div>
                         <div id="hubspotStatus"></div>
@@ -102,10 +104,9 @@
                         <div class="rec-label" id="convModel" style="margin-top:4px"></div>
                     </div>
 
-                    <!-- Transcript -->
                     <div class="detail-card">
                         <div class="detail-card-title">💬 Conversation Transcript</div>
-                        <div class="transcript" id="transcript"></div>
+                        <div class="transcript" id="transcript" role="log" aria-live="polite"></div>
                     </div>
 
                 </div>

@@ -1,20 +1,29 @@
 const { Pool } = require('pg');
 
-// Create connection pool
+// Create connection pool for Neon
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    ssl: {
+        rejectUnauthorized: false, // Required for Neon
+    },
+    connectionTimeoutMillis: 5000,
+    idleTimeoutMillis: 30000,
+    max: 10,
 });
 
 // Test connection
 async function testConnection() {
+    let client;
     try {
-        const client = await pool.connect();
-        console.log('✅ Connected to Supabase PostgreSQL');
+        client = await pool.connect();
+        const result = await client.query('SELECT NOW() as time');
+        console.log('✅ Connected to Neon PostgreSQL');
+        console.log(`   Server time: ${result.rows[0].time}`);
         client.release();
         return true;
     } catch (err) {
         console.error('❌ Database connection error:', err.message);
+        if (client) client.release();
         return false;
     }
 }
@@ -47,9 +56,10 @@ async function saveConversation(data) {
             data.model_used
         ]);
         
+        console.log(`💾 Saved conversation ${data.id} to database`);
         return result.rows[0];
     } catch (err) {
-        console.error('Error saving conversation:', err);
+        console.error('Error saving conversation:', err.message);
         throw err;
     } finally {
         client.release();
@@ -64,7 +74,6 @@ async function getConversations(limit = 200, offset = 0, filters = {}) {
         const params = [];
         let paramIndex = 1;
         
-        // Add filters if provided
         if (filters.intent_level) {
             query += ` AND lead_data->>'intent_level' = $${paramIndex}`;
             params.push(filters.intent_level);
@@ -80,7 +89,6 @@ async function getConversations(limit = 200, offset = 0, filters = {}) {
         
         const result = await client.query(query, params);
         
-        // Parse JSON fields
         return result.rows.map(row => ({
             ...row,
             history: typeof row.history === 'string' ? JSON.parse(row.history) : row.history,

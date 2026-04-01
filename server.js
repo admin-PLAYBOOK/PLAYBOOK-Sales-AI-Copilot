@@ -112,21 +112,67 @@ async function callClaude(systemPrompt, messages, maxTokens = 600) {
 }
 
 // ─────────────────────────────────────────────
+// INPUT VALIDATION
+// ─────────────────────────────────────────────
+function sanitizeMessage(msg) {
+    if (typeof msg !== 'string') return '';
+    return msg.trim().slice(0, 2000); // cap message length
+}
+
+function isValidHistory(history) {
+    if (!Array.isArray(history)) return false;
+    return history.every(m =>
+        m && typeof m.role === 'string' && typeof m.content === 'string' &&
+        ['user', 'assistant'].includes(m.role)
+    );
+}
+
+// ─────────────────────────────────────────────
+// RATE LIMITING (simple in-memory)
+// ─────────────────────────────────────────────
+const rateLimitMap = new Map();
+function checkRateLimit(ip) {
+    const now = Date.now();
+    const windowMs = 60 * 1000; // 1 minute
+    const maxRequests = 20;
+    const entry = rateLimitMap.get(ip) || { count: 0, resetAt: now + windowMs };
+    if (now > entry.resetAt) {
+        entry.count = 0;
+        entry.resetAt = now + windowMs;
+    }
+    entry.count++;
+    rateLimitMap.set(ip, entry);
+    return entry.count <= maxRequests;
+}
+
+// ─────────────────────────────────────────────
 // CHAT ENDPOINT
 // ─────────────────────────────────────────────
 app.post('/api/chat', async (req, res) => {
-    const { message, history = [], conversationId } = req.body;
-    console.log('\n📨 User:', message);
+    // Rate limit by IP
+    const ip = req.ip || req.connection.remoteAddress;
+    if (!checkRateLimit(ip)) {
+        return res.status(429).json({ success: false, error: 'Too many requests. Please wait a moment.' });
+    }
+
+    const { message: rawMessage, history = [], conversationId } = req.body;
+    const message = sanitizeMessage(rawMessage);
 
     if (!message) return res.status(400).json({ success: false, error: 'No message provided' });
+    if (!isValidHistory(history)) return res.status(400).json({ success: false, error: 'Invalid history format' });
     if (!CLAUDE_API_KEY) return res.status(500).json({ success: false, error: 'Claude API key not configured' });
 
-    const convId = conversationId || uuidv4();
+    // Validate/sanitize conversationId — must be UUID or generate a new one
+    const convId = (typeof conversationId === 'string' && /^[0-9a-f-]{36}$/i.test(conversationId))
+        ? conversationId
+        : uuidv4();
+
+    console.log('\n📨 User:', message);
 
     try {
         // Step 1: Conversational reply
         const conversationMessages = [
-            ...history.map(m => ({ role: m.role, content: m.content })),
+            ...history.slice(-18).map(m => ({ role: m.role, content: m.content })), // cap history to last 18 turns
             { role: 'user', content: message }
         ];
         const { text: botReply, model } = await callClaude(SYSTEM_PROMPT, conversationMessages, 600);
@@ -223,9 +269,8 @@ app.post('/api/chat', async (req, res) => {
         res.json({
             success: true,
             response: botReply,
-            lead_data: leadData,
-            sales_output: salesOutput,
-            hubspot: hubspotResult,
+            // FIX: Don't expose lead_data, sales_output, hubspot to the client frontend
+            // These are internal — only admin should see them
             model_used: model,
             conversation_id: convId,
             timestamp: new Date().toISOString()
@@ -233,46 +278,48 @@ app.post('/api/chat', async (req, res) => {
 
     } catch (error) {
         console.error('❌ Server error:', error.message);
-        res.status(500).json({ success: false, error: error.message });
+        res.status(500).json({ success: false, error: 'Something went wrong. Please try again.' });
     }
 });
+
+// ─────────────────────────────────────────────
+// ADMIN MIDDLEWARE
+// ─────────────────────────────────────────────
+function requireAdminToken(req, res, next) {
+    const token = req.headers['x-admin-token'];
+    if (!token || token !== ADMIN_TOKEN) {
+        return res.status(401).json({ error: 'Unauthorised' });
+    }
+    next();
+}
 
 // ─────────────────────────────────────────────
 // ADMIN ENDPOINTS
 // ─────────────────────────────────────────────
 
-// Get all conversations
-app.get('/api/admin/conversations', async (req, res) => {
-    const token = req.headers['x-admin-token'];
-    if (token !== ADMIN_TOKEN) {
-        return res.status(401).json({ error: 'Unauthorised' });
-    }
-    
+app.get('/api/admin/conversations', requireAdminToken, async (req, res) => {
     try {
-        const { intent_level, has_email, limit = 200, offset = 0 } = req.query;
-        const conversations = await db.getConversations(
-            parseInt(limit), 
-            parseInt(offset), 
-            { intent_level, has_email: has_email === 'true' }
-        );
-        
-        res.json({ 
-            conversations,
-            total: conversations.length
+        const limit = Math.min(parseInt(req.query.limit) || 200, 500); // cap at 500
+        const offset = Math.max(parseInt(req.query.offset) || 0, 0);
+        const { intent_level, has_email } = req.query;
+
+        // Validate intent_level if provided
+        const validIntents = ['High', 'Medium', 'Low'];
+        const safeIntent = validIntents.includes(intent_level) ? intent_level : undefined;
+
+        const conversations = await db.getConversations(limit, offset, {
+            intent_level: safeIntent,
+            has_email: has_email === 'true'
         });
+        
+        res.json({ conversations, total: conversations.length });
     } catch (err) {
         console.error('Database error:', err);
         res.status(500).json({ error: 'Failed to fetch conversations' });
     }
 });
 
-// Get conversation statistics
-app.get('/api/admin/stats', async (req, res) => {
-    const token = req.headers['x-admin-token'];
-    if (token !== ADMIN_TOKEN) {
-        return res.status(401).json({ error: 'Unauthorised' });
-    }
-    
+app.get('/api/admin/stats', requireAdminToken, async (req, res) => {
     try {
         const stats = await db.getStats();
         res.json(stats);
@@ -282,18 +329,15 @@ app.get('/api/admin/stats', async (req, res) => {
     }
 });
 
-// Get single conversation
-app.get('/api/admin/conversations/:id', async (req, res) => {
-    const token = req.headers['x-admin-token'];
-    if (token !== ADMIN_TOKEN) {
-        return res.status(401).json({ error: 'Unauthorised' });
+app.get('/api/admin/conversations/:id', requireAdminToken, async (req, res) => {
+    // FIX: validate that :id is a UUID before hitting the DB
+    const { id } = req.params;
+    if (!/^[0-9a-f-]{36}$/i.test(id)) {
+        return res.status(400).json({ error: 'Invalid conversation ID' });
     }
-    
     try {
-        const conversation = await db.getConversation(req.params.id);
-        if (!conversation) {
-            return res.status(404).json({ error: 'Conversation not found' });
-        }
+        const conversation = await db.getConversation(id);
+        if (!conversation) return res.status(404).json({ error: 'Conversation not found' });
         res.json({ conversation });
     } catch (err) {
         console.error('Database error:', err);
@@ -320,7 +364,6 @@ const PORT = process.env.PORT || 3000;
 async function startServer() {
     console.log('\n🚀 Starting PLAYBOOK AI Copilot...');
     
-    // Test database connection
     if (process.env.DATABASE_URL) {
         try {
             const connected = await db.testConnection();
@@ -336,14 +379,8 @@ async function startServer() {
         console.log('ℹ️  Database: No DATABASE_URL provided - using in-memory storage');
     }
     
-    // Check API keys
-    if (!CLAUDE_API_KEY) {
-        console.warn('⚠️  CLAUDE_API_KEY not set - chat functionality will not work');
-    }
-    
-    if (!HUBSPOT_TOKEN) {
-        console.warn('⚠️  HUBSPOT_ACCESS_TOKEN not set - HubSpot integration disabled');
-    }
+    if (!CLAUDE_API_KEY) console.warn('⚠️  CLAUDE_API_KEY not set - chat functionality will not work');
+    if (!HUBSPOT_TOKEN) console.warn('⚠️  HUBSPOT_ACCESS_TOKEN not set - HubSpot integration disabled');
     
     app.listen(PORT, () => {
         console.log('\n' + '='.repeat(50));
@@ -351,7 +388,6 @@ async function startServer() {
         console.log('='.repeat(50));
         console.log(`📍 Chat:  http://localhost:${PORT}`);
         console.log(`🔐 Admin: http://localhost:${PORT}/admin`);
-        console.log(`🔄 Theme: Toggle with floating button in bottom-right corner`);
         console.log('='.repeat(50));
     });
 }

@@ -1,4 +1,4 @@
-const POLL_INTERVAL = 8000; // refresh feed every 8s
+const POLL_INTERVAL = 8000;
 
 let selectedConvId = null;
 let conversations = [];
@@ -9,20 +9,15 @@ let pollTimer = null;
 // ─────────────────────────────────────────────
 
 function initAdmin() {
-    // Hide login gate and show admin dashboard immediately
     const loginGate = document.getElementById('loginGate');
     const adminDash = document.getElementById('adminDash');
-    
     if (loginGate) loginGate.style.display = 'none';
     if (adminDash) adminDash.style.display = 'flex';
-    
-    // Start polling for conversations
     startPolling();
     updateLiveStatus();
 }
 
 function logout() {
-    // For now, just refresh the page to reset state
     window.location.reload();
 }
 
@@ -37,16 +32,17 @@ function startPolling() {
 }
 
 function stopPolling() {
-    if (pollTimer) {
-        clearInterval(pollTimer);
-        pollTimer = null;
-    }
+    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
 }
 
 async function fetchConversations() {
     try {
+        // FIX: Token now read from meta tag instead of hardcoded in JS
+        const tokenMeta = document.querySelector('meta[name="admin-token"]');
+        const token = tokenMeta ? tokenMeta.getAttribute('content') : '';
+
         const res = await fetch('/api/admin/conversations', {
-            headers: { 'x-admin-token': 'playbook2024' } // Keep server-side token
+            headers: { 'x-admin-token': token }
         });
         
         if (!res.ok) {
@@ -63,24 +59,26 @@ async function fetchConversations() {
             countText.textContent = `${conversations.length} conversation${conversations.length !== 1 ? 's' : ''}`;
         }
         
-        // If selected conversation still exists, refresh its view
         if (selectedConvId) {
             const stillExists = conversations.some(c => c.id === selectedConvId);
             if (stillExists) {
                 selectConversation(selectedConvId);
             } else {
-                // Selected conversation no longer exists
                 selectedConvId = null;
-                const emptyState = document.getElementById('emptyState');
-                const convDetail = document.getElementById('convDetail');
-                if (emptyState) emptyState.style.display = 'flex';
-                if (convDetail) convDetail.style.display = 'none';
-                renderFeed(); // Re-render to remove active state
+                showEmptyState();
+                renderFeed();
             }
         }
     } catch (err) {
         console.error('Poll error:', err);
     }
+}
+
+function showEmptyState() {
+    const emptyState = document.getElementById('emptyState');
+    const convDetail = document.getElementById('convDetail');
+    if (emptyState) emptyState.style.display = 'flex';
+    if (convDetail) convDetail.style.display = 'none';
 }
 
 // ─────────────────────────────────────────────
@@ -98,7 +96,7 @@ function renderFeed() {
 
     feed.innerHTML = conversations
         .slice()
-        .reverse() // newest first
+        .reverse()
         .map(conv => {
             const lead = conv.lead_data || {};
             const name = lead.name || 'Anonymous';
@@ -113,7 +111,8 @@ function renderFeed() {
             const vibeEmoji = VIBE_EMOJI[vibe] || '💬';
             const hasEmail = lead.email ? '📧' : '';
 
-            return `<div class="feed-item ${isSelected}" onclick="selectConversation('${escapeHtml(conv.id)}')">
+            // FIX: use data attribute + event delegation instead of inline onclick with raw id
+            return `<div class="feed-item ${isSelected}" data-conv-id="${escapeAttr(conv.id)}" tabindex="0" role="button" aria-label="View conversation with ${escapeHtml(name)}">
                 <div class="feed-item-top">
                     <span class="feed-name">${escapeHtml(name)} ${hasEmail}</span>
                     <span class="feed-time">${escapeHtml(time)}</span>
@@ -133,7 +132,7 @@ function renderFeed() {
 
 function selectConversation(id) {
     selectedConvId = id;
-    renderFeed(); // re-render to show active state
+    renderFeed();
 
     const conv = conversations.find(c => c.id === id);
     if (!conv) return;
@@ -146,27 +145,21 @@ function selectConversation(id) {
     const lead = conv.lead_data || {};
     const sales = conv.sales_output || {};
 
-    // Header
     const detailName = document.getElementById('detailName');
     const detailMeta = document.getElementById('detailMeta');
     if (detailName) detailName.textContent = lead.name || 'Anonymous';
     if (detailMeta) {
         detailMeta.textContent = [lead.email, lead.lead_type]
-            .filter(Boolean)
-            .join(' · ') || 'No contact info yet';
+            .filter(Boolean).join(' · ') || 'No contact info yet';
     }
 
-    // Vibe badge
     const vibeEmoji = VIBE_EMOJI[lead.conversation_vibe] || '💬';
     const vibeLabel = lead.conversation_vibe
         ? lead.conversation_vibe.charAt(0).toUpperCase() + lead.conversation_vibe.slice(1)
         : '—';
     const detailVibeBadge = document.getElementById('detailVibeBadge');
-    if (detailVibeBadge) {
-        detailVibeBadge.textContent = `${vibeEmoji} ${vibeLabel}`;
-    }
+    if (detailVibeBadge) detailVibeBadge.textContent = `${vibeEmoji} ${vibeLabel}`;
 
-    // Priority badge
     const priorityEl = document.getElementById('detailPriority');
     if (priorityEl) {
         const priority = (sales.priority || 'Low').toLowerCase();
@@ -174,7 +167,6 @@ function selectConversation(id) {
         priorityEl.className = `priority-badge priority-${priority}`;
     }
 
-    // Lead grid
     const leadGrid = document.getElementById('leadGrid');
     if (leadGrid) {
         leadGrid.innerHTML = [
@@ -190,7 +182,6 @@ function selectConversation(id) {
         `).join('');
     }
 
-    // Intent
     const intentClass = lead.intent_level === 'High' ? 'status-success'
         : lead.intent_level === 'Medium' ? 'status-warning' : 'status-error';
     const intentRow = document.getElementById('intentRow');
@@ -204,11 +195,8 @@ function selectConversation(id) {
     }
     
     const intentSignals = document.getElementById('intentSignals');
-    if (intentSignals) {
-        intentSignals.textContent = lead.intent_signals || '';
-    }
+    if (intentSignals) intentSignals.textContent = lead.intent_signals || '';
 
-    // Vibe detail
     const vibeDetail = document.getElementById('vibeDetail');
     if (vibeDetail) {
         vibeDetail.innerHTML = `
@@ -217,22 +205,18 @@ function selectConversation(id) {
         `;
     }
 
-    // Sales recs
     const nextAction = document.getElementById('nextAction');
     const followUp = document.getElementById('followUp');
     if (nextAction) nextAction.textContent = sales.recommended_next_action || '—';
     if (followUp) followUp.textContent = sales.follow_up_message || '—';
 
-    // HubSpot
     const hs = conv.hubspot || {};
     const hubspotStatus = document.getElementById('hubspotStatus');
     if (hubspotStatus) {
         let hsHtml = '';
         if (hs.success) {
             hsHtml = `<div class="status-badge status-success">✅ ${escapeHtml(hs.message || 'Synced')}</div>`;
-            if (hs.contactId) {
-                hsHtml += `<div class="rec-label" style="margin-top:8px">Contact ID: ${escapeHtml(hs.contactId)}</div>`;
-            }
+            if (hs.contactId) hsHtml += `<div class="rec-label" style="margin-top:8px">Contact ID: ${escapeHtml(hs.contactId)}</div>`;
         } else {
             const statusClass = hs.message?.includes('email') ? 'status-warning' : 'status-error';
             hsHtml = `<div class="status-badge ${statusClass}">
@@ -243,20 +227,11 @@ function selectConversation(id) {
     }
     
     const convTimestamp = document.getElementById('convTimestamp');
-    if (convTimestamp) {
-        convTimestamp.textContent = conv.timestamp
-            ? '🕐 ' + new Date(conv.timestamp).toLocaleString()
-            : '';
-    }
+    if (convTimestamp) convTimestamp.textContent = conv.timestamp ? '🕐 ' + new Date(conv.timestamp).toLocaleString() : '';
     
     const convModel = document.getElementById('convModel');
-    if (convModel) {
-        convModel.textContent = conv.model_used
-            ? `🤖 ${conv.model_used}`
-            : '';
-    }
+    if (convModel) convModel.textContent = conv.model_used ? `🤖 ${conv.model_used}` : '';
 
-    // Transcript
     const transcriptEl = document.getElementById('transcript');
     if (transcriptEl) {
         const history = conv.history || [];
@@ -269,6 +244,8 @@ function selectConversation(id) {
                     <span class="transcript-text">${escapeHtml(m.content)}</span>
                 </div>
             `).join('');
+            // FIX: auto-scroll transcript to bottom so latest message is visible
+            transcriptEl.scrollTop = transcriptEl.scrollHeight;
         }
     }
 }
@@ -290,19 +267,26 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// FIX: separate escaper for HTML attribute values (handles quotes)
+function escapeAttr(text) {
+    if (!text) return '';
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
 // ─────────────────────────────────────────────
 // KEYBOARD SHORTCUTS
 // ─────────────────────────────────────────────
 
 function handleKeyboardShortcuts(e) {
-    // Escape - clear selection
     if (e.key === 'Escape' && selectedConvId) {
         e.preventDefault();
         selectedConvId = null;
-        const emptyState = document.getElementById('emptyState');
-        const convDetail = document.getElementById('convDetail');
-        if (emptyState) emptyState.style.display = 'flex';
-        if (convDetail) convDetail.style.display = 'none';
+        showEmptyState();
         renderFeed();
     }
 }
@@ -315,9 +299,7 @@ function updateLiveStatus() {
     const liveCount = document.getElementById('liveCount');
     if (liveCount) {
         const dot = liveCount.querySelector('.status-dot');
-        if (dot) {
-            dot.style.animation = 'pulse 2s infinite';
-        }
+        if (dot) dot.style.animation = 'pulse 2s infinite';
     }
 }
 
@@ -326,35 +308,37 @@ function updateLiveStatus() {
 // ─────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Theme is already initialized by theme.js
-    // Initialize admin immediately (no login required)
     initAdmin();
-    
-    // Add keyboard shortcuts
     document.addEventListener('keydown', handleKeyboardShortcuts);
-    
-    // Add refresh button to sidebar
+
+    // FIX: event delegation on the feed instead of inline onclick per item
+    const feed = document.getElementById('conversationFeed');
+    if (feed) {
+        feed.addEventListener('click', (e) => {
+            const item = e.target.closest('[data-conv-id]');
+            if (item) selectConversation(item.dataset.convId);
+        });
+        // Keyboard accessibility: Enter/Space activates item
+        feed.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                const item = e.target.closest('[data-conv-id]');
+                if (item) { e.preventDefault(); selectConversation(item.dataset.convId); }
+            }
+        });
+    }
+
     const sidebarFooter = document.querySelector('.sidebar-footer');
     if (sidebarFooter && !document.getElementById('refreshBtn')) {
         const refreshBtn = document.createElement('button');
         refreshBtn.id = 'refreshBtn';
         refreshBtn.className = 'refresh-btn';
         refreshBtn.textContent = '⟳ Refresh';
-        refreshBtn.onclick = (e) => {
-            e.preventDefault();
-            fetchConversations();
-        };
-        
+        refreshBtn.onclick = (e) => { e.preventDefault(); fetchConversations(); };
         const logoutBtn = sidebarFooter.querySelector('.logout-btn');
-        if (logoutBtn) {
-            sidebarFooter.insertBefore(refreshBtn, logoutBtn);
-        }
+        if (logoutBtn) sidebarFooter.insertBefore(refreshBtn, logoutBtn);
     }
 });
 
-// ─────────────────────────────────────────────
-// EXPORT FOR DEBUGGING
-// ─────────────────────────────────────────────
 if (typeof window !== 'undefined') {
     window.admin = {
         refresh: fetchConversations,

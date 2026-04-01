@@ -1,6 +1,8 @@
 const API_URL = '/api/chat';
 let conversationHistory = [];
+let conversationId = null; // FIX: persist conversation ID across turns
 let quickBtnsHidden = false;
+let isSending = false; // FIX: prevent double-sends
 
 // ─────────────────────────────────────────────
 // HISTORY
@@ -16,12 +18,13 @@ function addToHistory(role, content) {
 // ─────────────────────────────────────────────
 
 async function sendMessage() {
+    if (isSending) return; // FIX: guard against double-send
+
     const input = document.getElementById('messageInput');
     const message = input.value.trim();
     const sendBtn = document.getElementById('sendBtn');
     if (!message) return;
 
-    // Hide quick buttons after first message
     if (!quickBtnsHidden) {
         document.getElementById('quickBtns').style.display = 'none';
         quickBtnsHidden = true;
@@ -30,6 +33,7 @@ async function sendMessage() {
     addToHistory('user', message);
     input.value = '';
     sendBtn.disabled = true;
+    isSending = true;
 
     addMessage(message, 'user');
     const loadingId = addTypingIndicator();
@@ -40,7 +44,8 @@ async function sendMessage() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 message,
-                history: conversationHistory.slice(0, -1)
+                history: conversationHistory.slice(0, -1),
+                conversationId // FIX: send persistent ID so server updates same record
             })
         });
 
@@ -49,6 +54,10 @@ async function sendMessage() {
         removeTypingIndicator(loadingId);
 
         if (data.success) {
+            // FIX: store conversation ID returned by server on first turn
+            if (!conversationId && data.conversation_id) {
+                conversationId = data.conversation_id;
+            }
             addToHistory('assistant', data.response);
             addMessage(data.response, 'ai');
         } else {
@@ -62,6 +71,7 @@ async function sendMessage() {
         addMessage('Connection issue — please try again.', 'ai');
     } finally {
         sendBtn.disabled = false;
+        isSending = false;
         input.focus();
     }
 }
@@ -119,6 +129,8 @@ function removeTypingIndicator(id) {
 }
 
 function setExample(text) {
+    // FIX: don't call sendMessage if already sending
+    if (isSending) return;
     document.getElementById('messageInput').value = text;
     sendMessage();
 }
@@ -130,10 +142,21 @@ function escapeHtml(text) {
 }
 
 // ─────────────────────────────────────────────
-// INIT — render welcome with correct timestamp
+// INIT
 // ─────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
     addMessage("Hi, I'm Raya — your guide to PLAYBOOK. What are you looking to get out of the network?", 'ai');
-    document.getElementById('messageInput').focus();
+
+    const input = document.getElementById('messageInput');
+    input.focus();
+
+    // FIX: also handle Enter key on the input element here (not just inline onkeypress)
+    // This removes reliance on inline HTML event handlers for Enter key
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
 });

@@ -10,34 +10,35 @@
     <div class="client-wrap">
 
         <div class="client-header">
-            <div class="client-avatar">R</div>
+            <div class="client-avatar" aria-hidden="true">R</div>
             <div class="client-header-text">
                 <div class="client-name">Raya</div>
-                <div class="client-status"><span class="status-dot"></span> Online</div>
+                <div class="client-status"><span class="status-dot" aria-hidden="true"></span> Online</div>
             </div>
             <div class="client-logo">PLAYBOOK</div>
         </div>
 
-        <div class="client-messages" id="messages"></div>
+        <div class="client-messages" id="messages" role="log" aria-live="polite" aria-label="Chat messages"></div>
 
         <div class="client-input-wrap">
-            <div class="quick-btns" id="quickBtns">
+            <div class="quick-btns" id="quickBtns" role="group" aria-label="Quick message suggestions">
                 <button class="quick-btn" onclick="setExample('I want to join PLAYBOOK as a member')">✨ Join</button>
                 <button class="quick-btn" onclick="setExample('Tell me about investing through Women Spark')">💰 Invest</button>
                 <button class="quick-btn" onclick="setExample('What masterclasses do you offer?')">📚 Learn</button>
                 <button class="quick-btn" onclick="setExample('I\'m looking for mentorship')">🌟 Connect</button>
             </div>
             <div class="client-input-row">
+                <!-- FIX: removed inline onkeypress — Enter key handled in app.js via addEventListener -->
                 <input type="text" id="messageInput" placeholder="Message Raya..." autocomplete="off"
-                    onkeypress="if(event.key==='Enter') sendMessage()">
-                <button id="sendBtn" onclick="sendMessage()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    aria-label="Type your message">
+                <button id="sendBtn" onclick="sendMessage()" aria-label="Send message">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </button>
             </div>
-            <div class="client-footer">Powered by PLAYBOOK AI</div>
+            <div class="client-footer">Powered by PLAYBOOK</div>
         </div>
 
     </div>
