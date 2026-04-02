@@ -180,8 +180,10 @@ function requireAdminSession(req, res, next) {
     // Parse cookies manually (no cookie-parser dep needed)
     const cookieHeader = req.headers.cookie || '';
     const cookies = Object.fromEntries(
-        cookieHeader.split(';').map(c => c.trim().split('=').map(decodeURIComponent))
-    );
+        cookieHeader.split(';').map(c => {
+            const i = c.trim().indexOf('=');
+            return [decodeURIComponent(c.trim().slice(0, i)), decodeURIComponent(c.trim().slice(i + 1))];
+        })    );
     const sid = cookies['admin_session'];
     if (!sid || !adminSessions.has(sid)) {
         return res.status(401).json({ error: 'Unauthorised — please log in' });
