@@ -334,9 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault(); fetchConversations(); fetchStats();
     });
 
-    // ── Feed: event delegation — FIX for the refresh-on-click bug ──
-    // The bug: clicking a feed item was bubbling up to a parent with a page reload.
-    // Fix: use stopPropagation and handle both click and keyboard activation here.
+    // ── Feed: event delegation ──
     const feed = document.getElementById('conversationFeed');
     if (feed) {
         feed.addEventListener('click', e => {

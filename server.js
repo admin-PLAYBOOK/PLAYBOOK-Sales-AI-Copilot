@@ -11,6 +11,7 @@ app.use(express.static('public'));
 
 const CLAUDE_API_KEY  = process.env.CLAUDE_API_KEY;
 const HUBSPOT_TOKEN   = process.env.HUBSPOT_ACCESS_TOKEN;
+const HUBSPOT_LIST_ID = process.env.HUBSPOT_LIST_ID;   // static list ID to add contacts to
 const ADMIN_TOKEN     = process.env.ADMIN_TOKEN || 'playbook2024';
 
 // ─────────────────────────────────────────────
@@ -131,13 +132,13 @@ function isValidHistory(history) {
 // ─────────────────────────────────────────────
 const rateLimitMap = new Map();
 
-// Prevent memory leak — purge expired entries every 5 minutes
 setInterval(() => {
     const now = Date.now();
     for (const [ip, entry] of rateLimitMap.entries()) {
         if (now > entry.resetAt) rateLimitMap.delete(ip);
     }
 }, 5 * 60 * 1000);
+
 function checkRateLimit(ip) {
     const now = Date.now();
     const windowMs = 60 * 1000;
@@ -150,26 +151,22 @@ function checkRateLimit(ip) {
 }
 
 // ─────────────────────────────────────────────
-// ADMIN AUTH — session cookie (token never in HTML)
+// ADMIN AUTH — DB-backed sessions
 // ─────────────────────────────────────────────
 
-// ─────────────────────────────────────────────
-// ADMIN AUTH — DB-backed sessions (survives restarts)
-// ─────────────────────────────────────────────
+const adminSessionsFallback = new Set();
 
-// POST /api/admin/login
 app.post('/api/admin/login', express.json(), async (req, res) => {
     const { password } = req.body || {};
     if (!password || password !== ADMIN_TOKEN) {
         return res.status(401).json({ error: 'Incorrect password' });
     }
     const sessionId = uuidv4();
-    const expiresAt = new Date(Date.now() + 8 * 60 * 60 * 1000); // 8 hours
+    const expiresAt = new Date(Date.now() + 8 * 60 * 60 * 1000);
 
     try {
         await db.createSession(sessionId, expiresAt);
     } catch (e) {
-        // Fall back to in-memory if DB unavailable
         console.warn('⚠️ Session DB save failed, using memory:', e.message);
         adminSessionsFallback.add(sessionId);
     }
@@ -183,10 +180,6 @@ app.post('/api/admin/login', express.json(), async (req, res) => {
     res.json({ success: true });
 });
 
-// In-memory fallback (used only if DB is unavailable)
-const adminSessionsFallback = new Set();
-
-// POST /api/admin/logout
 app.post('/api/admin/logout', async (req, res) => {
     const cookieHeader = req.headers.cookie || '';
     const cookies = Object.fromEntries(
@@ -206,9 +199,7 @@ app.post('/api/admin/logout', async (req, res) => {
     res.json({ success: true });
 });
 
-// Middleware
 async function requireAdminSession(req, res, next) {
-    // Parse cookies — split on first = only so base64/UUID values aren't truncated
     const cookieHeader = req.headers.cookie || '';
     const cookies = Object.fromEntries(
         cookieHeader.split(';').map(c => {
@@ -221,12 +212,10 @@ async function requireAdminSession(req, res, next) {
     const sid = cookies['admin_session'];
     if (!sid) return res.status(401).json({ error: 'Unauthorised — please log in' });
 
-    // Check DB first, fall back to in-memory set
     try {
         const valid = await db.validateSession(sid);
         if (valid) return next();
     } catch (_) {
-        // DB unavailable — check fallback
         if (adminSessionsFallback.has(sid)) return next();
     }
 
@@ -234,7 +223,52 @@ async function requireAdminSession(req, res, next) {
 }
 
 // ─────────────────────────────────────────────
-// CHAT ENDPOINT
+// HUBSPOT HELPERS
+// ─────────────────────────────────────────────
+
+/**
+ * Add a contact to a HubSpot static list.
+ * Uses the v1 lists API (the only one that supports static list membership writes).
+ * Silently skips if HUBSPOT_LIST_ID is not configured.
+ */
+async function addContactToList(contactId) {
+    if (!HUBSPOT_LIST_ID || !HUBSPOT_TOKEN) return;
+    try {
+        await axios.post(
+            `https://api.hubapi.com/contacts/v1/lists/${HUBSPOT_LIST_ID}/add`,
+            { vids: [parseInt(contactId, 10)] },
+            { headers: { 'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' } }
+        );
+        console.log(`📋 Added contact ${contactId} to HubSpot list ${HUBSPOT_LIST_ID}`);
+    } catch (err) {
+        // 400 = already in list — not a real error
+        if (err.response?.status !== 400) {
+            console.warn('⚠️ HubSpot list add failed:', err.response?.data?.message || err.message);
+        }
+    }
+}
+
+// ─────────────────────────────────────────────
+// GET /api/chat/:id  — restore a conversation
+// ─────────────────────────────────────────────
+app.get('/api/chat/:id', async (req, res) => {
+    const { id } = req.params;
+    if (!/^[0-9a-f-]{36}$/i.test(id)) {
+        return res.status(400).json({ error: 'Invalid conversation ID' });
+    }
+    try {
+        const conv = await db.getConversation(id);
+        if (!conv) return res.status(404).json({ error: 'Conversation not found' });
+        // Only return the transcript — never leak lead/sales/hubspot data to the client
+        res.json({ history: conv.history || [] });
+    } catch (err) {
+        console.error('Error fetching conversation:', err.message);
+        res.status(500).json({ error: 'Failed to fetch conversation' });
+    }
+});
+
+// ─────────────────────────────────────────────
+// POST /api/chat  — main chat endpoint
 // ─────────────────────────────────────────────
 app.post('/api/chat', async (req, res) => {
     const ip = req.ip || req.connection.remoteAddress;
@@ -300,16 +334,21 @@ app.post('/api/chat', async (req, res) => {
         if (leadData.email && HUBSPOT_TOKEN) {
             try {
                 let contactId = null, existingContact = false;
+
+                // Search for existing contact by email
                 try {
-                    const searchRes = await axios.post('https://api.hubapi.com/crm/v3/objects/contacts/search', {
-                        filterGroups: [{ filters: [{ propertyName: 'email', operator: 'EQ', value: leadData.email }] }]
-                    }, { headers: { 'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' } });
+                    const searchRes = await axios.post(
+                        'https://api.hubapi.com/crm/v3/objects/contacts/search',
+                        { filterGroups: [{ filters: [{ propertyName: 'email', operator: 'EQ', value: leadData.email }] }] },
+                        { headers: { 'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' } }
+                    );
                     if (searchRes.data.results?.length > 0) {
-                        contactId = searchRes.data.results[0].id;
+                        contactId       = searchRes.data.results[0].id;
                         existingContact = true;
                     }
                 } catch (_) {}
 
+                // Create contact if not found
                 if (!contactId) {
                     const props = { email: leadData.email };
                     if (leadData.name) {
@@ -317,24 +356,38 @@ app.post('/api/chat', async (req, res) => {
                         props.lastname  = leadData.name.split(' ').slice(1).join(' ') || '';
                     }
                     props.lifecyclestage = leadData.intent_level === 'High' ? 'lead' : 'subscriber';
-                    const contactRes = await axios.post('https://api.hubapi.com/crm/v3/objects/contacts',
+                    const contactRes = await axios.post(
+                        'https://api.hubapi.com/crm/v3/objects/contacts',
                         { properties: props },
                         { headers: { 'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' } }
                     );
                     contactId = contactRes.data.id;
                 }
 
+                // Add to static list (if configured)
+                await addContactToList(contactId);
+
+                // Add conversation note
                 const vibeEmoji = { serious:'🎯',excited:'🔥',curious:'🤔',skeptical:'🧐',funny:'😄',annoyed:'😤',trolling:'🧌',distracted:'💭',overwhelmed:'😰',cold:'🧊' }[leadData.conversation_vibe] || '💬';
                 const fullHistory = [...history, { role: 'user', content: message }, { role: 'assistant', content: botReply }];
                 const transcript  = fullHistory.map(m => `${m.role === 'user' ? 'User' : 'Layla'}: ${m.content}`).join('\n');
                 const noteContent = `🤖 PLAYBOOK AI Copilot — Layla (${model})\n\n${'━'.repeat(35)}\n💬 TRANSCRIPT\n${'━'.repeat(35)}\n${transcript}\n\n${'━'.repeat(35)}\n📋 LEAD INTELLIGENCE\n${'━'.repeat(35)}\nType: ${leadData.lead_type}\nIntent: ${leadData.intent_level}\nIntent signals: ${leadData.intent_signals || 'N/A'}\nInterest: ${leadData.main_interest || 'N/A'}\n\n${vibeEmoji} VIBE: ${leadData.conversation_vibe?.toUpperCase()}\n${leadData.vibe_note || ''}\n\n${'━'.repeat(35)}\n🎯 SALES RECOMMENDATIONS\n${'━'.repeat(35)}\nNext Action: ${salesOutput.recommended_next_action}\nPriority: ${salesOutput.priority}\n\n${'━'.repeat(35)}\n✉️ FOLLOW-UP\n${'━'.repeat(35)}\n${salesOutput.follow_up_message}\n\nTimestamp: ${new Date().toLocaleString()}`;
 
-                await axios.post('https://api.hubapi.com/crm/v3/objects/notes', {
-                    properties: { hs_timestamp: new Date().toISOString(), hs_note_body: noteContent },
-                    associations: [{ to: { id: contactId }, types: [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: 202 }] }]
-                }, { headers: { 'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' } });
+                await axios.post(
+                    'https://api.hubapi.com/crm/v3/objects/notes',
+                    {
+                        properties: { hs_timestamp: new Date().toISOString(), hs_note_body: noteContent },
+                        associations: [{ to: { id: contactId }, types: [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: 202 }] }]
+                    },
+                    { headers: { 'Authorization': `Bearer ${HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' } }
+                );
 
-                hubspotResult = { success: true, contactId, existing: existingContact, message: existingContact ? '✅ Note added to existing contact' : '✅ New contact created' };
+                hubspotResult = {
+                    success: true, contactId,
+                    existing: existingContact,
+                    listAdded: !!HUBSPOT_LIST_ID,
+                    message: existingContact ? '✅ Note added to existing contact' : '✅ New contact created'
+                };
             } catch (hsErr) {
                 hubspotResult = { success: false, message: hsErr.response?.data?.message || hsErr.message };
             }
@@ -367,17 +420,17 @@ app.post('/api/chat', async (req, res) => {
 });
 
 // ─────────────────────────────────────────────
-// ADMIN API ROUTES (all protected by session)
+// ADMIN API ROUTES
 // ─────────────────────────────────────────────
 app.get('/api/admin/conversations', requireAdminSession, async (req, res) => {
     try {
-        const limit      = Math.min(parseInt(req.query.limit)  || 200, 500);
-        const offset     = Math.max(parseInt(req.query.offset) || 0,   0);
+        const limit        = Math.min(parseInt(req.query.limit)  || 200, 500);
+        const offset       = Math.max(parseInt(req.query.offset) || 0,   0);
         const validIntents = ['High', 'Medium', 'Low'];
-        const safeIntent = validIntents.includes(req.query.intent_level) ? req.query.intent_level : undefined;
+        const safeIntent   = validIntents.includes(req.query.intent_level) ? req.query.intent_level : undefined;
         const conversations = await db.getConversations(limit, offset, {
             intent_level: safeIntent,
-            has_email: req.query.has_email === 'true',
+            has_email:    req.query.has_email === 'true',
         });
         res.json({ conversations, total: conversations.length });
     } catch (err) {
@@ -412,10 +465,12 @@ app.get('/api/admin/conversations/:id', requireAdminSession, async (req, res) =>
 app.get('/test', (req, res) => res.json({
     status: 'OK', message: 'Layla is online',
     time: new Date().toISOString(),
-    database: process.env.DATABASE_URL ? 'configured' : 'not configured'
+    database:   process.env.DATABASE_URL  ? 'configured' : 'not configured',
+    hubspot:    HUBSPOT_TOKEN             ? 'configured' : 'not configured',
+    hubspotList: HUBSPOT_LIST_ID          ? HUBSPOT_LIST_ID : 'not configured',
 }));
 
-// Serve admin page — just the static HTML, no token injection needed anymore
+// Serve admin page
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
@@ -432,9 +487,9 @@ async function startServer() {
         try {
             const ok = await db.testConnection();
             if (ok) {
-            await db.initSchema();
-            await db.cleanExpiredSessions(); // purge stale sessions on boot
-        }
+                await db.initSchema();
+                await db.cleanExpiredSessions();
+            }
         } catch (err) {
             console.error('❌ Database startup error:', err.message);
         }
@@ -442,8 +497,9 @@ async function startServer() {
         console.log('ℹ️  DATABASE_URL not set — no persistence');
     }
 
-    if (!CLAUDE_API_KEY) console.warn('⚠️  CLAUDE_API_KEY not set');
-    if (!HUBSPOT_TOKEN)  console.warn('⚠️  HUBSPOT_ACCESS_TOKEN not set');
+    if (!CLAUDE_API_KEY)   console.warn('⚠️  CLAUDE_API_KEY not set');
+    if (!HUBSPOT_TOKEN)    console.warn('⚠️  HUBSPOT_ACCESS_TOKEN not set');
+    if (!HUBSPOT_LIST_ID)  console.warn('ℹ️  HUBSPOT_LIST_ID not set — contacts won\'t be added to a list');
 
     app.listen(PORT, () => {
         console.log('\n' + '='.repeat(50));
