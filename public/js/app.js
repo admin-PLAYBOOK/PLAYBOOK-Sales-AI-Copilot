@@ -89,7 +89,7 @@ function addMessage(text, sender) {
 
     if (sender === 'ai') {
         div.innerHTML = `
-            <div class="msg-avatar">R</div>
+            <div class="msg-avatar">L</div>
             <div class="msg-body">
                 <div class="msg-bubble">${escapeHtml(text)}</div>
                 <div class="msg-time">${time}</div>
@@ -113,7 +113,7 @@ function addTypingIndicator() {
     div.className = 'msg msg-ai';
     div.id = id;
     div.innerHTML = `
-        <div class="msg-avatar">R</div>
+        <div class="msg-avatar">L</div>
         <div class="msg-body">
             <div class="msg-bubble typing-indicator">
                 <span></span><span></span><span></span>

@@ -3,7 +3,6 @@ const express = require('express');
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const db = require('./db');
-const fs = require('fs');
 const path = require('path');
 
 const app = express();
@@ -131,6 +130,14 @@ function isValidHistory(history) {
 // RATE LIMITING
 // ─────────────────────────────────────────────
 const rateLimitMap = new Map();
+
+// Prevent memory leak — purge expired entries every 5 minutes
+setInterval(() => {
+    const now = Date.now();
+    for (const [ip, entry] of rateLimitMap.entries()) {
+        if (now > entry.resetAt) rateLimitMap.delete(ip);
+    }
+}, 5 * 60 * 1000);
 function checkRateLimit(ip) {
     const now = Date.now();
     const windowMs = 60 * 1000;
@@ -146,49 +153,84 @@ function checkRateLimit(ip) {
 // ADMIN AUTH — session cookie (token never in HTML)
 // ─────────────────────────────────────────────
 
-// Simple signed-session store (in-memory; survives deploys fine for single-instance)
-const adminSessions = new Set();
+// ─────────────────────────────────────────────
+// ADMIN AUTH — DB-backed sessions (survives restarts)
+// ─────────────────────────────────────────────
 
-// POST /api/admin/login — validates password, sets httpOnly cookie
-app.post('/api/admin/login', express.json(), (req, res) => {
+// POST /api/admin/login
+app.post('/api/admin/login', express.json(), async (req, res) => {
     const { password } = req.body || {};
     if (!password || password !== ADMIN_TOKEN) {
         return res.status(401).json({ error: 'Incorrect password' });
     }
     const sessionId = uuidv4();
-    adminSessions.add(sessionId);
-    // httpOnly + SameSite so the cookie can't be read by JS or sent cross-site
+    const expiresAt = new Date(Date.now() + 8 * 60 * 60 * 1000); // 8 hours
+
+    try {
+        await db.createSession(sessionId, expiresAt);
+    } catch (e) {
+        // Fall back to in-memory if DB unavailable
+        console.warn('⚠️ Session DB save failed, using memory:', e.message);
+        adminSessionsFallback.add(sessionId);
+    }
+
     res.cookie('admin_session', sessionId, {
         httpOnly: true,
         sameSite: 'strict',
-        maxAge: 8 * 60 * 60 * 1000, // 8 hours
+        maxAge: 8 * 60 * 60 * 1000,
         path: '/',
     });
     res.json({ success: true });
 });
 
-// POST /api/admin/logout
-app.post('/api/admin/logout', (req, res) => {
-    const sid = req.cookies?.admin_session;
-    if (sid) adminSessions.delete(sid);
-    res.clearCookie('admin_session');
-    res.json({ success: true });
-});
+// In-memory fallback (used only if DB is unavailable)
+const adminSessionsFallback = new Set();
 
-// Middleware — protects all /api/admin/* routes except login
-function requireAdminSession(req, res, next) {
-    // Parse cookies manually (no cookie-parser dep needed)
+// POST /api/admin/logout
+app.post('/api/admin/logout', async (req, res) => {
     const cookieHeader = req.headers.cookie || '';
     const cookies = Object.fromEntries(
         cookieHeader.split(';').map(c => {
             const i = c.trim().indexOf('=');
-            return [decodeURIComponent(c.trim().slice(0, i)), decodeURIComponent(c.trim().slice(i + 1))];
-        })    );
+            return i < 0
+                ? [decodeURIComponent(c.trim()), '']
+                : [decodeURIComponent(c.trim().slice(0, i)), decodeURIComponent(c.trim().slice(i + 1))];
+        })
+    );
     const sid = cookies['admin_session'];
-    if (!sid || !adminSessions.has(sid)) {
-        return res.status(401).json({ error: 'Unauthorised — please log in' });
+    if (sid) {
+        try { await db.deleteSession(sid); } catch (_) {}
+        adminSessionsFallback.delete(sid);
     }
-    next();
+    res.clearCookie('admin_session');
+    res.json({ success: true });
+});
+
+// Middleware
+async function requireAdminSession(req, res, next) {
+    // Parse cookies — split on first = only so base64/UUID values aren't truncated
+    const cookieHeader = req.headers.cookie || '';
+    const cookies = Object.fromEntries(
+        cookieHeader.split(';').map(c => {
+            const i = c.trim().indexOf('=');
+            return i < 0
+                ? [decodeURIComponent(c.trim()), '']
+                : [decodeURIComponent(c.trim().slice(0, i)), decodeURIComponent(c.trim().slice(i + 1))];
+        })
+    );
+    const sid = cookies['admin_session'];
+    if (!sid) return res.status(401).json({ error: 'Unauthorised — please log in' });
+
+    // Check DB first, fall back to in-memory set
+    try {
+        const valid = await db.validateSession(sid);
+        if (valid) return next();
+    } catch (_) {
+        // DB unavailable — check fallback
+        if (adminSessionsFallback.has(sid)) return next();
+    }
+
+    return res.status(401).json({ error: 'Unauthorised — please log in' });
 }
 
 // ─────────────────────────────────────────────
@@ -389,7 +431,10 @@ async function startServer() {
     if (process.env.DATABASE_URL) {
         try {
             const ok = await db.testConnection();
-            if (ok) await db.initSchema(); // ← creates table + indexes if missing
+            if (ok) {
+            await db.initSchema();
+            await db.cleanExpiredSessions(); // purge stale sessions on boot
+        }
         } catch (err) {
             console.error('❌ Database startup error:', err.message);
         }

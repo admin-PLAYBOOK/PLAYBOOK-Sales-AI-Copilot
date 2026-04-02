@@ -1,4 +1,4 @@
-# PLAYBOOK AI Sales Copilot — Raya
+# PLAYBOOK AI Sales Copilot — Layla
 
 An intelligent AI-powered sales assistant that engages with potential members, captures lead data, analyzes conversation sentiment, and syncs with HubSpot CRM.
 
@@ -83,4 +83,3 @@ PORT=3000
 Access the Application;
 - Chat Interface: http://localhost:3000
 - Admin Dashboard: http://localhost:3000/admin
-

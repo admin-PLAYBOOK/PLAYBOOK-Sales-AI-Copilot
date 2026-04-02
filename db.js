@@ -35,6 +35,16 @@ async function initSchema() {
             CREATE INDEX IF NOT EXISTS idx_conversations_email
                 ON conversations ((lead_data->>'email'))
                 WHERE lead_data->>'email' IS NOT NULL;
+
+            -- Admin sessions table (survives server restarts)
+            CREATE TABLE IF NOT EXISTS admin_sessions (
+                id         TEXT PRIMARY KEY,
+                expires_at TIMESTAMPTZ NOT NULL,
+                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_sessions_expires
+                ON admin_sessions (expires_at);
         `);
         console.log('✅ Database schema ready');
     } catch (err) {
@@ -162,6 +172,60 @@ function parseRow(row) {
     };
 }
 
+// ─────────────────────────────────────────────
+// ADMIN SESSIONS
+// ─────────────────────────────────────────────
+
+async function createSession(id, expiresAt) {
+    const client = await pool.connect();
+    try {
+        await client.query(
+            `INSERT INTO admin_sessions (id, expires_at) VALUES ($1, $2)
+             ON CONFLICT (id) DO UPDATE SET expires_at = EXCLUDED.expires_at`,
+            [id, expiresAt]
+        );
+    } finally {
+        client.release();
+    }
+}
+
+async function validateSession(id) {
+    const client = await pool.connect();
+    try {
+        const result = await client.query(
+            `SELECT id FROM admin_sessions WHERE id = $1 AND expires_at > NOW()`,
+            [id]
+        );
+        return result.rows.length > 0;
+    } finally {
+        client.release();
+    }
+}
+
+async function deleteSession(id) {
+    const client = await pool.connect();
+    try {
+        await client.query(`DELETE FROM admin_sessions WHERE id = $1`, [id]);
+    } finally {
+        client.release();
+    }
+}
+
+// Purge expired sessions — call periodically or on startup
+async function cleanExpiredSessions() {
+    const client = await pool.connect();
+    try {
+        const result = await client.query(
+            `DELETE FROM admin_sessions WHERE expires_at < NOW()`
+        );
+        if (result.rowCount > 0) {
+            console.log(`🧹 Purged ${result.rowCount} expired session(s)`);
+        }
+    } finally {
+        client.release();
+    }
+}
+
 module.exports = {
     initSchema,
     testConnection,
@@ -169,4 +233,8 @@ module.exports = {
     getConversations,
     getConversation,
     getStats,
+    createSession,
+    validateSession,
+    deleteSession,
+    cleanExpiredSessions,
 };
