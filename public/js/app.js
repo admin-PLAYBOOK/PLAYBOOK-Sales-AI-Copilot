@@ -135,8 +135,10 @@ class ChatInstance {
                 } else if (this.conversationId) {
                     this.saveSession(); // refresh savedAt timestamp
                 }
+                // Change, added formattedResponse to allow formatting 
+                const formattedResponse = marked.parse(data.response);
                 this.addToHistory('assistant', data.response);
-                this.renderMessage(data.response, 'ai');
+                this.renderMessage(formattedResponse, 'ai');
             } else {
                 this.conversationHistory.pop();
                 this.renderMessage('Something went wrong — please try again.', 'ai');
@@ -178,12 +180,13 @@ class ChatInstance {
         const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
         if (sender === 'ai') {
-            div.innerHTML = `
-                <div class="msg-avatar">L</div>
-                <div class="msg-body">
-                    <div class="msg-bubble">${escapeHtml(text)}</div>
-                    <div class="msg-time">${time}</div>
-                </div>`;
+    // CHANGE: We REMOVE escapeHtml(text) here so the <strong> tags can work
+    div.innerHTML = `
+        <div class="msg-avatar">L</div>
+        <div class="msg-body">
+            <div class="msg-bubble">${text}</div>
+            <div class="msg-time">${time}</div>
+        </div>`;
         } else {
             div.innerHTML = `
                 <div class="msg-body">
@@ -386,11 +389,25 @@ const ChatManager = {
 // HELPERS
 // ─────────────────────────────────────────────
 
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+//CHANGE: Removed this
+//function escapeHtml(text) {
+//    const div = document.createElement('div');
+//    div.innerHTML = text;
+//    return div.innerHTML;
+//}
+
+// CHANGE: added this
+function renderMessage(content, type) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${type}`;
+
+    // USE THIS: This allows the <strong> tags to work
+    messageDiv.innerHTML = content; 
+
+    this.chatContainer.appendChild(messageDiv);
 }
+
+
 
 // ─────────────────────────────────────────────
 // BOOT
