@@ -11,8 +11,8 @@ app.use(express.static('public'));
 
 const CLAUDE_API_KEY  = process.env.CLAUDE_API_KEY;
 const HUBSPOT_TOKEN   = process.env.HUBSPOT_ACCESS_TOKEN;
-const HUBSPOT_LIST_ID = process.env.HUBSPOT_LIST_ID;   // static list ID to add contacts to
-const ADMIN_TOKEN     = process.env.ADMIN_TOKEN || 'playbook2024';
+const HUBSPOT_LIST_ID = process.env.HUBSPOT_LIST_ID;
+const ADMIN_TOKEN     = process.env.ADMIN_TOKEN;
 
 // ─────────────────────────────────────────────
 // SYSTEM PROMPT
@@ -24,6 +24,7 @@ About PLAYBOOK:
 - 170+ expert coaches and mentors  
 - 15,819+ learning minutes of content
 - Founded by Wafa AlObaidat and co-founders
+- Co-founder names: Shreya Rammohan, Ismahan Al Saad, Nada Darwish
 - Built for women, led by women
 
 What PLAYBOOK offers:
