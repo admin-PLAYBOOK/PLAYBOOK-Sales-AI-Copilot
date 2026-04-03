@@ -71,6 +71,8 @@ class ChatInstance {
             messagesEl.innerHTML = '';
 
             this.el('quickBtns').style.display = 'none';
+            const hint = this.el('quickBtns').previousElementSibling;
+            if (hint?.classList.contains('quick-btns-hint')) hint.style.display = 'none';
             this.quickBtnsHidden = true;
 
             data.history.forEach(m => {
@@ -99,6 +101,8 @@ class ChatInstance {
 
         if (!this.quickBtnsHidden) {
             this.el('quickBtns').style.display = 'none';
+            const hint = this.el('quickBtns').previousElementSibling;
+            if (hint?.classList.contains('quick-btns-hint')) hint.style.display = 'none';
             this.quickBtnsHidden = true;
         }
 
@@ -161,6 +165,8 @@ class ChatInstance {
         const messagesEl = this.el('messages');
         messagesEl.innerHTML = '';
         this.el('quickBtns').style.display = 'flex';
+        const hint = this.el('quickBtns').previousElementSibling;
+        if (hint?.classList.contains('quick-btns-hint')) hint.style.display = 'block';
         this.renderMessage(
             "Hi, I'm Layla — your guide to PLAYBOOK. What are you looking to get out of the network?",
             'ai', false
@@ -238,6 +244,12 @@ class ChatInstance {
                             <span class="status-dot" aria-hidden="true"></span> Online
                         </div>
                     </div>
+                    <button class="clear-chat-btn" id="${cid}-clearBtn" aria-label="Clear chat">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Clear
+                    </button>
                     <div class="client-logo">PLAYBOOK</div>
                 </div>
 
@@ -245,6 +257,7 @@ class ChatInstance {
                      role="log" aria-live="polite" aria-label="Chat messages"></div>
 
                 <div class="client-input-wrap">
+                    <div class="quick-btns-hint">Not sure where to start? Try one of these:</div>
                     <div class="quick-btns" id="${cid}-quickBtns"
                          role="group" aria-label="Quick message suggestions">
                         <button class="quick-btn" data-text="I want to join PLAYBOOK as a member">✨ Join</button>
@@ -284,6 +297,8 @@ class ChatInstance {
             const btn = e.target.closest('[data-text]');
             if (btn) this.setExample(btn.dataset.text);
         });
+
+        this.el('clearBtn').addEventListener('click', () => this.newChat());
     }
 }
 

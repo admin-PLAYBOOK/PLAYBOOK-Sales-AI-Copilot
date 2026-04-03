@@ -336,6 +336,13 @@ body.client-page {
 }
 
 /* Quick buttons */
+.quick-btns-hint {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
+}
+
 .quick-btns {
     display: flex;
     gap: 6px;
@@ -757,4 +764,189 @@ body.client-page {
 .msg-bubble,
 .quick-btn {
     will-change: auto;
+}
+
+/* ═══════════════════════════════════════════
+   TAB BAR
+   Tabs sit on top of the page gradient
+   (dark purple in both light + dark themes),
+   so we always need visible contrast there.
+═══════════════════════════════════════════ */
+
+.chat-shell {
+    display: flex;
+    flex-direction: column;
+    width: 420px;
+    max-width: 96vw;
+}
+
+.tab-bar {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    padding: 0 4px;
+}
+
+/* Inactive tabs — solid enough to read against the dark gradient */
+.tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px 10px;
+    border-radius: 12px 12px 0 0;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-bottom: none;
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.65);
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+    max-width: 140px;
+}
+
+.tab-btn:hover:not(.tab-active) {
+    background: rgba(255,255,255,0.22);
+    color: rgba(255,255,255,0.95);
+    border-color: rgba(255,255,255,0.35);
+}
+
+/* Active tab matches the chat window background */
+.tab-btn.tab-active {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: rgba(255,255,255,0.2);
+    position: relative;
+    z-index: 1;
+}
+
+.tab-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90px;
+}
+
+.tab-close {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    line-height: 1;
+    cursor: pointer;
+    color: inherit;
+    transition: background 0.15s, color 0.15s;
+}
+
+.tab-close:hover {
+    background: rgba(239,68,68,0.6);
+    color: #fff;
+}
+
+/* "+" new tab button */
+.add-tab-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.75);
+    font-size: 1.1rem;
+    font-weight: 300;
+    cursor: pointer;
+    align-self: center;
+    margin-bottom: 2px;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.add-tab-btn:hover:not(:disabled) {
+    background: var(--vibrant);
+    border-color: transparent;
+    color: #fff;
+}
+
+.add-tab-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Panel wrapper + panels */
+#panelWrap {
+    position: relative;
+}
+
+.tab-panel {
+    display: none;
+}
+
+.tab-panel .client-wrap {
+    width: 100%;
+    max-width: 100%;
+    height: 640px;
+    max-height: calc(100vh - 120px);
+    border-radius: 0 16px 16px 16px;
+}
+
+/* ═══════════════════════════════════════════
+   CLEAR CHAT BUTTON (inside chat header)
+═══════════════════════════════════════════ */
+
+.clear-chat-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.28);
+    color: rgba(255,255,255,0.88);
+    font-size: 0.72rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+
+.clear-chat-btn:hover {
+    background: rgba(255,255,255,0.28);
+    color: #fff;
+}
+
+.clear-chat-btn:active {
+    background: rgba(255,255,255,0.1);
+}
+
+/* ── Tab / shell responsive ── */
+@media (max-width: 480px) {
+    .chat-shell {
+        width: 100vw;
+        max-width: 100vw;
+        padding-top: 8px;
+        background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    }
+
+    .tab-bar {
+        padding: 0 8px;
+    }
+
+    .tab-btn {
+        padding: 7px 10px 9px;
+        font-size: 0.72rem;
+    }
+
+    .tab-panel .client-wrap {
+        height: calc(100vh - 56px);
+        max-height: none;
+        border-radius: 0 12px 0 0;
+    }
 }

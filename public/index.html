@@ -6,7 +6,6 @@
     <title>PLAYBOOK — Chat with Layla</title>
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        /* ── Page shell ── */
         body.client-page {
             align-items: center;
             justify-content: center;
@@ -14,164 +13,10 @@
             min-height: 100vh;
         }
 
-        /* ── Outer container: tab bar on top, chat panel below ── */
-        .chat-shell {
-            display: flex;
-            flex-direction: column;
-            width: 420px;
-            max-width: 96vw;
-        }
-
-        /* ── Tab bar ── */
-        .tab-bar {
-            display: flex;
-            align-items: flex-end;
-            gap: 4px;
-            padding: 0 4px;
-            /* tabs sit flush above the rounded chat window */
-        }
-
-        .tab-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 14px 10px;        /* extra bottom so it overlaps border */
-            border-radius: 12px 12px 0 0;
-            border: 1px solid rgba(255,255,255,0.12);
-            border-bottom: none;
-            background: rgba(255,255,255,0.06);
-            color: rgba(255,255,255,0.55);
-            font-size: 0.78rem;
-            font-weight: 600;
-            font-family: inherit;
-            cursor: pointer;
-            transition: background 0.15s, color 0.15s;
-            white-space: nowrap;
-            max-width: 140px;
-        }
-
-        .tab-btn:hover:not(.tab-active) {
-            background: rgba(255,255,255,0.12);
-            color: rgba(255,255,255,0.8);
-        }
-
-        .tab-btn.tab-active {
-            background: var(--bg-secondary);  /* matches chat window bg */
-            color: #fff;
-            border-color: rgba(255,255,255,0.15);
-            position: relative;
-            z-index: 1;
-        }
-
-        .tab-label {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 90px;
-        }
-
-        .tab-close {
-            flex-shrink: 0;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.65rem;
-            line-height: 1;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-
-        .tab-close:hover {
-            background: rgba(239, 68, 68, 0.5);
-        }
-
-        /* "+" add tab button — lives in the tab bar row */
-        .add-tab-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.08);
-            color: rgba(255,255,255,0.7);
-            font-size: 1rem;
-            font-weight: 300;
-            cursor: pointer;
-            margin-bottom: 2px;          /* align with tab bottoms */
-            align-self: center;
-            transition: background 0.15s, color 0.15s;
-            flex-shrink: 0;
-        }
-
-        .add-tab-btn:hover:not(:disabled) {
-            background: var(--vibrant);
-            border-color: transparent;
-            color: #fff;
-        }
-
-        .add-tab-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        /* ── Panel wrapper — renders the active chat window ── */
-        #panelWrap {
-            position: relative;
-            /* The active panel's .client-wrap fills this */
-        }
-
-        /* Each panel wraps a .client-wrap */
-        .tab-panel {
-            display: none; /* shown via JS */
-        }
-
-        /* Override .client-wrap to remove its own rounded top corners
-           so it connects cleanly to the tab bar */
-        .tab-panel .client-wrap {
-            width: 100%;
-            max-width: 100%;
-            height: 640px;
-            max-height: calc(100vh - 120px);
-            border-radius: 0 16px 16px 16px; /* flat top-left, rounded elsewhere */
-        }
-
-        /* When only one tab exists (first tab active), round all corners */
-        .tab-btn:first-child.tab-active:last-of-type ~ * .client-wrap,
-        .single-tab .client-wrap {
-            border-radius: 16px;
-        }
-
-        /* ── Responsive ── */
         @media (max-width: 480px) {
             body.client-page {
                 padding: 0;
                 align-items: flex-start;
-            }
-
-            .chat-shell {
-                width: 100vw;
-                max-width: 100vw;
-                padding-top: 8px;
-                background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
-            }
-
-            .tab-bar {
-                padding: 0 8px;
-            }
-
-            .tab-btn {
-                padding: 7px 10px 9px;
-                font-size: 0.72rem;
-            }
-
-            .tab-panel .client-wrap {
-                height: calc(100vh - 56px);
-                max-height: none;
-                border-radius: 0 12px 0 0;
             }
         }
     </style>
@@ -179,10 +24,13 @@
 <body class="client-page">
 
     <div class="chat-shell">
+        <!-- Tab bar: tab buttons + add button are injected here by JS -->
         <div class="tab-bar" id="tabBar" role="tablist" aria-label="Chat sessions">
+            <!-- tab buttons injected by ChatManager -->
             <button class="add-tab-btn" id="addChatBtn" aria-label="Open a new chat tab" title="New chat tab">+</button>
         </div>
 
+        <!-- Active chat panel is shown here -->
         <div id="panelWrap"></div>
     </div>
 

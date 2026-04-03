@@ -141,6 +141,16 @@ async function getConversation(id) {
     }
 }
 
+async function deleteConversation(id) {
+    const client = await pool.connect();
+    try {
+        await client.query('DELETE FROM conversations WHERE id = $1', [id]);
+        console.log(`🗑️  Deleted conversation ${id}`);
+    } finally {
+        client.release();
+    }
+}
+
 async function getStats() {
     const client = await pool.connect();
     try {
@@ -232,6 +242,7 @@ module.exports = {
     saveConversation,
     getConversations,
     getConversation,
+    deleteConversation,
     getStats,
     createSession,
     validateSession,

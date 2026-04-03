@@ -291,6 +291,55 @@ function showEmptyState() {
     document.getElementById('convDetail').style.display = 'none';
 }
 
+async function deleteConversation(id) {
+    showDeleteModal(id);
+}
+
+function showDeleteModal(id) {
+    const modal = document.getElementById('deleteModal');
+    modal.style.display = 'flex';
+    document.getElementById('modalConfirm').focus();
+
+    // Store id for confirm handler
+    modal.dataset.pendingId = id;
+}
+
+function hideDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    modal.style.display = 'none';
+    delete modal.dataset.pendingId;
+}
+
+async function confirmDelete() {
+    const id = document.getElementById('deleteModal').dataset.pendingId;
+    hideDeleteModal();
+    if (!id) return;
+
+    try {
+        const res = await fetch(`/api/admin/conversations/${id}`, {
+            method: 'DELETE',
+            credentials: 'same-origin',
+        });
+
+        if (res.status === 401) { logout(); return; }
+        if (!res.ok) { alert('Failed to delete — please try again.'); return; }
+
+        conversations = conversations.filter(c => c.id !== id);
+        selectedConvId = null;
+        renderFeed();
+        showEmptyState();
+
+        const countText = document.getElementById('countText');
+        if (countText) countText.textContent =
+            `${conversations.length} conversation${conversations.length !== 1 ? 's' : ''}`;
+
+        fetchStats();
+    } catch (err) {
+        console.error('Delete error:', err);
+        alert('Connection error — please try again.');
+    }
+}
+
 // ─────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────
@@ -319,6 +368,24 @@ function escapeAttr(text) {
 // ─────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    // ── Delete conversation button ──
+    document.getElementById('deleteConvBtn').addEventListener('click', () => {
+        if (selectedConvId) deleteConversation(selectedConvId);
+    });
+
+    // ── Delete modal ──
+    document.getElementById('modalCancel').addEventListener('click', hideDeleteModal);
+    document.getElementById('modalConfirm').addEventListener('click', confirmDelete);
+    document.getElementById('deleteModal').addEventListener('click', e => {
+        // Click outside card closes modal
+        if (e.target === e.currentTarget) hideDeleteModal();
+    });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && document.getElementById('deleteModal').style.display !== 'none') {
+            hideDeleteModal();
+        }
+    });
 
     // ── Login button (no form, no default submit) ──
     document.getElementById('loginBtn').addEventListener('click', attemptLogin);
