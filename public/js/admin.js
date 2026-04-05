@@ -1,445 +1,483 @@
-const POLL_INTERVAL = 8000;
-
-let selectedConvId = null;
-let conversations  = [];
-let pollTimer      = null;
-let isLoggedIn     = false;
+const API_URL = '/api/chat';
 
 // ─────────────────────────────────────────────
-// LOGIN — posts password to server, gets httpOnly cookie back
-// Token never touches the browser JS environment
+// CHAT INSTANCE CLASS
+// Each tab gets its own independent instance
 // ─────────────────────────────────────────────
 
-async function attemptLogin() {
-    const password = document.getElementById('passwordInput').value;
-    const loginBtn = document.getElementById('loginBtn');
-    const errEl    = document.getElementById('loginError');
+class ChatInstance {
+    constructor(containerId, instanceIndex) {
+        this.containerId         = containerId;
+        this.instanceIndex       = instanceIndex;
+        this.conversationId      = null;
+        this.conversationHistory = [];
+        this.quickBtnsHidden     = false;
+        this.isSending           = false;
+    }
 
-    loginBtn.disabled    = true;
-    loginBtn.textContent = 'Signing in…';
-    errEl.style.display  = 'none';
+    // ── History ──
 
-    try {
-        const res = await fetch('/api/admin/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password }),
-            credentials: 'same-origin', // include cookies
-        });
+    addToHistory(role, content) {
+        this.conversationHistory.push({ role, content });
+        if (this.conversationHistory.length > 20)
+            this.conversationHistory = this.conversationHistory.slice(-20);
+    }
 
-        if (res.ok) {
-            showDashboard();
-        } else {
-            errEl.style.display  = 'block';
-            loginBtn.disabled    = false;
-            loginBtn.textContent = 'Sign in →';
-            document.getElementById('passwordInput').value = '';
-            document.getElementById('passwordInput').focus();
+    // ── Persist to localStorage ──
+
+    saveSession() {
+        if (!this.conversationId) return;
+        const key = `playbook_chat_${this.instanceIndex}`;
+        localStorage.setItem(key, JSON.stringify({
+            conversationId: this.conversationId,
+            savedAt: Date.now()
+        }));
+    }
+
+    loadSession() {
+        const key = `playbook_chat_${this.instanceIndex}`;
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        try {
+            const data = JSON.parse(raw);
+            if (Date.now() - data.savedAt > 24 * 60 * 60 * 1000) {
+                localStorage.removeItem(key);
+                return null;
+            }
+            return data.conversationId;
+        } catch (_) { return null; }
+    }
+
+    clearSession() {
+        localStorage.removeItem(`playbook_chat_${this.instanceIndex}`);
+        this.conversationId      = null;
+        this.conversationHistory = [];
+        this.quickBtnsHidden     = false;
+    }
+
+    // ── Restore from DB ──
+
+    async restoreFromDB(conversationId) {
+        try {
+            const res = await fetch(`/api/chat/${conversationId}`);
+            if (!res.ok) return false;
+            const data = await res.json();
+            if (!data.history || data.history.length === 0) return false;
+
+            this.conversationId      = conversationId;
+            this.conversationHistory = data.history;
+
+            const messagesEl = this.el('messages');
+            messagesEl.innerHTML = '';
+
+            this.el('quickBtns').style.display = 'none';
+            const hint = this.el('quickBtns').previousElementSibling;
+            if (hint?.classList.contains('quick-btns-hint')) hint.style.display = 'none';
+            this.quickBtnsHidden = true;
+
+            data.history.forEach(m => {
+                this.renderMessage(m.content, m.role === 'user' ? 'user' : 'ai', false);
+            });
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+            return true;
+        } catch (_) { return false; }
+    }
+
+    // ── DOM helper ──
+
+    el(suffix) {
+        return document.getElementById(`${this.containerId}-${suffix}`);
+    }
+
+    // ── Send ──
+
+    async sendMessage() {
+        if (this.isSending) return;
+
+        const input   = this.el('input');
+        const sendBtn = this.el('sendBtn');
+        const message = input.value.trim();
+        if (!message) return;
+
+        if (!this.quickBtnsHidden) {
+            this.el('quickBtns').style.display = 'none';
+            const hint = this.el('quickBtns').previousElementSibling;
+            if (hint?.classList.contains('quick-btns-hint')) hint.style.display = 'none';
+            this.quickBtnsHidden = true;
         }
-    } catch (err) {
-        errEl.textContent   = 'Connection error — is the server running?';
-        errEl.style.display = 'block';
-        loginBtn.disabled   = false;
-        loginBtn.textContent = 'Sign in →';
-    }
-}
 
-async function logout() {
-    await fetch('/api/admin/logout', { method: 'POST', credentials: 'same-origin' });
-    isLoggedIn = false;
-    stopPolling();
-    document.getElementById('adminDash').style.display  = 'none';
-    document.getElementById('loginGate').style.display  = 'flex';
-    document.getElementById('passwordInput').value      = '';
-    selectedConvId = null;
-    conversations  = [];
-}
+        this.addToHistory('user', message);
+        input.value      = '';
+        sendBtn.disabled = true;
+        this.isSending   = true;
 
-function showDashboard() {
-    isLoggedIn = true;
-    document.getElementById('loginGate').style.display = 'none';
-    document.getElementById('adminDash').style.display = 'flex';
-    startPolling();
-    fetchStats();
-}
+        this.renderMessage(message, 'user');
+        const loadingId = this.addTypingIndicator();
 
-// ─────────────────────────────────────────────
-// POLLING
-// ─────────────────────────────────────────────
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message,
+                    history:        this.conversationHistory.slice(0, -1),
+                    conversationId: this.conversationId
+                })
+            });
 
-function startPolling() {
-    fetchConversations();
-    if (pollTimer) clearInterval(pollTimer);
-    pollTimer = setInterval(() => {
-        fetchConversations();
-        fetchStats();
-    }, POLL_INTERVAL);
-}
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            this.removeTypingIndicator(loadingId);
 
-function stopPolling() {
-    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
-}
-
-async function fetchConversations() {
-    try {
-        const res = await fetch('/api/admin/conversations', { credentials: 'same-origin' });
-
-        if (res.status === 401) { logout(); return; }
-        if (!res.ok) return;
-
-        const data    = await res.json();
-        conversations = data.conversations || [];
-
-        renderFeed();
-
-        const countText = document.getElementById('countText');
-        if (countText) countText.textContent =
-            `${conversations.length} conversation${conversations.length !== 1 ? 's' : ''}`;
-
-        // Re-render detail if selected convo was updated
-        if (selectedConvId && conversations.some(c => c.id === selectedConvId)) {
-            selectConversation(selectedConvId);
+            if (data.success) {
+                if (!this.conversationId && data.conversation_id) {
+                    this.conversationId = data.conversation_id;
+                    this.saveSession();
+                } else if (this.conversationId) {
+                    this.saveSession();
+                }
+                const formattedResponse = marked.parse(data.response);
+                this.addToHistory('assistant', data.response);
+                this.renderMessage(formattedResponse, 'ai');
+            } else {
+                this.conversationHistory.pop();
+                this.renderMessage('Something went wrong — please try again.', 'ai');
+            }
+        } catch (_) {
+            this.removeTypingIndicator(loadingId);
+            this.conversationHistory.pop();
+            this.renderMessage('Connection issue — please try again.', 'ai');
+        } finally {
+            sendBtn.disabled = false;
+            this.isSending   = false;
+            input.focus();
         }
-    } catch (err) {
-        console.error('Poll error:', err);
-    }
-}
-
-async function fetchStats() {
-    try {
-        const res = await fetch('/api/admin/stats', { credentials: 'same-origin' });
-        if (!res.ok) return;
-        const s = await res.json();
-        setText('statTotal',  s.total            ?? '—');
-        setText('statHigh',   s.high_intent       ?? '—');
-        setText('statMedium', s.medium_intent      ?? '—');
-        setText('statLow',    s.low_intent         ?? '—');
-        setText('statEmails', s.emails_captured    ?? '—');
-    } catch (err) {
-        console.error('Stats error:', err);
-    }
-}
-
-function setText(id, val) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = val;
-}
-
-// ─────────────────────────────────────────────
-// FEED
-// ─────────────────────────────────────────────
-
-function renderFeed() {
-    const feed = document.getElementById('conversationFeed');
-    if (!feed) return;
-
-    if (conversations.length === 0) {
-        feed.innerHTML = '<div class="feed-empty">No conversations yet</div>';
-        return;
     }
 
-    // Build HTML — use data-conv-id + event delegation, no inline onclick
-    feed.innerHTML = conversations
-        .slice().reverse()
-        .map(conv => {
-            const lead  = conv.lead_data || {};
-            const name  = lead.name || 'Anonymous';
-            const vibe  = lead.conversation_vibe || 'curious';
-            const intent = lead.intent_level || 'Low';
-            const time  = conv.timestamp
-                ? new Date(conv.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                : '';
-            const intentClass = intent === 'High' ? 'intent-high'
-                : intent === 'Medium' ? 'intent-medium' : 'intent-low';
-            const isActive  = conv.id === selectedConvId ? 'feed-item-active' : '';
-            const vibeEmoji = VIBE_EMOJI[vibe] || '💬';
-            const emailBadge = lead.email ? '📧 ' : '';
-
-            return `<div class="feed-item ${isActive}"
-                        data-conv-id="${escapeAttr(conv.id)}"
-                        tabindex="0" role="button"
-                        aria-label="View conversation with ${escapeHtml(name)}">
-                <div class="feed-item-top">
-                    <span class="feed-name">${emailBadge}${escapeHtml(name)}</span>
-                    <span class="feed-time">${escapeHtml(time)}</span>
-                </div>
-                <div class="feed-item-bottom">
-                    <span class="feed-vibe">${vibeEmoji} ${escapeHtml(vibe)}</span>
-                    <span class="feed-intent ${intentClass}">${escapeHtml(intent)}</span>
-                </div>
-            </div>`;
-        })
-        .join('');
-}
-
-// ─────────────────────────────────────────────
-// DETAIL VIEW
-// ─────────────────────────────────────────────
-
-function selectConversation(id) {
-    selectedConvId = id;
-    renderFeed(); // update active state
-
-    const conv = conversations.find(c => c.id === id);
-    if (!conv) return;
-
-    document.getElementById('emptyState').style.display = 'none';
-    document.getElementById('convDetail').style.display = 'block';
-
-    const lead  = conv.lead_data   || {};
-    const sales = conv.sales_output || {};
-
-    // Header
-    setText('detailName', lead.name || 'Anonymous');
-    setText('detailMeta',
-        [lead.email, lead.lead_type].filter(Boolean).join(' · ') || 'No contact info yet');
-
-    // Vibe badge
-    const vibeEmoji = VIBE_EMOJI[lead.conversation_vibe] || '💬';
-    const vibeLabel = lead.conversation_vibe
-        ? lead.conversation_vibe.charAt(0).toUpperCase() + lead.conversation_vibe.slice(1)
-        : '—';
-    setText('detailVibeBadge', `${vibeEmoji} ${vibeLabel}`);
-
-    // Priority badge
-    const priority    = (sales.priority || 'Low').toLowerCase();
-    const priorityEl  = document.getElementById('detailPriority');
-    if (priorityEl) {
-        priorityEl.textContent = `${sales.priority || 'Low'} Priority`;
-        priorityEl.className   = `priority-badge priority-${priority}`;
+    setExample(text) {
+        if (this.isSending) return;
+        this.el('input').value = text;
+        this.sendMessage();
     }
 
-    // Lead grid
-    const leadGrid = document.getElementById('leadGrid');
-    if (leadGrid) {
-        leadGrid.innerHTML = [
-            { label: 'Name',     value: lead.name },
-            { label: 'Email',    value: lead.email },
-            { label: 'Type',     value: lead.lead_type },
-            { label: 'Interest', value: lead.main_interest },
-        ].map(f => `
-            <div class="lead-field">
-                <span class="lead-label">${f.label}</span>
-                <span class="lead-value">${escapeHtml(f.value || '—')}</span>
-            </div>`).join('');
+    newChat() {
+        this.clearSession();
+        const messagesEl = this.el('messages');
+        messagesEl.innerHTML = '';
+        this.el('quickBtns').style.display = 'flex';
+        const hint = this.el('quickBtns').previousElementSibling;
+        if (hint?.classList.contains('quick-btns-hint')) hint.style.display = 'block';
+        this.renderMessage(
+            "Hey! I'm Layla — I help people figure out if PLAYBOOK is the right fit for them, and find what they're looking for inside it. What's on your mind?",
+            'ai', false
+        );
+        this.el('input').focus();
+        ChatManager.updateTabLabel(this.instanceIndex, null);
     }
 
-    // Intent row
-    const intentClass = lead.intent_level === 'High'   ? 'status-success'
-        : lead.intent_level === 'Medium' ? 'status-warning' : 'status-error';
-    const intentRow = document.getElementById('intentRow');
-    if (intentRow) {
-        intentRow.innerHTML = `
-            <span class="lead-label">Intent</span>
-            <span class="status-badge ${intentClass}" style="font-size:0.75rem;padding:3px 10px;margin-top:0">
-                ${escapeHtml(lead.intent_level || 'Low')}
-            </span>`;
-    }
-    setText('intentSignals', lead.intent_signals || '');
+    // ── UI rendering ──
 
-    // Vibe detail
-    const vibeDetail = document.getElementById('vibeDetail');
-    if (vibeDetail) {
-        vibeDetail.innerHTML = `
-            <div class="vibe-badge-large">${vibeEmoji} ${escapeHtml(vibeLabel)}</div>
-            <div class="vibe-note">${escapeHtml(lead.vibe_note || '—')}</div>`;
-    }
+    renderMessage(text, sender, animate = true) {
+        const messagesEl = this.el('messages');
+        const div = document.createElement('div');
+        div.className = `msg ${sender === 'user' ? 'msg-user' : 'msg-ai'}`;
+        if (!animate) div.style.animation = 'none';
 
-    // Sales recs
-    setText('nextAction', sales.recommended_next_action || '—');
-    setText('followUp',   sales.follow_up_message       || '—');
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    // HubSpot
-    const hs = conv.hubspot || {};
-    const hubspotStatus = document.getElementById('hubspotStatus');
-    if (hubspotStatus) {
-        if (hs.success) {
-            hubspotStatus.innerHTML = `
-                <div class="status-badge status-success">✅ ${escapeHtml(hs.message || 'Synced')}</div>
-                ${hs.contactId ? `<div class="rec-label" style="margin-top:8px">Contact ID: ${escapeHtml(String(hs.contactId))}</div>` : ''}`;
+        if (sender === 'ai') {
+            div.innerHTML = `
+                <div class="msg-avatar">L</div>
+                <div class="msg-body">
+                    <div class="msg-bubble">${text}</div>
+                    <div class="msg-time">${time}</div>
+                </div>`;
         } else {
-            const sc = hs.message?.includes('email') ? 'status-warning' : 'status-error';
-            hubspotStatus.innerHTML = `
-                <div class="status-badge ${sc}">
-                    ${hs.message?.includes('email') ? '⚠️ Waiting for email' : `❌ ${escapeHtml(hs.message || 'Error')}`}
+            div.innerHTML = `
+                <div class="msg-body">
+                    <div class="msg-bubble">${escapeHtml(text)}</div>
+                    <div class="msg-time">${time}</div>
                 </div>`;
         }
+
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
     }
 
-    setText('convTimestamp', conv.timestamp ? '🕐 ' + new Date(conv.timestamp).toLocaleString() : '');
-    setText('convModel',     conv.model_used ? `🤖 ${conv.model_used}` : '');
-
-    // Transcript
-    const transcriptEl = document.getElementById('transcript');
-    if (transcriptEl) {
-        const history = conv.history || [];
-        if (history.length === 0) {
-            transcriptEl.innerHTML = '<div class="transcript-empty">No transcript available</div>';
-        } else {
-            transcriptEl.innerHTML = history.map(m => `
-                <div class="transcript-msg ${m.role === 'user' ? 'transcript-user' : 'transcript-ai'}">
-                    <span class="transcript-sender">${m.role === 'user' ? 'User' : 'Layla'}</span>
-                    <span class="transcript-text">${escapeHtml(m.content)}</span>
-                </div>`).join('');
-            transcriptEl.scrollTop = transcriptEl.scrollHeight;
-        }
+    addTypingIndicator() {
+        const messagesEl = this.el('messages');
+        const id  = `typing-${this.containerId}-${Date.now()}`;
+        const div = document.createElement('div');
+        div.className = 'msg msg-ai';
+        div.id = id;
+        div.innerHTML = `
+            <div class="msg-avatar">L</div>
+            <div class="msg-body">
+                <div class="msg-bubble typing-indicator">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>`;
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        return id;
     }
-}
 
-function showEmptyState() {
-    document.getElementById('emptyState').style.display = 'flex';
-    document.getElementById('convDetail').style.display = 'none';
-}
+    removeTypingIndicator(id) {
+        document.getElementById(id)?.remove();
+    }
 
-async function deleteConversation(id) {
-    showDeleteModal(id);
-}
+    // ── Build DOM for this tab's chat panel ──
 
-function showDeleteModal(id) {
-    const modal = document.getElementById('deleteModal');
-    modal.style.display = 'flex';
-    document.getElementById('modalConfirm').focus();
+    buildDOM() {
+        const cid   = this.containerId;
+        const panel = document.createElement('div');
+        panel.className = 'tab-panel';
+        panel.id        = `panel-${cid}`;
 
-    // Store id for confirm handler
-    modal.dataset.pendingId = id;
-}
+        panel.innerHTML = `
+            <div class="client-wrap">
+                <div class="client-header">
+                    <div class="client-avatar" aria-hidden="true">L</div>
+                    <div class="client-header-text">
+                        <div class="client-name">Layla</div>
+                        <div class="client-status">
+                            <span class="status-dot" aria-hidden="true"></span> Online
+                        </div>
+                    </div>
+                    <button class="clear-chat-btn" id="${cid}-clearBtn" aria-label="Clear chat">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Clear
+                    </button>
+                    <div class="client-logo">PLAYBOOK</div>
+                </div>
 
-function hideDeleteModal() {
-    const modal = document.getElementById('deleteModal');
-    modal.style.display = 'none';
-    delete modal.dataset.pendingId;
-}
+                <div class="client-messages" id="${cid}-messages"
+                     role="log" aria-live="polite" aria-label="Chat messages"></div>
 
-async function confirmDelete() {
-    const id = document.getElementById('deleteModal').dataset.pendingId;
-    hideDeleteModal();
-    if (!id) return;
+                <div class="client-input-wrap">
+                    <div class="quick-btns-hint">Not sure where to start? Try one of these:</div>
+                    <div class="quick-btns" id="${cid}-quickBtns"
+                         role="group" aria-label="Quick message suggestions">
+                        <button class="quick-btn" data-text="I want to join PLAYBOOK as a member">✨ Join</button>
+                        <button class="quick-btn" data-text="Tell me about investing through Women Spark">💰 Invest</button>
+                        <button class="quick-btn" data-text="What masterclasses do you offer?">📚 Learn</button>
+                        <button class="quick-btn" data-text="I'm looking for mentorship">🌟 Connect</button>
+                    </div>
+                    <div class="client-input-row">
+                        <input type="text" id="${cid}-input"
+                               placeholder="Message Layla…" autocomplete="off"
+                               aria-label="Type your message">
+                        <button id="${cid}-sendBtn" aria-label="Send message">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2"
+                                      stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="client-footer">Powered by PLAYBOOK</div>
+                </div>
+            </div>`;
 
-    try {
-        const res = await fetch(`/api/admin/conversations/${id}`, {
-            method: 'DELETE',
-            credentials: 'same-origin',
+        return panel;
+    }
+
+    // ── Wire up events ──
+
+    bindEvents() {
+        this.el('sendBtn').addEventListener('click', () => this.sendMessage());
+
+        this.el('input').addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.sendMessage(); }
         });
 
-        if (res.status === 401) { logout(); return; }
-        if (!res.ok) { alert('Failed to delete — please try again.'); return; }
+        this.el('quickBtns').addEventListener('click', e => {
+            const btn = e.target.closest('[data-text]');
+            if (btn) this.setExample(btn.dataset.text);
+        });
 
-        conversations = conversations.filter(c => c.id !== id);
-        selectedConvId = null;
-        renderFeed();
-        showEmptyState();
-
-        const countText = document.getElementById('countText');
-        if (countText) countText.textContent =
-            `${conversations.length} conversation${conversations.length !== 1 ? 's' : ''}`;
-
-        fetchStats();
-    } catch (err) {
-        console.error('Delete error:', err);
-        alert('Connection error — please try again.');
+        this.el('clearBtn').addEventListener('click', () => this.newChat());
     }
 }
+
+// ─────────────────────────────────────────────
+// CHAT MANAGER — owns all tabs
+// ─────────────────────────────────────────────
+
+const ChatManager = {
+    instances:   [],
+    activeIndex: 0,
+    maxChats:    4,
+
+    async init() {
+        await this.createInstance(true);
+
+        document.getElementById('addChatBtn').addEventListener('click', () => {
+            this.addNewTab();
+        });
+
+        this.updateAddButton();
+    },
+
+    async createInstance(isFirst = false) {
+        const idx      = this.instances.length;
+        const cid      = `chat-${idx}`;
+        const instance = new ChatInstance(cid, idx);
+        this.instances.push(instance);
+
+        // ── Tab button ──
+        const tabBar = document.getElementById('tabBar');
+        const tabBtn = document.createElement('button');
+        tabBtn.className           = 'tab-btn' + (isFirst ? ' tab-active' : '');
+        tabBtn.id                  = `tab-btn-${idx}`;
+        tabBtn.dataset.idx         = idx;
+        tabBtn.setAttribute('role', 'tab');
+        tabBtn.setAttribute('aria-selected', isFirst ? 'true' : 'false');
+        tabBtn.setAttribute('aria-controls', `panel-${cid}`);
+
+        tabBtn.innerHTML = `
+            <span class="tab-label" id="tab-label-${idx}">Chat ${idx + 1}</span>
+            ${idx > 0
+                ? `<span class="tab-close" data-idx="${idx}" aria-label="Close tab ${idx + 1}" role="button" tabindex="0">✕</span>`
+                : ''}
+        `;
+        tabBar.appendChild(tabBtn);
+
+        // ── Panel ──
+        const panelWrap = document.getElementById('panelWrap');
+        const panel     = instance.buildDOM();
+        panel.style.display = isFirst ? 'flex' : 'none';
+        panelWrap.appendChild(panel);
+
+        instance.bindEvents();
+
+        // ── Tab switch on click ──
+        tabBtn.addEventListener('click', e => {
+            if (e.target.closest('.tab-close')) return;
+            this.switchTab(idx);
+        });
+
+        // ── Close button ──
+        const closeSpan = tabBtn.querySelector('.tab-close');
+        if (closeSpan) {
+            closeSpan.addEventListener('click', e => {
+                e.stopPropagation();
+                this.removeTab(idx);
+            });
+            closeSpan.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.removeTab(idx);
+                }
+            });
+        }
+
+        // ── Restore session or show greeting ──
+        const savedId = instance.loadSession();
+        let restored  = false;
+        if (savedId) restored = await instance.restoreFromDB(savedId);
+
+        if (!restored) {
+            instance.renderMessage(
+                "Hey! I'm Layla — I help people figure out if PLAYBOOK is the right fit for them, and find what they're looking for inside it. What's on your mind?",
+                'ai', false
+            );
+        }
+
+        // Switch to this tab (auto-focuses input)
+        if (!isFirst) this.switchTab(idx);
+        else instance.el('input').focus();
+
+        return instance;
+    },
+
+    async addNewTab() {
+        if (this.instances.length >= this.maxChats) return;
+        await this.createInstance(false);
+        this.updateAddButton();
+    },
+
+    switchTab(idx) {
+        this.instances.forEach(inst => {
+            const panel = document.getElementById(`panel-${inst.containerId}`);
+            if (panel) panel.style.display = 'none';
+
+            const btn = document.getElementById(`tab-btn-${inst.instanceIndex}`);
+            if (btn) {
+                btn.classList.remove('tab-active');
+                btn.setAttribute('aria-selected', 'false');
+            }
+        });
+
+        const target = this.instances.find(i => i.instanceIndex === idx);
+        if (!target) return;
+
+        const panel = document.getElementById(`panel-${target.containerId}`);
+        if (panel) panel.style.display = 'flex';
+
+        const btn = document.getElementById(`tab-btn-${idx}`);
+        if (btn) {
+            btn.classList.add('tab-active');
+            btn.setAttribute('aria-selected', 'true');
+        }
+
+        this.activeIndex = idx;
+        target.el('input').focus();
+    },
+
+    removeTab(idx) {
+        if (idx === 0) return; // first tab is permanent
+
+        const instance = this.instances.find(i => i.instanceIndex === idx);
+        if (!instance) return;
+
+        instance.clearSession();
+        document.getElementById(`panel-${instance.containerId}`)?.remove();
+        document.getElementById(`tab-btn-${idx}`)?.remove();
+
+        this.instances = this.instances.filter(i => i.instanceIndex !== idx);
+
+        // If we closed the active tab, switch to the last remaining one
+        if (this.activeIndex === idx) {
+            const last = this.instances[this.instances.length - 1];
+            if (last) this.switchTab(last.instanceIndex);
+        }
+
+        this.updateAddButton();
+    },
+
+    // Rename a tab label (call this once a user's name is known, if desired)
+    updateTabLabel(idx, name) {
+        const label = document.getElementById(`tab-label-${idx}`);
+        if (label) label.textContent = name || `Chat ${idx + 1}`;
+    },
+
+    updateAddButton() {
+        const btn = document.getElementById('addChatBtn');
+        if (!btn) return;
+        const atMax  = this.instances.length >= this.maxChats;
+        btn.disabled = atMax;
+        btn.title    = atMax
+            ? `Maximum ${this.maxChats} chats open`
+            : 'Open a new chat tab';
+    }
+};
 
 // ─────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────
 
-const VIBE_EMOJI = {
-    serious:'🎯', excited:'🔥', curious:'🤔', skeptical:'🧐',
-    funny:'😄', annoyed:'😤', trolling:'🧌', distracted:'💭',
-    overwhelmed:'😰', cold:'🧊'
-};
-
 function escapeHtml(text) {
-    if (!text) return '';
-    const d = document.createElement('div');
-    d.textContent = String(text);
-    return d.innerHTML;
-}
-
-function escapeAttr(text) {
-    return String(text || '')
-        .replace(/&/g,'&amp;').replace(/"/g,'&quot;')
-        .replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const div = document.createElement('div');
+    div.textContent = String(text || '');
+    return div.innerHTML;
 }
 
 // ─────────────────────────────────────────────
-// INIT
+// BOOT
 // ─────────────────────────────────────────────
 
-document.addEventListener('DOMContentLoaded', () => {
-
-    // ── Delete conversation button ──
-    document.getElementById('deleteConvBtn').addEventListener('click', () => {
-        if (selectedConvId) deleteConversation(selectedConvId);
-    });
-
-    // ── Delete modal ──
-    document.getElementById('modalCancel').addEventListener('click', hideDeleteModal);
-    document.getElementById('modalConfirm').addEventListener('click', confirmDelete);
-    document.getElementById('deleteModal').addEventListener('click', e => {
-        // Click outside card closes modal
-        if (e.target === e.currentTarget) hideDeleteModal();
-    });
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && document.getElementById('deleteModal').style.display !== 'none') {
-            hideDeleteModal();
-        }
-    });
-
-    // ── Login button (no form, no default submit) ──
-    document.getElementById('loginBtn').addEventListener('click', attemptLogin);
-    document.getElementById('passwordInput').addEventListener('keydown', e => {
-        if (e.key === 'Enter') { e.preventDefault(); attemptLogin(); }
-    });
-
-    // ── Logout / refresh ──
-    document.getElementById('logoutBtn').addEventListener('click', e => {
-        e.preventDefault(); logout();
-    });
-    document.getElementById('refreshBtn').addEventListener('click', e => {
-        e.preventDefault(); fetchConversations(); fetchStats();
-    });
-
-    // ── Feed: event delegation ──
-    const feed = document.getElementById('conversationFeed');
-    if (feed) {
-        feed.addEventListener('click', e => {
-            e.preventDefault();      // stop any accidental link/form behaviour
-            e.stopPropagation();
-            const item = e.target.closest('[data-conv-id]');
-            if (item) selectConversation(item.dataset.convId);
-        });
-        feed.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                const item = e.target.closest('[data-conv-id]');
-                if (item) selectConversation(item.dataset.convId);
-            }
-        });
-    }
-
-    // ── Keyboard shortcut: Escape deselects ──
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && selectedConvId) {
-            selectedConvId = null;
-            showEmptyState();
-            renderFeed();
-        }
-    });
-
-    // ── Check if we already have a valid session (cookie) ──
-    // Try fetching stats — if it returns 401, show login gate; otherwise go straight to dashboard
-    fetch('/api/admin/stats', { credentials: 'same-origin' })
-        .then(res => {
-            if (res.ok) {
-                showDashboard();
-            } else {
-                document.getElementById('loginGate').style.display = 'flex';
-                document.getElementById('passwordInput').focus();
-            }
-        })
-        .catch(() => {
-            document.getElementById('loginGate').style.display = 'flex';
-        });
-});
+document.addEventListener('DOMContentLoaded', () => ChatManager.init());
