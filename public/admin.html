@@ -55,6 +55,20 @@
             </div>
 
             <div class="sidebar-section-label">Live Conversations</div>
+
+            <!-- ── Filters ── -->
+            <div class="filter-bar">
+                <button class="filter-pill filter-pill-active" data-intent="all">All</button>
+                <button class="filter-pill" data-intent="High">🔴 High</button>
+                <button class="filter-pill" data-intent="Medium">🟡 Medium</button>
+                <button class="filter-pill" data-intent="Low">⚪ Low</button>
+                <label class="filter-checkbox" id="filterEmailLabel">
+                    <input type="checkbox" id="filterEmail">
+                    <span class="filter-checkbox-box"></span>
+                    ✉️ Has email
+                </label>
+            </div>
+
             <div id="conversationFeed" class="conversation-feed" role="list"></div>
 
             <div class="sidebar-footer">

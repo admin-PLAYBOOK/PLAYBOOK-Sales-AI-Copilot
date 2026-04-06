@@ -524,10 +524,7 @@ app.post('/api/chat', async (req, res) => {
                 await addContactToList(contactId);
 
                 // Add conversation note
-                const vibeEmoji = { serious:'🎯',excited:'🔥',curious:'🤔',skeptical:'🧐',funny:'😄',annoyed:'😤',trolling:'🧌',distracted:'💭',overwhelmed:'😰',cold:'🧊' }[leadData.conversation_vibe] || '💬';
-                const fullHistory = [...history, { role: 'user', content: message }, { role: 'assistant', content: botReply }];
-                const transcript  = fullHistory.map(m => `${m.role === 'user' ? 'User' : 'Layla'}: ${m.content}`).join('\n');
-                const noteContent = `🤖 PLAYBOOK AI Copilot — Layla (${model})\n\n${'━'.repeat(35)}\n💬 TRANSCRIPT\n${'━'.repeat(35)}\n${transcript}\n\n${'━'.repeat(35)}\n📋 LEAD INTELLIGENCE\n${'━'.repeat(35)}\nType: ${leadData.lead_type}\nIntent: ${leadData.intent_level}\nIntent signals: ${leadData.intent_signals || 'N/A'}\nInterest: ${leadData.main_interest || 'N/A'}\n\n${vibeEmoji} VIBE: ${leadData.conversation_vibe?.toUpperCase()}\n${leadData.vibe_note || ''}\n\n${'━'.repeat(35)}\n🎯 SALES RECOMMENDATIONS\n${'━'.repeat(35)}\nNext Action: ${salesOutput.recommended_next_action}\nPriority: ${salesOutput.priority}\n\n${'━'.repeat(35)}\n✉️ FOLLOW-UP\n${'━'.repeat(35)}\n${salesOutput.follow_up_message}\n\nTimestamp: ${new Date().toLocaleString()}`;
+                const noteContent = `Extracted from AI (PLAYBOOK Copilot — Layla)\n\nName: ${leadData.name || 'Unknown'}\nEmail: ${leadData.email}\nIntent: ${leadData.intent_level}\nInterest: ${leadData.main_interest || 'N/A'}\nLead Type: ${leadData.lead_type}\nVibe: ${leadData.conversation_vibe}\n\nNext Action: ${salesOutput.recommended_next_action}\n\nTimestamp: ${new Date().toLocaleString()}`;
 
                 await axios.post(
                     'https://api.hubapi.com/crm/v3/objects/notes',

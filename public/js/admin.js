@@ -2,8 +2,9 @@
 // ADMIN DASHBOARD — admin.js
 // ─────────────────────────────────────────────
 
-let currentConvId = null;
+let currentConvId    = null;
 let allConversations = [];
+let activeFilters    = { intent: 'all', emailOnly: false };
 
 // ─────────────────────────────────────────────
 // LOGIN
@@ -56,12 +57,47 @@ async function loadStats() {
         if (!res.ok) return;
         const data = await res.json();
 
-        document.getElementById('statTotal').textContent  = data.total            ?? '—';
-        document.getElementById('statHigh').textContent   = data.high_intent      ?? '—';
-        document.getElementById('statMedium').textContent = data.medium_intent    ?? '—';
-        document.getElementById('statLow').textContent    = data.low_intent       ?? '—';
-        document.getElementById('statEmails').textContent = data.emails_captured  ?? '—';
+        document.getElementById('statTotal').textContent  = data.total           ?? '—';
+        document.getElementById('statHigh').textContent   = data.high_intent     ?? '—';
+        document.getElementById('statMedium').textContent = data.medium_intent   ?? '—';
+        document.getElementById('statLow').textContent    = data.low_intent      ?? '—';
+        document.getElementById('statEmails').textContent = data.emails_captured ?? '—';
     } catch (_) {}
+}
+
+// ─────────────────────────────────────────────
+// FILTERS
+// ─────────────────────────────────────────────
+
+function applyFilters() {
+    let filtered = allConversations;
+
+    if (activeFilters.intent !== 'all') {
+        filtered = filtered.filter(c =>
+            (c.lead_data?.intent_level || 'Low') === activeFilters.intent
+        );
+    }
+
+    if (activeFilters.emailOnly) {
+        filtered = filtered.filter(c => c.lead_data?.email);
+    }
+
+    renderFeed(filtered);
+    document.getElementById('countText').textContent =
+        `${filtered.length} conversation${filtered.length !== 1 ? 's' : ''}`;
+}
+
+function setIntentFilter(value) {
+    activeFilters.intent = value;
+    document.querySelectorAll('.filter-pill[data-intent]').forEach(btn => {
+        btn.classList.toggle('filter-pill-active', btn.dataset.intent === value);
+    });
+    applyFilters();
+}
+
+function toggleEmailFilter() {
+    activeFilters.emailOnly = document.getElementById('filterEmail').checked;
+    applyFilters();
 }
 
 // ─────────────────────────────────────────────
@@ -75,8 +111,7 @@ async function loadConversations() {
         const data = await res.json();
 
         allConversations = data.conversations || [];
-        renderFeed(allConversations);
-        document.getElementById('countText').textContent = `${allConversations.length} conversation${allConversations.length !== 1 ? 's' : ''}`;
+        applyFilters();
     } catch (_) {}
 }
 
@@ -85,7 +120,7 @@ function renderFeed(conversations) {
     feed.innerHTML = '';
 
     if (!conversations.length) {
-        feed.innerHTML = '<div class="feed-empty">No conversations yet</div>';
+        feed.innerHTML = '<div class="feed-empty">No conversations match</div>';
         return;
     }
 
@@ -123,7 +158,6 @@ function renderFeed(conversations) {
 async function openConversation(id) {
     currentConvId = id;
 
-    // Highlight active item in feed
     document.querySelectorAll('.feed-item').forEach(el => {
         el.classList.toggle('feed-item-active', el.dataset.id === id);
     });
@@ -135,8 +169,8 @@ async function openConversation(id) {
 
         renderDetail(conv);
 
-        document.getElementById('emptyState').style.display  = 'none';
-        document.getElementById('convDetail').style.display  = 'block';
+        document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('convDetail').style.display = 'block';
     } catch (_) {}
 }
 
@@ -153,25 +187,23 @@ function renderDetail(conv) {
         : formatFull(conv.timestamp);
 
     // Vibe badge
-    const vibeBadge = document.getElementById('detailVibeBadge');
     const vibe = lead.conversation_vibe || '';
-    vibeBadge.textContent = `${getVibeEmoji(vibe)} ${vibe}`;
+    document.getElementById('detailVibeBadge').textContent = `${getVibeEmoji(vibe)} ${vibe}`;
 
     // Priority badge
-    const priEl = document.getElementById('detailPriority');
     const pri   = (sales.priority || 'Low').toLowerCase();
+    const priEl = document.getElementById('detailPriority');
     priEl.className   = `priority-badge priority-${pri}`;
     priEl.textContent = sales.priority || 'Low';
 
     // Lead data grid
-    const leadGrid = document.getElementById('leadGrid');
     const fields = [
         { label: 'Name',      value: lead.name          || '—' },
         { label: 'Email',     value: lead.email         || '—' },
         { label: 'Lead Type', value: lead.lead_type     || '—' },
         { label: 'Interest',  value: lead.main_interest || '—' },
     ];
-    leadGrid.innerHTML = fields.map(f => `
+    document.getElementById('leadGrid').innerHTML = fields.map(f => `
         <div class="lead-field">
             <div class="lead-label">${f.label}</div>
             <div class="lead-value">${escapeHtml(String(f.value))}</div>
@@ -179,11 +211,9 @@ function renderDetail(conv) {
 
     // Intent row
     const intentLevel = lead.intent_level || 'Low';
+    const intentColor = intentLevel === 'High' ? 'error' : intentLevel === 'Medium' ? 'warning' : 'success';
     document.getElementById('intentRow').innerHTML =
-        `<span class="status-badge status-${intentLevel === 'High' ? 'error' : intentLevel === 'Medium' ? 'warning' : 'success'}">
-            ${intentLevel} Intent
-         </span>`;
-
+        `<span class="status-badge status-${intentColor}">${intentLevel} Intent</span>`;
     document.getElementById('intentSignals').textContent = lead.intent_signals || '';
 
     // Vibe detail
@@ -215,19 +245,17 @@ function renderDetail(conv) {
         transcriptEl.innerHTML = '<div class="transcript-empty">No transcript available</div>';
     } else {
         transcriptEl.innerHTML = history.map(m => {
-            const isAI   = m.role === 'assistant';
-            const sender = isAI ? 'Layla' : 'User';
+            const isAI = m.role === 'assistant';
             return `<div class="transcript-msg ${isAI ? 'transcript-ai' : 'transcript-user'}">
-                        <div class="transcript-sender">${sender}</div>
+                        <div class="transcript-sender">${isAI ? 'Layla' : 'User'}</div>
                         <div class="transcript-text">${escapeHtml(m.content)}</div>
                     </div>`;
         }).join('');
         transcriptEl.scrollTop = 0;
     }
 
-    // Wire up delete button
-    const delBtn = document.getElementById('deleteConvBtn');
-    delBtn.onclick = () => showDeleteModal(conv.id);
+    // Delete button
+    document.getElementById('deleteConvBtn').onclick = () => showDeleteModal(conv.id);
 }
 
 // ─────────────────────────────────────────────
@@ -252,16 +280,13 @@ async function deleteConversation(id) {
         const res = await fetch(`/api/admin/conversations/${id}`, { method: 'DELETE' });
         if (!res.ok) return;
 
-        // Remove from local list and re-render feed
         allConversations = allConversations.filter(c => c.id !== id);
-        renderFeed(allConversations);
-        document.getElementById('countText').textContent = `${allConversations.length} conversation${allConversations.length !== 1 ? 's' : ''}`;
+        applyFilters();
 
-        // Hide detail panel if we just deleted the active one
         if (currentConvId === id) {
             currentConvId = null;
-            document.getElementById('convDetail').style.display  = 'none';
-            document.getElementById('emptyState').style.display  = 'flex';
+            document.getElementById('convDetail').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'flex';
         }
 
         await loadStats();
@@ -273,9 +298,7 @@ async function deleteConversation(id) {
 // ─────────────────────────────────────────────
 
 async function adminLogout() {
-    try {
-        await fetch('/api/admin/logout', { method: 'POST' });
-    } catch (_) {}
+    try { await fetch('/api/admin/logout', { method: 'POST' }); } catch (_) {}
     location.reload();
 }
 
@@ -291,29 +314,20 @@ function escapeHtml(text) {
 
 function getVibeEmoji(vibe) {
     const map = {
-        serious:     '🎯',
-        excited:     '🔥',
-        curious:     '🤔',
-        skeptical:   '🧐',
-        funny:       '😄',
-        annoyed:     '😤',
-        trolling:    '🧌',
-        distracted:  '💭',
-        overwhelmed: '😰',
-        cold:        '🧊',
+        serious: '🎯', excited: '🔥', curious: '🤔', skeptical: '🧐',
+        funny: '😄', annoyed: '😤', trolling: '🧌', distracted: '💭',
+        overwhelmed: '😰', cold: '🧊',
     };
     return map[vibe] || '💬';
 }
 
 function formatTime(ts) {
     if (!ts) return '';
-    const d = new Date(ts);
-    const now = new Date();
-    const diffMs = now - d;
-    const diffMins = Math.floor(diffMs / 60000);
-    if (diffMins < 1)   return 'just now';
-    if (diffMins < 60)  return `${diffMins}m ago`;
-    if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h ago`;
+    const d    = new Date(ts);
+    const mins = Math.floor((Date.now() - d) / 60000);
+    if (mins < 1)    return 'just now';
+    if (mins < 60)   return `${mins}m ago`;
+    if (mins < 1440) return `${Math.floor(mins / 60)}h ago`;
     return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
 
@@ -330,32 +344,35 @@ function formatFull(ts) {
 // ─────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Login events
+    // Login
     document.getElementById('loginBtn').addEventListener('click', adminLogin);
     document.getElementById('passwordInput').addEventListener('keydown', e => {
         if (e.key === 'Enter') adminLogin();
     });
 
-    // Dashboard events
+    // Logout & refresh
     document.getElementById('logoutBtn').addEventListener('click', adminLogout);
     document.getElementById('refreshBtn').addEventListener('click', async () => {
         await loadStats();
         await loadConversations();
-        // Re-open current conversation if one was selected
         if (currentConvId) openConversation(currentConvId);
     });
 
-    // Close modal on backdrop click
-    document.getElementById('deleteModal').addEventListener('click', e => {
-        if (e.target === document.getElementById('deleteModal')) {
-            document.getElementById('deleteModal').style.display = 'none';
-        }
+    // Filter pills — intent
+    document.querySelectorAll('.filter-pill[data-intent]').forEach(btn => {
+        btn.addEventListener('click', () => setIntentFilter(btn.dataset.intent));
     });
 
-    // Close modal on Escape
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') {
+    // Filter checkbox — email only
+    document.getElementById('filterEmail').addEventListener('change', toggleEmailFilter);
+
+    // Modal
+    document.getElementById('deleteModal').addEventListener('click', e => {
+        if (e.target === document.getElementById('deleteModal'))
             document.getElementById('deleteModal').style.display = 'none';
-        }
+    });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape')
+            document.getElementById('deleteModal').style.display = 'none';
     });
 });

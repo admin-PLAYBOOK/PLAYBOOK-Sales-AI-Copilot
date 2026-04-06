@@ -1018,3 +1018,98 @@ body.admin-page {
     border-color: rgba(239,68,68,0.7);
     color: #fca5a5;
 }
+/* ── FILTER BAR ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 12px 10px;
+    border-bottom: 1px solid var(--admin-border);
+    flex-shrink: 0;
+    align-items: center;
+}
+
+.filter-pill {
+    padding: 4px 11px;
+    border-radius: 20px;
+    border: 1px solid var(--admin-border);
+    background: transparent;
+    color: var(--admin-text-muted);
+    font-size: 0.72rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+}
+
+.filter-pill:hover {
+    border-color: var(--vibrant-light);
+    color: var(--admin-text);
+}
+
+.filter-pill-active {
+    background: rgba(130,17,201,0.25);
+    border-color: rgba(130,17,201,0.5);
+    color: var(--vibrant-light);
+}
+
+/* Email checkbox */
+.filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--admin-text-muted);
+    margin-left: 2px;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.filter-checkbox input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.filter-checkbox-box {
+    width: 15px;
+    height: 15px;
+    border-radius: 4px;
+    border: 1.5px solid var(--admin-border);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.filter-checkbox:hover .filter-checkbox-box {
+    border-color: var(--vibrant-light);
+}
+
+.filter-checkbox input:checked ~ .filter-checkbox-box {
+    background: var(--vibrant);
+    border-color: var(--vibrant);
+}
+
+.filter-checkbox input:checked ~ .filter-checkbox-box::after {
+    content: '';
+    width: 4px;
+    height: 7px;
+    border: 1.5px solid white;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg) translateY(-1px);
+    display: block;
+}
+
+.filter-checkbox input:checked ~ .filter-checkbox-box + span,
+.filter-checkbox input:checked ~ span:last-child {
+    color: var(--vibrant-light);
+}
