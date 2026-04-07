@@ -38,58 +38,71 @@ LEARNING LIBRARY — use this to recommend specific content when relevant
 ━━━━━━━━━━━━━━━━━━━━━━
 
 MASTERCLASSES (full multi-lesson courses):
-1. Graphic Design & Creative Expression — Rana Salam
-2. Social Media Influence & Authenticity — Yalda Golsharifi
-3. Scaling a Business — Roaya Saleh (Arabic)
-4. Starting a Business — Wafa AlObaidat
-5. Fundamentals of Digital Marketing — Hanan Al-Haifi (Arabic)
-6. Feminine Health & Wellness — Emaan Abbass
-7. Board Membership & Advisory — Elham Hassan
-8. Mental Health — HH Sayyida Basma Al-Said (Arabic)
-9. Feminism & Women Crisis Advocacy — Mary-Justine Todd
-10. Climbing the Corporate Ladder — Amal Al Kooheji
-11. The Investor Mindset — Amal Dokhan
-12. Stepping into Feminine Power & Scaling — Deena Al-Ansari
-13. Leading a Family Business — Suzy Kanoo
-14. Colour Consulting & Expression — Fatima Alshirawi
-15. Early-Stage Fundraising — Ameena Bucheeri (Arabic)
-16. Thriving in Government — Dr. Fatima Al-Balooshi (Arabic)
-17. Authenticity in Sales — Nada Alawi (Arabic)
-18. The A-Player Mindset — Enas Asiri
-19. Strategic Career Growth — Afaf Zainalabedin
-20. Building Financial Independence — Nandini Joshi
-21. Managing Stakeholder Relations — Deemah AlYahya
-22. Palestinian Culture & Heritage — Mayssoun Azzam
+1. Graphic Design & Creative Expression — Rana Salam (15 lessons: pattern, colour, nostalgia, design industry, client handling, pricing, case studies)
+2. Social Media Influence & Authenticity — Yalda Golsharifi (12 lessons: content creation, brand collabs, money mindset, wellness, motherhood)
+3. Scaling a Business — Roaya Saleh (Arabic, 14 lessons: from banker to entrepreneur, financial challenges, brand strategy, global vs local markets)
+4. Starting a Business — Wafa AlObaidat (19 lessons: startup culture, hiring, delegating, KPIs, fundraising, office space, growth mindset)
+5. Fundamentals of Digital Marketing — Hanan Al-Haifi (Arabic, 14 lessons: buyer journey, SEO, social media, email marketing, retargeting)
+6. Feminine Health & Wellness — Emaan Abbass (16 lessons: body confidence, period-friendly workplace, health check-ups, body positivity, motherhood)
+7. Board Membership & Advisory — Elham Hassan (13 lessons: board governance, networking, assertiveness, boardroom ethics, amplifying your voice)
+8. Mental Health — HH Sayyida Basma Al-Said (Arabic, 14 lessons: mindfulness, positive psychology, social media & mental health, self-care)
+9. Feminism & Women Crisis Advocacy — Mary-Justine Todd (17 lessons: gender-based violence, bystander intervention, nonprofit/NGO guide, intergenerational trauma)
+10. Climbing the Corporate Ladder — Amal Al Kooheji (16 lessons: promotions, managing Gen Z, empathetic leadership, coaching & mentoring)
+11. The Investor Mindset — Amal Dokhan (11 lessons: angel investing, VC, cap tables, growth metrics, exits)
+12. Stepping into Feminine Power & Scaling — Deena Al-Ansari (15 lessons: feminine energy, scaling, intuition in sales, abundance mindset)
+13. Leading a Family Business — Suzy Kanoo (13 lessons: family dynamics, financial intellect, legacy, gentle negotiation, emotional intelligence)
+14. Colour Consulting & Expression — Fatima Alshirawi (13 lessons: colour psychology, personality types, branding, interiors, fashion)
+15. Early-Stage Fundraising — Ameena Bucheeri (Arabic, 11 lessons: startup valuation, investor meetings, pitch decks, fundraising emotions)
+16. Thriving in Government — Dr. Fatima Al-Balooshi (Arabic, 10 lessons: public service, crisis navigation, working with ministers, work-life balance)
+17. Authenticity in Sales — Nada Alawi (Arabic, 10 lessons: building a million-dollar company, sales cycle, pricing, leadership in the boardroom)
+18. The A-Player Mindset — Enas Asiri (13 lessons: work ethic, mentorship, CEO transition, emotional intelligence, work-life harmony)
+19. Strategic Career Growth — Afaf Zainalabedin (14 lessons: resilience, skills mapping, problem-solving, career pivots, exiting organisations)
+20. Building Financial Independence — Nandini Joshi (15 lessons: investing basics, risk appetite, savings vs investment, retirement planning)
+21. Managing Stakeholder Relations — Deemah AlYahya (17 lessons: stakeholder personalities, empathy, crisis management, negotiations, high-performance teams)
+22. Palestinian Culture & Heritage — Mayssoun Azzam (10 lessons: history, agriculture, cuisine, traditional attire, art, music, family dynamics)
 
 BOOTCAMP:
-- Mastering Strategic Networking — Wafa AlObaidat (4-week program)
+- Mastering Strategic Networking — Wafa AlObaidat (4-week program: redefining networking, purposeful connections, levelling up your connection game, personal brand)
 
 SESSION:
-- The PLAYBOOK Guide to Raising Capital (7-part series)
+- The PLAYBOOK Guide to Raising Capital (7-part series: scalable product, traction, investor space, rejection, finding the right investor)
 
 WORKSHOPS (grouped by topic):
-- Personal Development: mindset, confidence, negotiation, public speaking, burnout, emotional intelligence — speakers include Rula Husseini, Tatiana Poliakova, Laurel Herman, Katherina Dalka, Bedoor AlOmran, Louise Lambert and more
-- Financial Literacy: investing, budgeting, wealth building, financial independence — Baroness Helena Morrissey, Hanan Mughrabi, Muiz Alaradi, Nandini Joshi, Jana Osta and more
-- Career Development: interviews, board roles, career pivots, promotions — Navid Nazemian (World's #1 Executive Coach), Rima Hadid, Bedor Alrashoudi, Rachel Pether and more
-- Sales & Marketing: brand management, digital marketing, B2B, social media — Megha Kapoor, Rand Yahya, Natasha Salleh and more
-- Content Marketing & Online Presence: LinkedIn, blogging, personal branding, email marketing — Alia El Khatib, Tahani Alhajri, Shikha Sarkar and more
-- Health & Wellness: hormones, mental health, nutrition, menopause, gut health — Dr. Dana Al-Saeed, Sara Tarek, Ruby Saharan, Gayu Lewis and more
-- Technology & Innovation: AI, Web3, DAOs, ChatGPT for business — Tom Szekeres, Sharene Lee, Beenish Saeed
-- Startup & Entrepreneurship: legal contracts, fundraising, recruitment, CSR — Bushra Asif, Nina Abi Fadel, Latifa Sowaileh and more
-- Leadership & Management: inclusive leadership, feedback, change communication — Noor Al-Ajeel, Mai El Kinawi, Lara Khouri
-- Motherhood & Parenting: career re-entry, side hustles, coding education — Dina Abdul Majeed, Dina El Mofty, Hadil AlKhatib
+- Personal Development (26 workshops): mindset, confidence, negotiation, public speaking, burnout, emotional intelligence, human design, choice theory, imposter syndrome, manifestation, executive presence, storytelling, happiness, creative genius — speakers include Rula Husseini, Ghada Khalifeh, Arshy Ahmad, Dina El-Mofty, Tatiana Poliakova, Laurel Herman, Katherina Dalka, Bedoor AlOmran, Louise Lambert, Cristina Muntean, Sophie Belle and more
+- Financial Literacy (21 workshops): investing, budgeting, wealth building, financial models, money mindset, risk assessment, raising financially savvy kids, abundance & alignment — Baroness Helena Morrissey, H.E. Dr. Aisha Bin Bishr, Hanan Mughrabi, Muiz Alaradi, Abeer Albaitam, Tatiana Dudyez, Nina Abi Fadel, Jana Osta, Ali Al-Hammam and more
+- Career Development (8 workshops): interviews, board roles, career pivots, promotions, LinkedIn as a sales funnel, aerospace industry insights — Navid Nazemian (World's #1 Executive Coach), Rima Hadid, Bedor Alrashoudi, Rachel Pether, Salama Belghali, Zainab Farah, Mariana & Ivan Polic and more
+- Sales & Marketing (7 workshops): brand management, digital marketing, B2B secrets, growth hacking, persuasion, consumer loyalty — Megha Kapoor, Rand Yahya, Anastasia Stoiatska, Nadia Bouslama, Sanaz Falahatpisheh, Natasha Salleh, Nagi Salloum and more
+- Content Marketing & Online Presence (13 workshops): LinkedIn, blogging, personal branding, email marketing, AI for content creation, community building, writing a book, novel writing — Alia El Khatib, Tahani Alhajri, Shikha Sarkar, Katerina Drako, Moumita Das Roy, Hanan Ezzeldin, Arantxa Beltran, Dana Alhanbali and more
+- Health & Wellness (20 workshops): hormones, PCOS, mental health, nutrition, menopause, ADHD, gut health, acupressure, art therapy, nervous system, radiation safety, speech therapy — Dr. Dana Al-Saeed, Dr. Aarti Javeri-Mehta, Sara Tarek, Ruby Saharan, Gayu Lewis, Hazleen Ahmed, Hengameh Ebrahimi, Tina Chagoury, Susie Bower and more
+- Technology & Innovation (7 workshops): AI intro, DAOs & Web3, AI corporate policies, AI for small businesses, ChatGPT for corporate communication, custom GPTs, AI agents — Tom Szekeres, Sharene Lee, Hind Habbach, Beenish Saeed, Nidhima Kohli, Fatima-Zahra Khoukh
+- Startup & Entrepreneurship (8 workshops): legal contracts, fundraising, recruitment, CSR, psychological safety, vision to impact, retail brand building — Bushra Asif, Nina Abi Fadel, Latifa Sowaileh, Nadia Jazairli, Shahmeen Islam, Faiza Saeed, Hazar Al Zadjali and more
+- Leadership & Management (3 workshops): inclusive leadership, precision feedback, change communication — Noor Al-Ajeel, Mai El Kinawi, Lara Khouri
+- Motherhood & Parenting (4 workshops): career re-entry, side hustles, coding education, gut health for families — Dina Abdul Majeed, Dina El Mofty, Hadil AlKhatib, Sadaf Rehman
+- Entertainment & Arts (2 workshops): strategic event planning, filmmaking (legal & commercial) — Nadine Farrag, Dr. Moira Sullivan & Marjorie Sudrow
+- Wellness & Leadership Series (6 workshops): leading in times of stress, strong mothers, resilience in conflict, inner stability, founder reset — Asmaa AlKuwari, Rasha AlShubaian, Dr. Louise Lambert, Dr. Kholod Huneiti, Haya Al-Khalifa, Avneet Kohli
+- Mini Masterclass Recap: career tips and curation with Wafa AlObaidat
+- Hybrid Workshop: mindful living with Dr. Iman Cheffi
+- Learn in 5: Instagram as a sales funnel with Alia ElKhatib
 
 WOMEN SPARK WORKSHOPS (investing track):
-- Angel Investor Workshops: Zafer Younis, Jed Ng, Giovanna Melfi, Noor Alnaqeeb, Nelly Mounayar
-- Female Founder Club: pitching, legal, partnerships, fundraising hacks, investor relations — Mais Jauhary, Latifa Sowaileh, Joseph Tyan, Maria Frangieh and more
+- Angel Investor Workshops (7): investing in VC asset class, principles of angel investing, how to become an investor, legal essentials, networking for investors, personal branding for investors, beginner's guide to wealth — Zafer Younis, Jed Ng, Giovanna Melfi, Noor Alnaqeeb, Chef Suman Ali, Mariam Yasin, Nelly Mounayar
+- Female Founder Club (12 workshops): financial jargon, pitching, legal essentials, partnerships, fundraising hacks, innovative marketing, investor relations, impact measurement, founder mindset, revenue hacking, ignite your potential, building in Saudi Arabia — Mais Jauhary, Hidayet Ayadi, Noor Alnaqeeb, Roaa Ahmed, Latifa Sowaileh, Hanan El Basha, Joseph Tyan, Kristina Cordero, Margreet Magdy, Maria Frangieh, The Sophia Collective, Saeed Al-Ansari
+
+PARTNER WORKSHOPS:
+- nybl: AI for Education, AI for Healthcare, AI for Retail, Future Tech for Women Leaders, The Entrepreneurs Boardroom, AI for Sustainability, AI for Energy, Deep Tech, Funding for AI
+- AWE (Women & Success: Redefining Power — 2-day event)
+- Baghdad Business School: CX journey with Dr. Lama Shanti
+- FINBURSA: Navigating Private Market Investments with Ismail Badereldine
+- Junify: Get Started with Investing with Denise Lim & Phil M
+- Overcoming Imposter Syndrome, Mastering Boundaries & Emotional Intelligence, Strategic Opportunity Hunting — Jana Osta, Asmaa AlKuwari, Wafa AlObaidat
 
 SPEAKER SERIES:
-- Season 1: Dina Abdul Majeed (motherhood & career), Hafsa Rubiya (data), Dalal AlRayes (FinTech), Tatiana Poliakova (leadership), Shada El Borno (corporate), Dana Baki (acquisition & exit)
-- Season 2: Navid Nazemian (executive coaching), Muna AbuSulayman (career pivots)
+- Season 1: Dina Abdul Majeed (hacking motherhood & career), Hafsa Rubiya Yazdani (data & decision-making), Dalal AlRayes (FinTech startup), Tamara AbdelJaber (investing & closing the gap), Tatiana Poliakova (positive intensity leadership), Shada El Borno (rising through corporate ranks), Reem Khouri (Whyise & data), Dana Baki (acquisition & exit)
+- Season 2: Navid Nazemian (navigating to the top), Muna AbuSulayman (career pivots)
 
 PODCASTS:
-- Women Power Podcast (Seasons 1–10) hosted by Wafa AlObaidat — hundreds of episodes covering entrepreneurship, investing, mental health, creative careers, corporate growth, and more
-- AI Podcast with Mai and Adam — gender gap, women on boards, investing in MENA
+- Women Power Podcast (Seasons 1–10) hosted by Wafa AlObaidat — 100+ episodes covering entrepreneurship, investing, mental health, creative careers, corporate growth, and more
+- AI Podcast with Mai and Adam — 6 episodes: global gender gap, women on boards in GCC, financial health, women & investing in MENA, gender equality in 100 countries, diversifying investment portfolios
 
 ━━━━━━━━━━━━━━━━━━━━━━
 
