@@ -13,6 +13,9 @@ class ChatInstance {
         this.conversationHistory = [];
         this.quickBtnsHidden     = false;
         this.isSending           = false;
+        // Persisted lead data — sent back with each request so server
+        // can do incremental extraction instead of re-inferring everything
+        this.leadData            = {};
     }
 
     // ── History ──
@@ -30,7 +33,7 @@ class ChatInstance {
         const key = `playbook_chat_${this.instanceIndex}`;
         localStorage.setItem(key, JSON.stringify({
             conversationId: this.conversationId,
-            savedAt: Date.now()
+            savedAt: Date.now(),
         }));
     }
 
@@ -53,6 +56,7 @@ class ChatInstance {
         this.conversationId      = null;
         this.conversationHistory = [];
         this.quickBtnsHidden     = false;
+        this.leadData            = {};
     }
 
     // ── Restore from DB ──
@@ -89,7 +93,7 @@ class ChatInstance {
         return document.getElementById(`${this.containerId}-${suffix}`);
     }
 
-    // ── Send ──
+    // ── Send (streaming) ──
 
     async sendMessage() {
         if (this.isSending) return;
@@ -112,41 +116,80 @@ class ChatInstance {
         this.isSending   = true;
 
         this.renderMessage(message, 'user');
-        const loadingId = this.addTypingIndicator();
+
+        // Create the AI bubble early so we can stream into it
+        const aiMsgEl = this.createStreamingBubble();
 
         try {
             const response = await fetch(API_URL, {
-                method: 'POST',
+                method:  'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+                body:    JSON.stringify({
                     message,
                     history:        this.conversationHistory.slice(0, -1),
-                    conversationId: this.conversationId
-                })
+                    conversationId: this.conversationId,
+                    leadData:       this.leadData, // send accumulated lead data
+                }),
             });
 
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const data = await response.json();
-            this.removeTypingIndicator(loadingId);
 
-            if (data.success) {
-                if (!this.conversationId && data.conversation_id) {
-                    this.conversationId = data.conversation_id;
-                    this.saveSession();
-                } else if (this.conversationId) {
-                    this.saveSession();
+            // ── Read SSE stream ──
+            const reader  = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer    = '';
+            let fullText  = '';
+            const bubble  = aiMsgEl.querySelector('.msg-bubble');
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop();
+
+                for (const line of lines) {
+                    if (!line.startsWith('data: ')) continue;
+                    const payload = line.slice(6).trim();
+                    if (!payload) continue;
+
+                    try {
+                        const evt = JSON.parse(payload);
+
+                        if (evt.token !== undefined) {
+                            fullText += evt.token;
+                            // Render markdown incrementally
+                            bubble.innerHTML = marked.parse(fullText);
+                            this.el('messages').scrollTop = this.el('messages').scrollHeight;
+                        }
+
+                        if (evt.conversation_id && !this.conversationId) {
+                            this.conversationId = evt.conversation_id;
+                            this.saveSession();
+                        }
+
+                        if (evt.done) {
+                            // Commit to history
+                            this.addToHistory('assistant', fullText);
+                            ChatManager.updateTabLabel(this.instanceIndex, null);
+                        }
+
+                        if (evt.error) {
+                            bubble.innerHTML = escapeHtml(evt.error);
+                            this.conversationHistory.pop(); // remove the user turn we speculatively added
+                        }
+                    } catch (_) { /* malformed line — skip */ }
                 }
-                const formattedResponse = marked.parse(data.response);
-                this.addToHistory('assistant', data.response);
-                this.renderMessage(formattedResponse, 'ai');
-            } else {
-                this.conversationHistory.pop();
-                this.renderMessage('Something went wrong — please try again.', 'ai');
             }
+
+            // Final scroll
+            this.el('messages').scrollTop = this.el('messages').scrollHeight;
+
         } catch (_) {
-            this.removeTypingIndicator(loadingId);
+            const bubble = aiMsgEl.querySelector('.msg-bubble');
+            if (bubble) bubble.textContent = 'Connection issue — please try again.';
             this.conversationHistory.pop();
-            this.renderMessage('Connection issue — please try again.', 'ai');
         } finally {
             sendBtn.disabled = false;
             this.isSending   = false;
@@ -189,7 +232,7 @@ class ChatInstance {
             div.innerHTML = `
                 <div class="msg-avatar">L</div>
                 <div class="msg-body">
-                    <div class="msg-bubble">${text}</div>
+                    <div class="msg-bubble">${typeof marked !== 'undefined' ? marked.parse(text) : text}</div>
                     <div class="msg-time">${time}</div>
                 </div>`;
         } else {
@@ -202,28 +245,31 @@ class ChatInstance {
 
         messagesEl.appendChild(div);
         messagesEl.scrollTop = messagesEl.scrollHeight;
+        return div;
     }
 
-    addTypingIndicator() {
+    /**
+     * Create an empty AI bubble with a typing indicator.
+     * Returns the message element so the caller can stream tokens into it.
+     */
+    createStreamingBubble() {
         const messagesEl = this.el('messages');
-        const id  = `typing-${this.containerId}-${Date.now()}`;
         const div = document.createElement('div');
         div.className = 'msg msg-ai';
-        div.id = id;
+
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         div.innerHTML = `
             <div class="msg-avatar">L</div>
             <div class="msg-body">
-                <div class="msg-bubble typing-indicator">
-                    <span></span><span></span><span></span>
+                <div class="msg-bubble">
+                    <span class="typing-indicator"><span></span><span></span><span></span></span>
                 </div>
+                <div class="msg-time">${time}</div>
             </div>`;
+
         messagesEl.appendChild(div);
         messagesEl.scrollTop = messagesEl.scrollHeight;
-        return id;
-    }
-
-    removeTypingIndicator(id) {
-        document.getElementById(id)?.remove();
+        return div;
     }
 
     // ── Build DOM for this tab's chat panel ──
@@ -387,7 +433,6 @@ const ChatManager = {
             );
         }
 
-        // Switch to this tab (auto-focuses input)
         if (!isFirst) this.switchTab(idx);
         else instance.el('input').focus();
 
@@ -429,7 +474,7 @@ const ChatManager = {
     },
 
     removeTab(idx) {
-        if (idx === 0) return; // first tab is permanent
+        if (idx === 0) return;
 
         const instance = this.instances.find(i => i.instanceIndex === idx);
         if (!instance) return;
@@ -440,7 +485,6 @@ const ChatManager = {
 
         this.instances = this.instances.filter(i => i.instanceIndex !== idx);
 
-        // If we closed the active tab, switch to the last remaining one
         if (this.activeIndex === idx) {
             const last = this.instances[this.instances.length - 1];
             if (last) this.switchTab(last.instanceIndex);
@@ -449,7 +493,6 @@ const ChatManager = {
         this.updateAddButton();
     },
 
-    // Rename a tab label (call this once a user's name is known, if desired)
     updateTabLabel(idx, name) {
         const label = document.getElementById(`tab-label-${idx}`);
         if (label) label.textContent = name || `Chat ${idx + 1}`;
@@ -463,7 +506,7 @@ const ChatManager = {
         btn.title    = atMax
             ? `Maximum ${this.maxChats} chats open`
             : 'Open a new chat tab';
-    }
+    },
 };
 
 // ─────────────────────────────────────────────
