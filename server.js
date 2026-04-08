@@ -585,6 +585,12 @@ app.post('/api/chat', async (req, res) => {
             intent_signals: previousLead.intent_signals || null,
             conversation_vibe: previousLead.conversation_vibe || 'curious',
             vibe_note: previousLead.vibe_note || null,
+            // New fields
+            pillar_interest:  previousLead.pillar_interest  || null,
+            dialect:          sessionMemory[convId]?.dialect || previousLead.dialect || null,
+            channel:          req.body.channel || previousLead.channel || 'Web',
+            running_summary:  null,
+            slack_alert_sent: previousLead.slack_alert_sent || false,
         };
         let salesOutput = {
             recommended_next_action: previousLead.recommended_next_action || 'Review conversation manually',
@@ -611,6 +617,12 @@ app.post('/api/chat', async (req, res) => {
                     intent_signals:    parsed.intent_signals    || leadData.intent_signals,
                     conversation_vibe: parsed.conversation_vibe || leadData.conversation_vibe,
                     vibe_note:         parsed.vibe_note         || leadData.vibe_note,
+                    // New fields — preserve or update from extraction
+                    pillar_interest:  parsed.pillar_interest  || leadData.pillar_interest,
+                    dialect:          sessionMemory[convId]?.dialect || leadData.dialect,
+                    channel:          leadData.channel,
+                    running_summary:  sessionMemory[convId]?.runningSummary || null,
+                    slack_alert_sent: leadData.slack_alert_sent,
                 };
                 salesOutput = {
                     recommended_next_action: parsed.recommended_next_action || salesOutput.recommended_next_action,
@@ -627,6 +639,7 @@ app.post('/api/chat', async (req, res) => {
                     ];
                     sendSlackAlert({ ...leadData, ...salesOutput }, fullHistory)
                         .catch(err => console.warn('⚠️ Slack alert error:', err.message));
+                    leadData.slack_alert_sent = true;
                 }
 
                 // ── Update user profile for cross-session memory ──
@@ -646,6 +659,10 @@ app.post('/api/chat', async (req, res) => {
         ];
         updateRunningSummary(convId, fullHistoryForSummary)
             .catch(err => console.warn('⚠️ Summary error:', err.message));
+
+        // Refresh running_summary and dialect on leadData before save
+        leadData.running_summary = sessionMemory[convId]?.runningSummary || leadData.running_summary || null;
+        leadData.dialect         = sessionMemory[convId]?.dialect        || leadData.dialect        || null;
 
         // ── Step 3: HubSpot — only sync when email is first captured ──
         // We check: does this turn have an email that the previous turn didn't?
@@ -674,6 +691,7 @@ app.post('/api/chat', async (req, res) => {
             done: true,
             conversation_id: convId,
             timestamp: new Date().toISOString(),
+            leadData: { ...leadData, ...salesOutput },
         })}\n\n`);
         res.end();
 

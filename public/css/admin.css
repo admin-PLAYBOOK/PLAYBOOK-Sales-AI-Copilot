@@ -1113,3 +1113,105 @@ body.admin-page {
 .filter-checkbox input:checked ~ span:last-child {
     color: var(--vibrant-light);
 }
+/* ─────────────────────────────────────────────
+   NEW FIELDS — pillar, dialect, channel, summary, slack
+   ───────────────────────────────────────────── */
+
+/* Pillar interest pills */
+.pillar-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: capitalize;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+.pillar-connect    { background: rgba(139, 92, 246, 0.18); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); }
+.pillar-learn      { background: rgba(20, 184, 166, 0.18);  color: #2dd4bf; border: 1px solid rgba(20,184,166,0.3); }
+.pillar-invest     { background: rgba(245, 158, 11, 0.18);  color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+.pillar-membership { background: rgba(99, 102, 241, 0.18);  color: #818cf8; border: 1px solid rgba(99,102,241,0.3); }
+.pillar-event      { background: rgba(236, 72, 153, 0.18);  color: #f472b6; border: 1px solid rgba(236,72,153,0.3); }
+.pillar-unknown    { background: rgba(148, 163, 184, 0.12); color: #94a3b8; border: 1px solid rgba(148,163,184,0.2); }
+
+/* Dialect badge — sits inline next to the name */
+.dialect-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    background: rgba(148, 163, 184, 0.15);
+    color: var(--text-secondary, #94a3b8);
+    border: 1px solid rgba(148,163,184,0.2);
+    margin-left: 8px;
+    vertical-align: middle;
+    letter-spacing: 0.02em;
+}
+
+/* Channel badge — detail header */
+.channel-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+.channel-web       { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); }
+.channel-whatsapp  { background: rgba(34,197,94,0.15);  color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+
+/* Channel icon in feed items */
+.feed-channel {
+    font-size: 11px;
+    margin-right: 4px;
+    opacity: 0.75;
+}
+
+/* Slack alert tick in card title */
+.slack-tick {
+    font-size: 11px;
+    font-weight: 500;
+    color: #4ade80;
+    margin-left: 8px;
+    vertical-align: middle;
+    opacity: 0.9;
+}
+
+/* Running summary toggle */
+.summary-toggle {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.summary-toggle:hover { opacity: 0.85; }
+.summary-chevron {
+    font-size: 10px;
+    color: var(--text-secondary, #94a3b8);
+    transition: transform 0.2s;
+}
+
+/* Running summary text */
+.running-summary {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-secondary, #94a3b8);
+    margin-top: 10px;
+    white-space: pre-wrap;
+    overflow: hidden;
+    transition: max-height 0.25s ease, opacity 0.2s;
+    max-height: 600px;
+    opacity: 1;
+}
+.running-summary.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+}

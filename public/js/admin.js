@@ -130,6 +130,10 @@ function renderFeed(conversations) {
         const vibe      = conv.lead_data?.conversation_vibe || '';
         const vibeEmoji = getVibeEmoji(vibe);
         const time      = formatTime(conv.timestamp);
+        const channel   = conv.lead_data?.channel || 'Web';
+        const channelTag = channel === 'WhatsApp'
+            ? `<span class="feed-channel feed-channel-whatsapp">📱</span>`
+            : `<span class="feed-channel feed-channel-web">🌐</span>`;
 
         const item      = document.createElement('div');
         item.className  = 'feed-item' + (conv.id === currentConvId ? ' feed-item-active' : '');
@@ -139,7 +143,7 @@ function renderFeed(conversations) {
         item.innerHTML = `
             <div class="feed-item-top">
                 <div class="feed-name">${escapeHtml(name)}</div>
-                <div class="feed-time">${time}</div>
+                <div class="feed-time">${channelTag}${time}</div>
             </div>
             <div class="feed-item-bottom">
                 <div class="feed-vibe">${vibeEmoji} ${escapeHtml(vibe)}</div>
@@ -181,7 +185,8 @@ function renderDetail(conv) {
     const history = conv.history      || [];
 
     // Header
-    document.getElementById('detailName').textContent = lead.name || 'Anonymous';
+    const dialectLabel = lead.dialect ? ` <span class="dialect-badge">${escapeHtml(lead.dialect)}</span>` : '';
+    document.getElementById('detailName').innerHTML = escapeHtml(lead.name || 'Anonymous') + dialectLabel;
     document.getElementById('detailMeta').textContent = lead.email
         ? `${lead.email} · ${formatFull(conv.timestamp)}`
         : formatFull(conv.timestamp);
@@ -189,6 +194,12 @@ function renderDetail(conv) {
     // Vibe badge
     const vibe = lead.conversation_vibe || '';
     document.getElementById('detailVibeBadge').textContent = `${getVibeEmoji(vibe)} ${vibe}`;
+
+    // Channel badge
+    const channel    = lead.channel || conv.channel || 'Web';
+    const channelEl  = document.getElementById('detailChannel');
+    channelEl.className   = `channel-badge channel-${channel.toLowerCase()}`;
+    channelEl.textContent = channel === 'WhatsApp' ? '📱 WhatsApp' : '🌐 Web';
 
     // Priority badge
     const pri   = (sales.priority || 'Low').toLowerCase();
@@ -209,11 +220,15 @@ function renderDetail(conv) {
             <div class="lead-value">${escapeHtml(String(f.value))}</div>
         </div>`).join('');
 
-    // Intent row
+    // Intent row — intent level + pillar_interest pill
     const intentLevel = lead.intent_level || 'Low';
     const intentColor = intentLevel === 'High' ? 'error' : intentLevel === 'Medium' ? 'warning' : 'success';
+    const pillar      = (lead.pillar_interest || '').toLowerCase();
+    const pillarHtml  = pillar
+        ? `<span class="pillar-pill pillar-${pillar}">${escapeHtml(lead.pillar_interest)}</span>`
+        : '';
     document.getElementById('intentRow').innerHTML =
-        `<span class="status-badge status-${intentColor}">${intentLevel} Intent</span>`;
+        `<span class="status-badge status-${intentColor}">${intentLevel} Intent</span>${pillarHtml}`;
     document.getElementById('intentSignals').textContent = lead.intent_signals || '';
 
     // Vibe detail
@@ -238,6 +253,22 @@ function renderDetail(conv) {
     // Timestamp + model
     document.getElementById('convTimestamp').textContent = `Conversation: ${formatFull(conv.timestamp)}`;
     document.getElementById('convModel').textContent     = conv.model_used ? `Model: ${conv.model_used}` : '';
+
+    // Running summary
+    const summaryEl  = document.getElementById('runningSummaryText');
+    const summaryWrap = document.getElementById('runningSummaryWrap');
+    const summary = lead.running_summary || conv.running_summary || '';
+    if (summary) {
+        summaryEl.textContent   = summary;
+        summaryWrap.style.display = 'block';
+    } else {
+        summaryWrap.style.display = 'none';
+    }
+
+    // Slack alert tick
+    const slackEl = document.getElementById('slackAlertIndicator');
+    const slackSent = lead.slack_alert_sent || conv.slack_alert_sent || false;
+    slackEl.style.display = slackSent ? 'inline-flex' : 'none';
 
     // Transcript
     const transcriptEl = document.getElementById('transcript');
@@ -366,7 +397,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Filter checkbox — email only
     document.getElementById('filterEmail').addEventListener('change', toggleEmailFilter);
 
-    // Modal
+    // Running summary toggle
+    document.getElementById('summaryToggle').addEventListener('click', () => {
+        const textEl    = document.getElementById('runningSummaryText');
+        const chevron   = document.querySelector('.summary-chevron');
+        const toggle    = document.getElementById('summaryToggle');
+        const expanded  = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', !expanded);
+        textEl.classList.toggle('collapsed', expanded);
+        chevron.textContent = expanded ? '▶' : '▼';
+    });
+    document.getElementById('summaryToggle').addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') document.getElementById('summaryToggle').click();
+    });
+
+    // Modal backdrop click to close
     document.getElementById('deleteModal').addEventListener('click', e => {
         if (e.target === document.getElementById('deleteModal'))
             document.getElementById('deleteModal').style.display = 'none';

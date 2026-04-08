@@ -180,6 +180,10 @@ class ChatInstance {
                             // Commit to history
                             this.addToHistory('assistant', fullText);
                             ChatManager.updateTabLabel(this.instanceIndex, null);
+                            // Store updated lead data so next turn sends it back
+                            if (evt.leadData) {
+                                this.leadData = { ...this.leadData, ...evt.leadData };
+                            }
                         }
 
                         if (evt.error) {
