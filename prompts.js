@@ -270,7 +270,7 @@ const SYSTEM_PROMPT_AR = `أنت ليلى، وكيلة المبيعات الذك
 نسخة تجريبية مجانية لمدة أسبوع: https://network.get-playbook.com/landing
 انضمي الآن: https://network.get-playbook.com/plans/1895618/buy
 
-شخصيتك: حادة، دافئة، مباشرة. مستشارة على معرفة واسعة — لست روبوت محادثة. أبداً لا تكونين آلية.
+شخصيتك: حادة، دافئة، مباشرة. مستشارة على معرفة واسعة — لست روبوت محادثة. أبداً لا تكوني آلية.
 
 قواعد اللغة:
 - استخدمي العربية العصرية النظيفة (ليست رسمية أكثر من اللازم)
@@ -293,7 +293,6 @@ const SYSTEM_PROMPT_AR = `أنت ليلى، وكيلة المبيعات الذك
 أبداً لا: تقدمي أكثر من عرض واحد، تسألي عن الاسم/البريد الإلكتروني قبل الاهتمام الحقيقي، تستخدمي كلمات مثل 'تمكين' أو 'أطلق العنان لإمكانياتك'، تبدو آلية.
 
 ملاحظة: العديد من الدروس المتقدمة وورش العمل متاحة بالعربية — اذكري هذا عندما يكون مناسباً للمستخدمات الناطقات بالعربية.`;
-
 
 // ─────────────────────────────────────────────
 // EXTRACTION PROMPT
@@ -331,7 +330,7 @@ Return ONLY valid JSON — no markdown, no explanation:
   "lead_type": "Membership" | "Learning" | "Investing" | "Partnerships" | "Community" | "Mentorship",
   "main_interest": "specific interest based on conversation or null",
   "pillar_interest": "connect | learn | invest | membership | event | unknown",
-  "dialect": "gulf | levantine | egyptian | msa | unknown",
+  "dialect": "gulf | levant | egypt | msa | unknown",
   "intent_level": "High" | "Medium" | "Low",
   "intent_signals": "1-sentence explanation of why you assessed this intent level, quoting specific things they said",
   "conversation_vibe": "serious" | "excited" | "curious" | "skeptical" | "funny" | "annoyed" | "trolling" | "distracted" | "overwhelmed" | "cold",
@@ -359,7 +358,7 @@ function shouldExtract(turnCount, latestMessage, previousLeadData) {
 
     // Always extract if we might be getting contact info for the first time
     if (!previousLeadData.email && (msg.includes('@') || msg.includes('email'))) return true;
-    if (!previousLeadData.name  && msg.split(' ').length >= 2 && msg.length < 60) return true;
+    if (!previousLeadData.name && msg.split(' ').length >= 2 && msg.length < 60) return true;
 
     // Always extract on high-signal phrases
     const highSignal = [
@@ -377,11 +376,35 @@ function shouldExtract(turnCount, latestMessage, previousLeadData) {
     return false;
 }
 
+// ─────────────────────────────────────────────
+// DIALECT DETECTION PROMPT
+// ─────────────────────────────────────────────
+
+const DIALECT_DETECTION_PROMPT = `Analyze this Arabic text. Return ONLY valid JSON, no explanation, no markdown.
+{
+  "dialect": "Gulf | Levantine | Egyptian | Moroccan | MSA | Unknown",
+  "confidence": "high | medium | low",
+  "tone_note": "One sentence: how to adjust phrasing for this dialect",
+  "sample_greeting": "Appropriate opening greeting in this dialect"
+}
+Guidance:
+- Gulf: هال / تصبحين على خير, informal warm, avoid stiff MSA
+- Levantine: يسلمو / كيفك, warm and expressive
+- Egyptian: إزيك, direct and warm
+- MSA: use when dialect is unclear
+
+USER TEXT: {{first_arabic_message}}`;
+
+// ─────────────────────────────────────────────
+// EXPORTS
+// ─────────────────────────────────────────────
+
 module.exports = {
     SYSTEM_PROMPT,
     SYSTEM_PROMPT_AR,
     EXTRACTION_SYSTEM,
     RUNNING_SUMMARY_PROMPT,
+    DIALECT_DETECTION_PROMPT,
     buildExtractionPrompt,
     shouldExtract,
 };

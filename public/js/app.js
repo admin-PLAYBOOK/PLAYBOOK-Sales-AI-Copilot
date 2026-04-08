@@ -130,8 +130,8 @@ class ChatInstance {
                     message,
                     history:        this.conversationHistory.slice(0, -1),
                     conversationId: this.conversationId,
-                    leadData:       this.leadData, // send accumulated lead data
-                    language:       this.language, // language preference
+                    leadData:       this.leadData,
+                    language:       this.language,
                 }),
             });
 
@@ -163,7 +163,11 @@ class ChatInstance {
                         if (evt.token !== undefined) {
                             fullText += evt.token;
                             // Render markdown incrementally
-                            bubble.innerHTML = marked.parse(fullText);
+                            if (typeof marked !== 'undefined') {
+                                bubble.innerHTML = marked.parse(fullText);
+                            } else {
+                                bubble.innerHTML = escapeHtml(fullText);
+                            }
                             this.el('messages').scrollTop = this.el('messages').scrollHeight;
                         }
 
@@ -208,23 +212,45 @@ class ChatInstance {
 
     setLanguage(lang) {
         this.language = lang;
-        // Update toggle button label - FIXED LOGIC
+        
+        // Update toggle button label
         const btn = this.el('langToggle');
         if (btn) {
-            // When current language is 'en', button should say 'العربية' (to switch to Arabic)
-            // When current language is 'ar', button should say 'English' (to switch to English)
             btn.textContent = lang === 'en' ? 'العربية' : 'English';
         }
+        
         // Update input placeholder and panel direction
         const input = this.el('input');
         const panel = document.getElementById(`panel-${this.containerId}`);
+        
+        // Get quick buttons elements
+        const quickBtnsWrapper = this.el('quickBtns');
+        const quickBtnsHint = quickBtnsWrapper?.previousElementSibling;
+        
         if (lang === 'ar') {
             if (input) input.placeholder = 'راسلي ليلى…';
             if (panel) panel.setAttribute('dir', 'rtl');
-            // Also update the welcome message if it's the initial state?
+            
+            // Update hint text
+            if (quickBtnsHint && quickBtnsHint.classList.contains('quick-btns-hint')) {
+                quickBtnsHint.textContent = 'لست متأكدة من أين تبدأين؟ جربي أحد هذه الخيارات:';
+            }
+            
+            // Update quick button texts
+            if (quickBtnsWrapper) {
+                const btns = quickBtnsWrapper.querySelectorAll('.quick-btn');
+                if (btns.length >= 4) {
+                    btns[0].innerHTML = '✨ انضمام';
+                    btns[1].innerHTML = '💰 استثمار';
+                    btns[2].innerHTML = '📚 تعلم';
+                    btns[3].innerHTML = '🌟 تواصل';
+                }
+            }
+            
+            // Update welcome message if it's the initial English greeting
             const messagesEl = this.el('messages');
-            if (messagesEl.children.length === 0 || (messagesEl.children.length === 1 && messagesEl.children[0].querySelector('.msg-bubble')?.innerText.includes("Hi, I'm Layla"))) {
-                // If it's the initial empty state or only has English greeting, update it
+            const firstMessage = messagesEl.children[0];
+            if (firstMessage && firstMessage.querySelector('.msg-bubble')?.innerText.includes("Hi, I'm Layla")) {
                 messagesEl.innerHTML = '';
                 this.renderMessage(
                     "أهلاً، أنا ليلى — مرشدتك في PLAYBOOK. ما الذي تبحثين عنه في الشبكة؟",
@@ -234,6 +260,33 @@ class ChatInstance {
         } else {
             if (input) input.placeholder = 'Message Layla…';
             if (panel) panel.removeAttribute('dir');
+            
+            // Update hint text
+            if (quickBtnsHint && quickBtnsHint.classList.contains('quick-btns-hint')) {
+                quickBtnsHint.textContent = 'Not sure where to start? Try one of these:';
+            }
+            
+            // Update quick button texts
+            if (quickBtnsWrapper) {
+                const btns = quickBtnsWrapper.querySelectorAll('.quick-btn');
+                if (btns.length >= 4) {
+                    btns[0].innerHTML = '✨ Join';
+                    btns[1].innerHTML = '💰 Invest';
+                    btns[2].innerHTML = '📚 Learn';
+                    btns[3].innerHTML = '🌟 Connect';
+                }
+            }
+            
+            // Update welcome message if it's the Arabic greeting
+            const messagesEl = this.el('messages');
+            const firstMessage = messagesEl.children[0];
+            if (firstMessage && firstMessage.querySelector('.msg-bubble')?.innerText.includes("أهلاً، أنا ليلى")) {
+                messagesEl.innerHTML = '';
+                this.renderMessage(
+                    "Hi, I'm Layla — your guide to PLAYBOOK. What are you looking to get out of the network?",
+                    'ai', false
+                );
+            }
         }
     }
 
@@ -269,7 +322,7 @@ class ChatInstance {
             div.innerHTML = `
                 <div class="msg-avatar">L</div>
                 <div class="msg-body">
-                    <div class="msg-bubble">${typeof marked !== 'undefined' ? marked.parse(text) : text}</div>
+                    <div class="msg-bubble">${typeof marked !== 'undefined' ? marked.parse(text) : escapeHtml(text)}</div>
                     <div class="msg-time">${time}</div>
                 </div>`;
         } else {
@@ -388,11 +441,6 @@ class ChatInstance {
             const next = this.language === 'en' ? 'ar' : 'en';
             this.setLanguage(next);
         });
-
-        const langBtn = this.el('langToggle');
-            if (langBtn) {
-                langBtn.textContent = this.language === 'en' ? 'العربية' : 'English';
-            }
     }
 }
 

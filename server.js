@@ -4,7 +4,15 @@ const axios   = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const db   = require('./db');
 const path = require('path');
-const { SYSTEM_PROMPT, EXTRACTION_SYSTEM, RUNNING_SUMMARY_PROMPT, buildExtractionPrompt, shouldExtract } = require('./prompts');
+const { 
+    SYSTEM_PROMPT, 
+    SYSTEM_PROMPT_AR,
+    EXTRACTION_SYSTEM, 
+    RUNNING_SUMMARY_PROMPT, 
+    DIALECT_DETECTION_PROMPT,  // This imports from prompts.js - DO NOT redefine below
+    buildExtractionPrompt, 
+    shouldExtract 
+} = require('./prompts');
 const { Redis } = require('@upstash/redis');
 
 const app = express();
@@ -23,24 +31,8 @@ const ADMIN_TOKEN     = process.env.ADMIN_TOKEN;
 const CLAUDE_MODEL    = 'claude-haiku-4-5-20251001';
 const FALLBACK_MODELS = ['claude-sonnet-4-6', 'claude-opus-4-6'];
 
-// ─────────────────────────────────────────────
-// DIALECT DETECTION PROMPT
-// ─────────────────────────────────────────────
-
-const DIALECT_DETECTION_PROMPT = `Analyze this Arabic text. Return ONLY valid JSON, no explanation, no markdown.
-{
-  "dialect": "Gulf | Levantine | Egyptian | Moroccan | MSA | Unknown",
-  "confidence": "high | medium | low",
-  "tone_note": "One sentence: how to adjust phrasing for this dialect",
-  "sample_greeting": "Appropriate opening greeting in this dialect"
-}
-Guidance:
-- Gulf: هال / تصبحين على خير, informal warm, avoid stiff MSA
-- Levantine: يسلمو / كيفك, warm and expressive
-- Egyptian: إزيك, direct and warm
-- MSA: use when dialect is unclear
-
-USER TEXT: {{first_arabic_message}}`;
+// REMOVE THIS DUPLICATE BLOCK - it's already imported from prompts.js
+// const DIALECT_DETECTION_PROMPT = `Analyze this Arabic text...`;  // DELETE THIS LINE
 
 const redis = process.env.UPSTASH_REDIS_URL
   ? new Redis({
