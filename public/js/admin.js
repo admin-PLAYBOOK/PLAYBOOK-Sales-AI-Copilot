@@ -185,7 +185,29 @@ function renderDetail(conv) {
     const history = conv.history      || [];
 
     // Header
-    const dialectLabel = lead.dialect ? ` <span class="dialect-badge">${escapeHtml(lead.dialect)}</span>` : '';
+    const dialectMap = {
+        gulf:      { flag: '🇸🇦', label: 'Gulf',      cls: 'dialect-badge-gulf'     },
+        levantine: { flag: '🇱🇧', label: 'Levantine', cls: 'dialect-badge-levant'   },
+        egyptian:  { flag: '🇪🇬', label: 'Egyptian',  cls: 'dialect-badge-egypt'    },
+        moroccan:  { flag: '🇲🇦', label: 'Moroccan',  cls: 'dialect-badge-moroccan' },
+        msa:       { flag: '📖',  label: 'MSA',       cls: 'dialect-badge-msa'      },
+        unknown:   { flag: '🌍',  label: 'Unknown',   cls: 'dialect-badge-unknown'  },
+    };
+    const countryFlagMap = {
+        'bahrain':      '🇧🇭', 'saudi arabia': '🇸🇦', 'kuwait':   '🇰🇼',
+        'uae':          '🇦🇪', 'oman':         '🇴🇲', 'qatar':    '🇶🇦',
+        'jordan':       '🇯🇴', 'lebanon':      '🇱🇧', 'syria':    '🇸🇾',
+        'palestine':    '🇵🇸', 'egypt':        '🇪🇬', 'morocco':  '🇲🇦',
+        'iraq':         '🇮🇶', 'libya':        '🇱🇾', 'tunisia':  '🇹🇳',
+    };
+    const dialectKey   = (lead.dialect || '').toLowerCase();
+    const dialectInfo  = dialectMap[dialectKey] || null;
+    const country      = lead.dialect_country || '';
+    const countryFlag  = countryFlagMap[country.toLowerCase()] || '';
+    const countryLabel = (country && country !== 'Unknown') ? ` · ${countryFlag} ${country}` : '';
+    const dialectLabel = dialectInfo
+        ? ` <span class="dialect-badge ${dialectInfo.cls}">${dialectInfo.flag} ${dialectInfo.label}${escapeHtml(countryLabel)}</span>`
+        : '';
     document.getElementById('detailName').innerHTML = escapeHtml(lead.name || 'Anonymous') + dialectLabel;
     document.getElementById('detailMeta').textContent = lead.email
         ? `${lead.email} · ${formatFull(conv.timestamp)}`
@@ -410,9 +432,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('summaryToggle').addEventListener('keydown', e => {
         if (e.key === 'Enter' || e.key === ' ') document.getElementById('summaryToggle').click();
     });
-
-    // Modal backdrop click to close
-    document.getElementById('deleteModal').addEventListener('click', e => {
         if (e.target === document.getElementById('deleteModal'))
             document.getElementById('deleteModal').style.display = 'none';
     });
@@ -420,4 +439,3 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape')
             document.getElementById('deleteModal').style.display = 'none';
     });
-});

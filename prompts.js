@@ -383,15 +383,19 @@ function shouldExtract(turnCount, latestMessage, previousLeadData) {
 const DIALECT_DETECTION_PROMPT = `Analyze this Arabic text. Return ONLY valid JSON, no explanation, no markdown.
 {
   "dialect": "Gulf | Levantine | Egyptian | Moroccan | MSA | Unknown",
+  "country": "Most likely country in English, e.g. Bahrain | Saudi Arabia | Kuwait | UAE | Jordan | Lebanon | Syria | Egypt | Morocco | Unknown",
+  "country_confidence": "high | medium | low",
   "confidence": "high | medium | low",
   "tone_note": "One sentence: how to adjust phrasing for this dialect",
   "sample_greeting": "Appropriate opening greeting in this dialect"
 }
 Guidance:
-- Gulf: هال / تصبحين على خير, informal warm, avoid stiff MSA
-- Levantine: يسلمو / كيفك, warm and expressive
-- Egyptian: إزيك, direct and warm
-- MSA: use when dialect is unclear
+- Gulf: هال / تصبحين على خير / والله, informal warm — look for Saudi, Kuwaiti, Bahraini, Emirati, Omani, Qatari markers
+- Levantine: يسلمو / كيفك / هيك, warm and expressive — Jordan, Lebanon, Syria, Palestine
+- Egyptian: إزيك / عامل إيه, direct and warm
+- Moroccan: واش / دابا / زوين, Darija markers
+- MSA: use when dialect is unclear or text is very formal
+- For country: use specific vocabulary, spelling choices, and expressions as clues. If you can narrow to a country with medium+ confidence, do so. Otherwise return Unknown.
 
 USER TEXT: {{first_arabic_message}}`;
 

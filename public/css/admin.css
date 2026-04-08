@@ -1130,28 +1130,30 @@ body.admin-page {
     margin-left: 8px;
     vertical-align: middle;
 }
-.pillar-connect    { background: rgba(139, 92, 246, 0.18); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); }
-.pillar-learn      { background: rgba(20, 184, 166, 0.18);  color: #2dd4bf; border: 1px solid rgba(20,184,166,0.3); }
-.pillar-invest     { background: rgba(245, 158, 11, 0.18);  color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
-.pillar-membership { background: rgba(99, 102, 241, 0.18);  color: #818cf8; border: 1px solid rgba(99,102,241,0.3); }
-.pillar-event      { background: rgba(236, 72, 153, 0.18);  color: #f472b6; border: 1px solid rgba(236,72,153,0.3); }
-.pillar-unknown    { background: rgba(148, 163, 184, 0.12); color: #94a3b8; border: 1px solid rgba(148,163,184,0.2); }
+.pillar-connect  { background: rgba(139, 92, 246, 0.18); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); }
+.pillar-learn    { background: rgba(20, 184, 166, 0.18);  color: #2dd4bf; border: 1px solid rgba(20,184,166,0.3); }
+.pillar-invest   { background: rgba(245, 158, 11, 0.18);  color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+.pillar-membership { background: rgba(99, 102, 241, 0.18); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); }
 
 /* Dialect badge — sits inline next to the name */
 .dialect-badge {
     display: inline-flex;
     align-items: center;
-    padding: 1px 8px;
+    padding: 2px 9px;
     border-radius: 12px;
     font-size: 11px;
-    font-weight: 500;
-    background: rgba(148, 163, 184, 0.15);
-    color: var(--text-secondary, #94a3b8);
-    border: 1px solid rgba(148,163,184,0.2);
+    font-weight: 700;
     margin-left: 8px;
     vertical-align: middle;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
 }
+.dialect-badge-gulf     { background: rgba(251, 191, 36, 0.2);  color: #fbbf24; border: 1px solid rgba(251,191,36,0.45); }
+.dialect-badge-levant   { background: rgba(52, 211, 153, 0.2);  color: #34d399; border: 1px solid rgba(52,211,153,0.45); }
+.dialect-badge-egypt    { background: rgba(96, 165, 250, 0.2);  color: #60a5fa; border: 1px solid rgba(96,165,250,0.45); }
+.dialect-badge-moroccan { background: rgba(251, 113, 133, 0.2); color: #fb7185; border: 1px solid rgba(251,113,133,0.45); }
+.dialect-badge-msa      { background: rgba(167, 139, 250, 0.2); color: #a78bfa; border: 1px solid rgba(167,139,250,0.45); }
+.dialect-badge-unknown  { background: rgba(148, 163, 184, 0.15); color: #94a3b8; border: 1px solid rgba(148,163,184,0.3); }
 
 /* Channel badge — detail header */
 .channel-badge {

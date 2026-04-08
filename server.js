@@ -631,8 +631,8 @@ app.post('/api/chat', async (req, res) => {
                 };
                 console.log(`🎭 Vibe: ${leadData.conversation_vibe} | Intent: ${leadData.intent_level}`);
 
-                // ── Slack alert for high-intent leads ──
-                if (leadData.intent_level === 'High' && previousLead.intent_level !== 'High') {
+                // ── Slack alert for high-intent leads — only when email is known ──
+                if (leadData.intent_level === 'High' && previousLead.intent_level !== 'High' && leadData.email) {
                     const fullHistory = [
                         ...history,
                         { role: 'user', content: message },
@@ -691,7 +691,6 @@ app.post('/api/chat', async (req, res) => {
             done: true,
             conversation_id: convId,
             timestamp: new Date().toISOString(),
-            leadData: { ...leadData, ...salesOutput },
         })}\n\n`);
         res.end();
 
