@@ -16,6 +16,8 @@ class ChatInstance {
         // Persisted lead data — sent back with each request so server
         // can do incremental extraction instead of re-inferring everything
         this.leadData            = {};
+        // Language preference — 'en' or 'ar'
+        this.language            = 'en';
     }
 
     // ── History ──
@@ -129,6 +131,7 @@ class ChatInstance {
                     history:        this.conversationHistory.slice(0, -1),
                     conversationId: this.conversationId,
                     leadData:       this.leadData, // send accumulated lead data
+                    language:       this.language, // language preference
                 }),
             });
 
@@ -203,6 +206,37 @@ class ChatInstance {
         this.sendMessage();
     }
 
+    setLanguage(lang) {
+        this.language = lang;
+        // Update toggle button label - FIXED LOGIC
+        const btn = this.el('langToggle');
+        if (btn) {
+            // When current language is 'en', button should say 'العربية' (to switch to Arabic)
+            // When current language is 'ar', button should say 'English' (to switch to English)
+            btn.textContent = lang === 'en' ? 'العربية' : 'English';
+        }
+        // Update input placeholder and panel direction
+        const input = this.el('input');
+        const panel = document.getElementById(`panel-${this.containerId}`);
+        if (lang === 'ar') {
+            if (input) input.placeholder = 'راسلي ليلى…';
+            if (panel) panel.setAttribute('dir', 'rtl');
+            // Also update the welcome message if it's the initial state?
+            const messagesEl = this.el('messages');
+            if (messagesEl.children.length === 0 || (messagesEl.children.length === 1 && messagesEl.children[0].querySelector('.msg-bubble')?.innerText.includes("Hi, I'm Layla"))) {
+                // If it's the initial empty state or only has English greeting, update it
+                messagesEl.innerHTML = '';
+                this.renderMessage(
+                    "أهلاً، أنا ليلى — مرشدتك في PLAYBOOK. ما الذي تبحثين عنه في الشبكة؟",
+                    'ai', false
+                );
+            }
+        } else {
+            if (input) input.placeholder = 'Message Layla…';
+            if (panel) panel.removeAttribute('dir');
+        }
+    }
+
     newChat() {
         this.clearSession();
         const messagesEl = this.el('messages');
@@ -210,10 +244,13 @@ class ChatInstance {
         this.el('quickBtns').style.display = 'flex';
         const hint = this.el('quickBtns').previousElementSibling;
         if (hint?.classList.contains('quick-btns-hint')) hint.style.display = 'block';
-        this.renderMessage(
-            "Hi, I'm Layla — your guide to PLAYBOOK. What are you looking to get out of the network?",
-            'ai', false
-        );
+        
+        // Use language-appropriate greeting
+        const greeting = this.language === 'ar'
+            ? "أهلاً، أنا ليلى — مرشدتك في PLAYBOOK. ما الذي تبحثين عنه في الشبكة؟"
+            : "Hi, I'm Layla — your guide to PLAYBOOK. What are you looking to get out of the network?";
+        
+        this.renderMessage(greeting, 'ai', false);
         this.el('input').focus();
         ChatManager.updateTabLabel(this.instanceIndex, null);
     }
@@ -296,6 +333,7 @@ class ChatInstance {
                         </svg>
                         Clear
                     </button>
+                    <button class="lang-toggle-btn" id="${cid}-langToggle" aria-label="Toggle language">العربية</button>
                     <div class="client-logo">PLAYBOOK</div>
                 </div>
 
@@ -345,6 +383,16 @@ class ChatInstance {
         });
 
         this.el('clearBtn').addEventListener('click', () => this.newChat());
+
+        this.el('langToggle').addEventListener('click', () => {
+            const next = this.language === 'en' ? 'ar' : 'en';
+            this.setLanguage(next);
+        });
+
+        const langBtn = this.el('langToggle');
+            if (langBtn) {
+                langBtn.textContent = this.language === 'en' ? 'العربية' : 'English';
+            }
     }
 }
 

@@ -926,6 +926,55 @@ body.client-page {
     background: rgba(255,255,255,0.1);
 }
 
+/* ── Language toggle button ── */
+.lang-toggle-btn {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.28);
+    color: rgba(255,255,255,0.88);
+    font-size: 0.72rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+}
+
+.lang-toggle-btn:hover {
+    background: rgba(255,255,255,0.22);
+    color: #fff;
+}
+
+.lang-toggle-btn:active {
+    background: rgba(255,255,255,0.1);
+}
+
+/* RTL support when Arabic is active */
+[dir="rtl"] .client-input-row {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .client-messages .msg-user {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .client-messages .msg-ai {
+    flex-direction: row;
+}
+
+[dir="rtl"] .msg-bubble {
+    text-align: right;
+}
+
+[dir="rtl"] .client-input-wrap input {
+    text-align: right;
+    direction: rtl;
+}
+
 /* ── Tab / shell responsive ── */
 @media (max-width: 480px) {
     .chat-shell {

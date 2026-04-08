@@ -23,6 +23,25 @@ const ADMIN_TOKEN     = process.env.ADMIN_TOKEN;
 const CLAUDE_MODEL    = 'claude-haiku-4-5-20251001';
 const FALLBACK_MODELS = ['claude-sonnet-4-6', 'claude-opus-4-6'];
 
+// ─────────────────────────────────────────────
+// DIALECT DETECTION PROMPT
+// ─────────────────────────────────────────────
+
+const DIALECT_DETECTION_PROMPT = `Analyze this Arabic text. Return ONLY valid JSON, no explanation, no markdown.
+{
+  "dialect": "Gulf | Levantine | Egyptian | Moroccan | MSA | Unknown",
+  "confidence": "high | medium | low",
+  "tone_note": "One sentence: how to adjust phrasing for this dialect",
+  "sample_greeting": "Appropriate opening greeting in this dialect"
+}
+Guidance:
+- Gulf: هال / تصبحين على خير, informal warm, avoid stiff MSA
+- Levantine: يسلمو / كيفك, warm and expressive
+- Egyptian: إزيك, direct and warm
+- MSA: use when dialect is unclear
+
+USER TEXT: {{first_arabic_message}}`;
+
 const redis = process.env.UPSTASH_REDIS_URL
   ? new Redis({
       url:   process.env.UPSTASH_REDIS_URL,
@@ -218,6 +237,32 @@ async function updateRunningSummary(convId, conversationHistory) {
         console.log(`📝 Running summary updated for ${convId}`);
     } catch (err) {
         console.warn('⚠️ Running summary failed:', err.message);
+    }
+}
+
+// ─────────────────────────────────────────────
+// DIALECT DETECTION — runs once on first Arabic message
+// ─────────────────────────────────────────────
+
+async function detectDialect(convId, arabicText) {
+    if (sessionMemory[convId]?.dialect) return; // already detected
+    try {
+        const prompt = DIALECT_DETECTION_PROMPT.replace('{{first_arabic_message}}', arabicText);
+        const { text } = await callClaude(
+            'You are a dialect analyser. Return only valid JSON.',
+            [{ role: 'user', content: prompt }],
+            150
+        );
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        const dialectData = JSON.parse(jsonMatch ? jsonMatch[0] : text);
+        sessionMemory[convId] = {
+            ...sessionMemory[convId],
+            dialect:         dialectData.dialect,
+            dialectToneNote: dialectData.tone_note,
+        };
+        console.log(`🌍 Dialect detected for ${convId}: ${dialectData.dialect} (${dialectData.confidence})`);
+    } catch (err) {
+        console.warn('⚠️ Dialect detection failed:', err.message);
     }
 }
 
@@ -448,7 +493,7 @@ app.post('/api/chat', async (req, res) => {
         return res.status(429).json({ success: false, error: 'Too many requests. Please wait a moment.' });
     }
 
-    const { message: rawMessage, history = [], conversationId, leadData: clientLeadData } = req.body;
+    const { message: rawMessage, history = [], conversationId, leadData: clientLeadData, language = 'en' } = req.body;
     const message = sanitizeMessage(rawMessage);
 
     if (!message)              return res.status(400).json({ success: false, error: 'No message provided' });
@@ -479,6 +524,33 @@ app.post('/api/chat', async (req, res) => {
 
         // Build enriched system prompt with memory context
         let enrichedSystemPrompt = SYSTEM_PROMPT;
+
+        // ── Language setting ──
+        const safeLanguage = language === 'ar' ? 'ar' : 'en';
+
+        if (safeLanguage === 'ar') {
+            enrichedSystemPrompt = SYSTEM_PROMPT_AR;  // Use Arabic prompt
+        } else {
+            enrichedSystemPrompt = SYSTEM_PROMPT;     // Use English prompt
+        }
+
+        const langInstruction = safeLanguage === 'ar'
+        ? '\n\n## تعليمات اللغة\nأنت تردين فقط بالعربية الحديثة النظيفة. لا تستخدمي الإنجليزية إطلاقاً. كوني طبيعية ودافئة كصديقة.'
+        : '\n\n## LANGUAGE INSTRUCTION\nYou respond only in English. Be warm, natural, and conversational.';
+
+        enrichedSystemPrompt += langInstruction;
+
+        // ── Dialect detection (fires once on first Arabic message) ──
+        if (safeLanguage === 'ar' && !sessionMemory[convId]?.dialect) {
+            detectDialect(convId, message).catch(() => {}); // fire-and-forget
+        }
+       const dialectNote = sessionMemory[convId]?.dialectToneNote
+            ? `\n\n## نصائح اللهجة العربية\n${sessionMemory[convId].dialectToneNote}\nتكلمي بهذه اللهجة بشكل طبيعي، لا تكوني رسمية أكثر من اللازم.`
+            : '';
+
+        if (dialectNote && safeLanguage === 'ar') {
+            enrichedSystemPrompt += dialectNote;
+        }
 
         // Inject running summary if available
         const runningSummary = sessionMemory[convId]?.runningSummary;
