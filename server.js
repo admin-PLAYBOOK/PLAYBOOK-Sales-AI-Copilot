@@ -4,7 +4,8 @@ const axios   = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const db   = require('./db');
 const path = require('path');
-const { SYSTEM_PROMPT, EXTRACTION_SYSTEM, buildExtractionPrompt, shouldExtract } = require('./prompts');
+const { SYSTEM_PROMPT, EXTRACTION_SYSTEM, RUNNING_SUMMARY_PROMPT, buildExtractionPrompt, shouldExtract } = require('./prompts');
+const { Redis } = require('@upstash/redis');
 
 const app = express();
 app.use(express.json());
@@ -21,6 +22,13 @@ const ADMIN_TOKEN     = process.env.ADMIN_TOKEN;
 
 const CLAUDE_MODEL    = 'claude-haiku-4-5-20251001';
 const FALLBACK_MODELS = ['claude-sonnet-4-6', 'claude-opus-4-6'];
+
+const redis = process.env.UPSTASH_REDIS_URL
+  ? new Redis({
+      url:   process.env.UPSTASH_REDIS_URL,
+      token: process.env.UPSTASH_REDIS_TOKEN,
+    })
+  : null;
 
 /**
  * Non-streaming call — used for extraction only.
@@ -149,6 +157,68 @@ function checkRateLimit(map, key, maxRequests, windowMs = 60_000) {
     entry.count++;
     map.set(key, entry);
     return entry.count <= maxRequests;
+}
+
+// ─────────────────────────────────────────────
+// IN-MEMORY MEMORY STORES
+// ─────────────────────────────────────────────
+
+// Running summaries — keyed by conversationId
+// { runningSummary: string }
+const sessionMemory = {};
+
+// Cross-session user profiles — keyed by email
+// { name, pillar, stage, lastSeen, totalVisits }
+const userProfiles = {};
+
+async function saveUserProfile(email, data) {
+    if (!email || !redis) return;
+    const prev = await redis.get(`user:${email}`) || {};
+    await redis.set(`user:${email}`, {
+        name:        data.name          || prev.name,
+        pillar:      data.main_interest || prev.pillar,
+        stage:       data.lead_type     || prev.stage,
+        lastSeen:    new Date().toISOString(),
+        totalVisits: (prev.totalVisits  || 0) + 1,
+    });
+}
+
+async function getReturningUserContext(email) {
+    if (!email || !redis) return null;
+    const profile = await redis.get(`user:${email}`);
+    if (!profile || profile.totalVisits < 2) return null;
+    return `Returning user: ${profile.name || 'Unknown'}.`
+        + ` Previously interested in: ${profile.pillar || 'unknown'}.`
+        + ` Stage: ${profile.stage || 'unknown'}.`
+        + ` Greet her by name and reference what she was exploring before.`;
+}
+
+// ─────────────────────────────────────────────
+// RUNNING SUMMARY — fires every 5 user messages
+// ─────────────────────────────────────────────
+
+async function updateRunningSummary(convId, conversationHistory) {
+    // Only fire when turn count is a multiple of 5
+    const userTurns = conversationHistory.filter(m => m.role === 'user').length;
+    if (userTurns === 0 || userTurns % 5 !== 0) return;
+
+    try {
+        const last5 = conversationHistory.slice(-5)
+            .map(m => `${m.role}: ${m.content}`)
+            .join('\n');
+        const summaryPrompt = RUNNING_SUMMARY_PROMPT.replace('{{last_5_messages}}', last5);
+
+        const { text: summary } = await callClaude(
+            'You are a concise summariser. Output plain text only — no markdown, no preamble.',
+            [{ role: 'user', content: summaryPrompt }],
+            200
+        );
+
+        sessionMemory[convId] = { ...sessionMemory[convId], runningSummary: summary.trim() };
+        console.log(`📝 Running summary updated for ${convId}`);
+    } catch (err) {
+        console.warn('⚠️ Running summary failed:', err.message);
+    }
 }
 
 // ─────────────────────────────────────────────
@@ -314,6 +384,41 @@ async function syncToHubspot(leadData, salesOutput) {
 }
 
 // ─────────────────────────────────────────────
+// SLACK ALERTS — high-intent leads
+// ─────────────────────────────────────────────
+
+async function sendSlackAlert(leadData, conversationHistory) {
+    const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+    if (!webhookUrl) return; // silently skip if not configured
+
+    const lastMsg = conversationHistory[conversationHistory.length - 1]?.content || '';
+
+    const message = {
+        text: [
+            '🔥 *HOT LEAD* — Layla captured a High Intent conversation',
+            `*Name:* ${leadData.name || 'Unknown'}`,
+            `*Email:* ${leadData.email || 'Not captured yet'}`,
+            `*Interest:* ${leadData.main_interest || 'unclear'}`,
+            `*Intent signals:* ${leadData.intent_signals || 'unclear'}`,
+            `*Vibe:* ${leadData.conversation_vibe || 'unclear'}`,
+            `*Vibe note:* ${leadData.vibe_note || ''}`,
+            `*Last message:* "${lastMsg.slice(0, 200)}"`,
+            `*Suggested next action:* ${leadData.recommended_next_action || ''}`,
+            '→ Check HubSpot and follow up within 30 minutes.',
+        ].join('\n'),
+    };
+
+    try {
+        await axios.post(webhookUrl, message, {
+            headers: { 'Content-Type': 'application/json' },
+        });
+        console.log('🔔 Slack alert sent for high-intent lead');
+    } catch (err) {
+        console.warn('⚠️ Slack alert failed:', err.response?.data || err.message);
+    }
+}
+
+// ─────────────────────────────────────────────
 // GET /api/chat/:id  — restore a conversation
 // ─────────────────────────────────────────────
 
@@ -371,13 +476,30 @@ app.post('/api/chat', async (req, res) => {
 
     try {
         // ── Step 1: Stream Layla's conversational reply ──
+
+        // Build enriched system prompt with memory context
+        let enrichedSystemPrompt = SYSTEM_PROMPT;
+
+        // Inject running summary if available
+        const runningSummary = sessionMemory[convId]?.runningSummary;
+        if (runningSummary) {
+            enrichedSystemPrompt += '\n\n## CONVERSATION CONTEXT (do not repeat to user)\n' + runningSummary;
+        }
+
+        // Inject returning user context if email is known
+        const knownEmail = clientLeadData?.email;
+        const returningCtx = await getReturningUserContext(knownEmail);  // ← Add await here
+        if (returningCtx) {
+            enrichedSystemPrompt += '\n\n## RETURNING USER\n' + returningCtx;
+        }
+
         const conversationMessages = [
             ...history.slice(-18).map(m => ({ role: m.role, content: m.content })),
             { role: 'user', content: message },
         ];
 
         const { fullText: botReply, model } = await callClaudeStream(
-            SYSTEM_PROMPT,
+            enrichedSystemPrompt,
             conversationMessages,
             res,
             600
@@ -432,10 +554,34 @@ app.post('/api/chat', async (req, res) => {
                     priority:                parsed.priority                || salesOutput.priority,
                 };
                 console.log(`🎭 Vibe: ${leadData.conversation_vibe} | Intent: ${leadData.intent_level}`);
+
+                // ── Slack alert for high-intent leads ──
+                if (leadData.intent_level === 'High' && previousLead.intent_level !== 'High') {
+                    const fullHistory = [
+                        ...history,
+                        { role: 'user', content: message },
+                    ];
+                    sendSlackAlert({ ...leadData, ...salesOutput }, fullHistory)
+                        .catch(err => console.warn('⚠️ Slack alert error:', err.message));
+                }
+
+                // ── Update user profile for cross-session memory ──
+                if (leadData.email) {
+                    saveUserProfile(leadData.email, leadData);
+                }
             } catch (e) {
                 console.warn('⚠️ Extraction failed:', e.message);
             }
         }
+
+        // ── Running summary (fire-and-forget, every 5 user turns) ──
+        const fullHistoryForSummary = [
+            ...history,
+            { role: 'user', content: message },
+            { role: 'assistant', content: botReply },
+        ];
+        updateRunningSummary(convId, fullHistoryForSummary)
+            .catch(err => console.warn('⚠️ Summary error:', err.message));
 
         // ── Step 3: HubSpot — only sync when email is first captured ──
         // We check: does this turn have an email that the previous turn didn't?
@@ -536,9 +682,10 @@ app.delete('/api/admin/conversations/:id', requireAdminSession, async (req, res)
 app.get('/test', (req, res) => res.json({
     status: 'OK', message: 'Layla is online',
     time: new Date().toISOString(),
-    database:    process.env.DATABASE_URL ? 'configured' : 'not configured',
-    hubspot:     HUBSPOT_TOKEN            ? 'configured' : 'not configured',
-    hubspotList: HUBSPOT_LIST_ID          ? HUBSPOT_LIST_ID : 'not configured',
+    database:    process.env.DATABASE_URL      ? 'configured' : 'not configured',
+    hubspot:     HUBSPOT_TOKEN                 ? 'configured' : 'not configured',
+    hubspotList: HUBSPOT_LIST_ID               ? HUBSPOT_LIST_ID : 'not configured',
+    slack:       process.env.SLACK_WEBHOOK_URL ? 'configured' : 'not configured',
 }));
 
 // Serve admin page
@@ -572,6 +719,7 @@ async function startServer() {
     if (!CLAUDE_API_KEY)  console.warn('⚠️  CLAUDE_API_KEY not set');
     if (!HUBSPOT_TOKEN)   console.warn('⚠️  HUBSPOT_ACCESS_TOKEN not set');
     if (!HUBSPOT_LIST_ID) console.warn('ℹ️  HUBSPOT_LIST_ID not set — contacts won\'t be added to a list');
+    if (!process.env.SLACK_WEBHOOK_URL) console.warn('ℹ️  SLACK_WEBHOOK_URL not set — Slack alerts disabled');
 
     app.listen(PORT, () => {
         console.log('\n' + '='.repeat(50));

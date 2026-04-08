@@ -207,6 +207,21 @@ Lead capture behaviour:
 
 
 // ─────────────────────────────────────────────
+// RUNNING SUMMARY PROMPT — fires every 5 messages
+// ─────────────────────────────────────────────
+
+const RUNNING_SUMMARY_PROMPT = `Summarize this conversation in exactly 3 lines. Be specific, not generic.
+Line 1: User name (if shared), career stage, region/country if mentioned
+Line 2: Which Playbook pillar interests them most: Connect / Learn / Invest / Membership / unclear
+Line 3: Decision stage: cold / exploring / warm / ready to convert
+
+Output format (single paragraph, no line breaks in output):
+[Name or 'Unknown'] - [career stage] in [region]. Most interested in [pillar]. Currently [cold/exploring/warm/ready]. [One sentence on what matters most.]
+
+CONVERSATION:
+{{last_5_messages}}`;
+
+// ─────────────────────────────────────────────
 // EXTRACTION PROMPT
 // ─────────────────────────────────────────────
 
@@ -287,6 +302,7 @@ function shouldExtract(turnCount, latestMessage, previousLeadData) {
 module.exports = {
     SYSTEM_PROMPT,
     EXTRACTION_SYSTEM,
+    RUNNING_SUMMARY_PROMPT,
     buildExtractionPrompt,
     shouldExtract,
 };
