@@ -1041,7 +1041,7 @@ body.admin-page {
     padding: 7px 12px;
     border-radius: 8px;
     border: 1px solid var(--admin-border);
-    background: var(--admin-surface);
+    background: var(--admin-input-bg);
     color: var(--admin-text);
     font-size: 0.78rem;
     font-family: inherit;
@@ -1213,19 +1213,52 @@ body.admin-page {
     opacity: 0.9;
 }
 
-/* Running summary toggle */
-.summary-toggle {
+/* Generic collapsible toggle */
+.collapsible-toggle {
     cursor: pointer;
     user-select: none;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
 }
-.summary-toggle:hover { opacity: 0.85; }
-.summary-chevron {
-    font-size: 10px;
-    color: var(--text-secondary, #94a3b8);
-    transition: transform 0.2s;
+.collapsible-toggle:hover { opacity: 0.8; }
+
+.collapsible-chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    background: var(--admin-hover);
+    border: 1px solid var(--admin-border);
+    flex-shrink: 0;
+    transition: transform 0.2s ease, background 0.15s;
+    font-style: normal;
+    font-size: 9px;
+    color: var(--admin-text-muted);
+}
+
+.collapsible-toggle[aria-expanded="true"] .collapsible-chevron {
+    transform: rotate(90deg);
+    background: rgba(130,17,201,0.15);
+    border-color: rgba(130,17,201,0.3);
+    color: var(--vibrant-light);
+}
+
+/* Collapsible content */
+.collapsible-content {
+    overflow: hidden;
+    transition: max-height 0.25s ease, opacity 0.2s, margin-top 0.2s;
+    max-height: 1000px;
+    opacity: 1;
+    margin-top: 12px;
+}
+.collapsible-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
 }
 
 /* Running summary text */
@@ -1233,15 +1266,5 @@ body.admin-page {
     font-size: 13px;
     line-height: 1.6;
     color: var(--text-secondary, #94a3b8);
-    margin-top: 10px;
     white-space: pre-wrap;
-    overflow: hidden;
-    transition: max-height 0.25s ease, opacity 0.2s;
-    max-height: 600px;
-    opacity: 1;
-}
-.running-summary.collapsed {
-    max-height: 0;
-    opacity: 0;
-    margin-top: 0;
 }

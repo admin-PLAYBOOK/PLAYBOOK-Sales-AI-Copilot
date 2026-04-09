@@ -106,24 +106,34 @@ async function saveConversation(data) {
 async function getConversations(limit = 200, offset = 0, filters = {}) {
     const client = await pool.connect();
     try {
-        let query = `SELECT * FROM conversations WHERE 1=1`;
+        let baseWhere = `WHERE 1=1`;
         const params = [];
         let i = 1;
 
         if (filters.intent_level) {
-            query += ` AND lead_data->>'intent_level' = $${i++}`;
+            baseWhere += ` AND lead_data->>'intent_level' = $${i++}`;
             params.push(filters.intent_level);
         }
 
         if (filters.has_email) {
-            query += ` AND lead_data->>'email' IS NOT NULL`;
+            baseWhere += ` AND lead_data->>'email' IS NOT NULL`;
         }
 
-        query += ` ORDER BY timestamp DESC LIMIT $${i++} OFFSET $${i++}`;
-        params.push(limit, offset);
+        // Get true total count matching filters (before pagination)
+        const countResult = await client.query(
+            `SELECT COUNT(*)::int AS total FROM conversations ${baseWhere}`,
+            params
+        );
+        const total = countResult.rows[0].total;
 
-        const result = await client.query(query, params);
-        return result.rows.map(parseRow);
+        // Get paginated rows
+        const dataParams = [...params, limit, offset];
+        const result = await client.query(
+            `SELECT * FROM conversations ${baseWhere} ORDER BY timestamp DESC LIMIT $${i++} OFFSET $${i++}`,
+            dataParams
+        );
+
+        return { rows: result.rows.map(parseRow), total };
     } finally {
         client.release();
     }

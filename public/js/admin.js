@@ -33,6 +33,10 @@ async function adminLogin() {
             document.getElementById('adminDash').style.display = 'flex';
             await loadStats();
             await loadConversations();
+            setInterval(async () => {
+                await loadStats();
+                await loadConversations();
+            }, 30_000);
         } else {
             errorEl.style.display = 'block';
             document.getElementById('passwordInput').value = '';
@@ -85,14 +89,21 @@ function applyFilters() {
     if (activeFilters.search) {
         const q = activeFilters.search;
         filtered = filtered.filter(c =>
-            (c.lead_data?.name  || '').toLowerCase().includes(q) ||
-            (c.lead_data?.email || '').toLowerCase().includes(q)
+            (c.lead_data?.name              || '').toLowerCase().includes(q) ||
+            (c.lead_data?.email             || '').toLowerCase().includes(q) ||
+            (c.lead_data?.main_interest     || '').toLowerCase().includes(q) ||
+            (c.lead_data?.conversation_vibe || '').toLowerCase().includes(q) ||
+            (c.lead_data?.lead_type         || '').toLowerCase().includes(q)
         );
     }
 
     renderFeed(filtered);
-    document.getElementById('countText').textContent =
-        `${filtered.length} conversation${filtered.length !== 1 ? 's' : ''}`;
+
+    // Only update count label when a filter is active — otherwise loadConversations owns it
+    if (activeFilters.intent !== 'all' || activeFilters.emailOnly || activeFilters.search) {
+        document.getElementById('countText').textContent =
+            `${filtered.length} conversation${filtered.length !== 1 ? 's' : ''}`;
+    }
 }
 
 function setIntentFilter(value) {
@@ -119,12 +130,20 @@ async function loadConversations() {
         const data = await res.json();
 
         allConversations = data.conversations || [];
+        // Use server-reported total (accurate even with pagination)
+        const serverTotal = data.total ?? allConversations.length;
+        document.getElementById('countText').textContent =
+            `${serverTotal} conversation${serverTotal !== 1 ? 's' : ''}`;
         applyFilters();
     } catch (_) {}
 }
 
 function renderFeed(conversations) {
     const feed = document.getElementById('conversationFeed');
+
+    // Preserve scroll position across re-renders
+    const prevScroll = feed.scrollTop;
+
     feed.innerHTML = '';
 
     if (!conversations.length) {
@@ -161,6 +180,9 @@ function renderFeed(conversations) {
         item.addEventListener('click', () => openConversation(conv.id));
         feed.appendChild(item);
     });
+
+    // Restore scroll position so auto-refresh doesn't jump
+    feed.scrollTop = prevScroll;
 }
 
 // ─────────────────────────────────────────────
@@ -243,6 +265,7 @@ function renderDetail(conv) {
         { label: 'Email',     value: lead.email         || '—' },
         { label: 'Lead Type', value: lead.lead_type     || '—' },
         { label: 'Interest',  value: lead.main_interest || '—' },
+        { label: 'Blocker',   value: lead.blocker       || 'None identified' },
     ];
     document.getElementById('leadGrid').innerHTML = fields.map(f => `
         <div class="lead-field">
@@ -433,19 +456,26 @@ document.addEventListener('DOMContentLoaded', () => {
         applyFilters();
     });
 
-    // Running summary toggle
-    document.getElementById('summaryToggle').addEventListener('click', () => {
-        const textEl    = document.getElementById('runningSummaryText');
-        const chevron   = document.querySelector('.summary-chevron');
-        const toggle    = document.getElementById('summaryToggle');
-        const expanded  = toggle.getAttribute('aria-expanded') === 'true';
-        toggle.setAttribute('aria-expanded', !expanded);
-        textEl.classList.toggle('collapsed', expanded);
-        chevron.textContent = expanded ? '▶' : '▼';
-    });
-    document.getElementById('summaryToggle').addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') document.getElementById('summaryToggle').click();
-    });
+    // Collapsible cards — Sales, HubSpot, Conversation Summary
+    function makeCollapsible(toggleId, contentId) {
+        const toggle  = document.getElementById(toggleId);
+        const content = document.getElementById(contentId);
+        if (!toggle || !content) return;
+        const chevron = toggle.querySelector('.collapsible-chevron');
+
+        toggle.addEventListener('click', () => {
+            const expanded = toggle.getAttribute('aria-expanded') === 'true';
+            toggle.setAttribute('aria-expanded', String(!expanded));
+            content.classList.toggle('collapsed', expanded);
+        });
+        toggle.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle.click(); }
+        });
+    }
+
+    makeCollapsible('salesToggle',   'salesContent');
+    makeCollapsible('hubspotToggle', 'hubspotContent');
+    makeCollapsible('summaryToggle', 'runningSummaryText');
 
     // Close delete modal on backdrop click
     document.getElementById('deleteModal').addEventListener('click', e => {

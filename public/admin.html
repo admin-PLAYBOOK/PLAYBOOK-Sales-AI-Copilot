@@ -126,36 +126,44 @@
                     </div>
 
                     <div class="detail-card span-2">
-                        <div class="detail-card-title">🎯 Sales Recommendations</div>
-                        <div class="rec-grid">
-                            <div>
-                                <div class="rec-label">Next Action</div>
-                                <div class="rec-box" id="nextAction">—</div>
-                            </div>
-                            <div>
-                                <div class="rec-label">Suggested Follow-up Email</div>
-                                <div class="rec-box" id="followUp">—</div>
+                        <div class="detail-card-title collapsible-toggle" id="salesToggle" role="button" tabindex="0" aria-expanded="false">
+                            🎯 Sales Recommendations <span class="collapsible-chevron">▶</span>
+                        </div>
+                        <div id="salesContent" class="collapsible-content collapsed">
+                            <div class="rec-grid">
+                                <div>
+                                    <div class="rec-label">Next Action</div>
+                                    <div class="rec-box" id="nextAction">—</div>
+                                </div>
+                                <div>
+                                    <div class="rec-label">Suggested Follow-up Email</div>
+                                    <div class="rec-box" id="followUp">—</div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="detail-card">
-                        <div class="detail-card-title">🔄 HubSpot
+                        <div class="detail-card-title collapsible-toggle" id="hubspotToggle" role="button" tabindex="0" aria-expanded="false">
+                            🔄 HubSpot
                             <span id="slackAlertIndicator" class="slack-tick" title="Slack alert was sent" style="display:none">✅ Slack alerted</span>
+                            <span class="collapsible-chevron">▶</span>
                         </div>
-                        <div id="hubspotStatus"></div>
-                        <div class="rec-label" id="convTimestamp" style="margin-top:12px"></div>
-                        <div class="rec-label" id="convModel" style="margin-top:4px"></div>
+                        <div id="hubspotContent" class="collapsible-content collapsed">
+                            <div id="hubspotStatus"></div>
+                            <div class="rec-label" id="convTimestamp" style="margin-top:12px"></div>
+                            <div class="rec-label" id="convModel" style="margin-top:4px"></div>
+                        </div>
                     </div>
 
                     <div class="detail-card" id="runningSummaryWrap" style="display:none">
-                        <div class="detail-card-title summary-toggle" id="summaryToggle" role="button" tabindex="0" aria-expanded="false">
-                            📝 Conversation Summary <span class="summary-chevron">▶</span>
+                        <div class="detail-card-title collapsible-toggle" id="summaryToggle" role="button" tabindex="0" aria-expanded="false">
+                            📝 Conversation Summary <span class="collapsible-chevron">▶</span>
                         </div>
-                        <div id="runningSummaryText" class="running-summary collapsed"></div>
+                        <div id="runningSummaryText" class="collapsible-content running-summary collapsed"></div>
                     </div>
 
-                    <div class="detail-card">
+                    <div class="detail-card span-2">
                         <div class="detail-card-title">💬 Conversation Transcript</div>
                         <div class="transcript" id="transcript" role="log"></div>
                     </div>
