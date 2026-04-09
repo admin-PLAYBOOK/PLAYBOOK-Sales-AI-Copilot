@@ -14,6 +14,7 @@ const {
     shouldExtract 
 } = require('./prompts');
 const { Redis } = require('@upstash/redis');
+const { findContent, formatContentLink } = require('./content library');
 
 const app = express();
 app.use(express.json());
@@ -556,6 +557,18 @@ app.post('/api/chat', async (req, res) => {
         if (returningCtx) {
             enrichedSystemPrompt += '\n\n## RETURNING USER\n' + returningCtx;
         }
+
+        // ── Inject relevant content links based on current message ──
+        try {
+            const relevantContent = findContent(message, 4);
+            if (relevantContent.length > 0) {
+                const contentBlock = relevantContent
+                    .map(item => `- [${item.title}](${item.url}) with ${item.speaker} [${item.type.replace('PLAYBOOK ', '')}]`)
+                    .join('\n');
+                enrichedSystemPrompt += '\n\n## RELEVANT CONTENT FOR THIS MESSAGE (use these links if recommending content)\n' + contentBlock;
+            }
+        } catch (_) {}
+
 
         const conversationMessages = [
             ...history.slice(-18).map(m => ({ role: m.role, content: m.content })),
