@@ -9,7 +9,7 @@ const {
     SYSTEM_PROMPT_AR,
     EXTRACTION_SYSTEM, 
     RUNNING_SUMMARY_PROMPT, 
-    DIALECT_DETECTION_PROMPT,  // This imports from prompts.js - DO NOT redefine below
+    DIALECT_DETECTION_PROMPT,
     buildExtractionPrompt, 
     shouldExtract 
 } = require('./prompts');
@@ -17,6 +17,15 @@ const { Redis } = require('@upstash/redis');
 const { findContent, formatContentLink } = require('./content library');
 
 const app = express();
+
+// Basic HTTP security headers
+try {
+    const helmet = require('helmet');
+    app.use(helmet({ contentSecurityPolicy: false })); // CSP disabled to allow CDN scripts
+} catch (_) {
+    console.warn('ℹ️  helmet not installed — run: npm install helmet');
+}
+
 app.use(express.json());
 app.use(express.static('public'));
 
@@ -31,9 +40,6 @@ const ADMIN_TOKEN     = process.env.ADMIN_TOKEN;
 
 const CLAUDE_MODEL    = 'claude-haiku-4-5-20251001';
 const FALLBACK_MODELS = ['claude-sonnet-4-6', 'claude-opus-4-6'];
-
-// REMOVE THIS DUPLICATE BLOCK - it's already imported from prompts.js
-// const DIALECT_DETECTION_PROMPT = `Analyze this Arabic text...`;  // DELETE THIS LINE
 
 const redis = process.env.UPSTASH_REDIS_URL
   ? new Redis({
@@ -61,9 +67,13 @@ async function callClaude(systemPrompt, messages, maxTokens = 600) {
             );
             return { text: response.data.content[0].text, model };
         } catch (error) {
-            const msg = error.response?.data?.error?.message || error.message;
+            const status = error.response?.status;
+            const msg = error.response?.data?.error?.message || error.message || JSON.stringify(error);
+            console.log(`   ❌ ${model} (stream): ${msg}`, error.code || '');
             console.log(`   ❌ ${model}: ${msg}`);
             if (msg.includes('authentication') || msg.includes('api_key')) throw error;
+            // On rate limit, wait 8s before trying next model
+            if (status === 429) await new Promise(r => setTimeout(r, 8000));
         }
     }
     throw new Error('All Claude models failed');
@@ -124,9 +134,12 @@ async function callClaudeStream(systemPrompt, messages, res, maxTokens = 600) {
             });
 
         } catch (error) {
-            const msg = error.response?.data?.error?.message || error.message;
+            const status = error.response?.status;
+            const msg    = error.response?.data?.error?.message || error.message;
             console.log(`   ❌ ${model} (stream): ${msg}`);
             if (msg.includes('authentication') || msg.includes('api_key')) throw error;
+            // On rate limit, wait 8s before trying next model
+            if (status === 429) await new Promise(r => setTimeout(r, 8000));
         }
     }
     throw new Error('All Claude models failed');
@@ -176,12 +189,18 @@ function checkRateLimit(map, key, maxRequests, windowMs = 60_000) {
 // ─────────────────────────────────────────────
 
 // Running summaries — keyed by conversationId
-// { runningSummary: string }
+// { runningSummary: string, lastAccessed: number }
 const sessionMemory = {};
 
-// Cross-session user profiles — keyed by email
-// { name, pillar, stage, lastSeen, totalVisits }
-const userProfiles = {};
+// Cross-session user profiles are stored in Redis via saveUserProfile / getReturningUserContext
+
+// Purge session memory entries older than 24 hours
+setInterval(() => {
+    const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+    for (const [key, val] of Object.entries(sessionMemory)) {
+        if ((val.lastAccessed || 0) < cutoff) delete sessionMemory[key];
+    }
+}, 60 * 60 * 1000); // run hourly
 
 async function saveUserProfile(email, data) {
     if (!email || !redis) return;
@@ -226,7 +245,7 @@ async function updateRunningSummary(convId, conversationHistory) {
             200
         );
 
-        sessionMemory[convId] = { ...sessionMemory[convId], runningSummary: summary.trim() };
+        sessionMemory[convId] = { ...sessionMemory[convId], runningSummary: summary.trim(), lastAccessed: Date.now() };
         console.log(`📝 Running summary updated for ${convId}`);
     } catch (err) {
         console.warn('⚠️ Running summary failed:', err.message);
@@ -252,6 +271,7 @@ async function detectDialect(convId, arabicText) {
             ...sessionMemory[convId],
             dialect:         dialectData.dialect,
             dialectToneNote: dialectData.tone_note,
+            lastAccessed:    Date.now(),
         };
         console.log(`🌍 Dialect detected for ${convId}: ${dialectData.dialect} (${dialectData.confidence})`);
     } catch (err) {
@@ -277,7 +297,28 @@ function parseCookies(req) {
     );
 }
 
+const loginAttemptMap = new Map(); // IP → { count, lockedUntil }
+
+function checkLoginRateLimit(ip) {
+    const now   = Date.now();
+    const entry = loginAttemptMap.get(ip) || { count: 0, lockedUntil: 0 };
+    if (now < entry.lockedUntil) return false; // still locked
+    if (now > entry.lockedUntil && entry.count >= 5) {
+        // window expired — reset
+        entry.count = 0;
+        entry.lockedUntil = 0;
+    }
+    entry.count++;
+    if (entry.count >= 5) entry.lockedUntil = now + 15 * 60 * 1000; // lock 15 min
+    loginAttemptMap.set(ip, entry);
+    return entry.count <= 5;
+}
+
 app.post('/api/admin/login', express.json(), async (req, res) => {
+    const ip = req.ip || req.connection?.remoteAddress || 'unknown';
+    if (!checkLoginRateLimit(ip))
+        return res.status(429).json({ error: 'Too many attempts — try again in 15 minutes' });
+
     const { password } = req.body || {};
     if (!password || password !== ADMIN_TOKEN)
         return res.status(401).json({ error: 'Incorrect password' });
@@ -553,7 +594,7 @@ app.post('/api/chat', async (req, res) => {
 
         // Inject returning user context if email is known
         const knownEmail = clientLeadData?.email;
-        const returningCtx = await getReturningUserContext(knownEmail);  // ← Add await here
+        const returningCtx = await getReturningUserContext(knownEmail);
         if (returningCtx) {
             enrichedSystemPrompt += '\n\n## RETURNING USER\n' + returningCtx;
         }
@@ -579,7 +620,7 @@ app.post('/api/chat', async (req, res) => {
             enrichedSystemPrompt,
             conversationMessages,
             res,
-            600
+            1100
         );
 
         console.log('💬 Layla:', botReply);
@@ -677,13 +718,21 @@ app.post('/api/chat', async (req, res) => {
         leadData.running_summary = sessionMemory[convId]?.runningSummary || leadData.running_summary || null;
         leadData.dialect         = sessionMemory[convId]?.dialect        || leadData.dialect        || null;
 
-        // ── Step 3: HubSpot — only sync when email is first captured ──
-        // We check: does this turn have an email that the previous turn didn't?
+        // ── Step 3: HubSpot — only sync when email is first captured (fire-and-forget) ──
         const emailIsNew = leadData.email && !previousLead.email;
         let hubspotResult = clientLeadData?.hubspot || { success: false, message: 'No email yet — continuing conversation' };
 
         if (emailIsNew) {
-            hubspotResult = await syncToHubspot(leadData, salesOutput);
+            syncToHubspot(leadData, salesOutput)
+                .then(result => {
+                    // Save again with HubSpot result once it resolves
+                    db.saveConversation({
+                        id: convId, timestamp: new Date().toISOString(),
+                        history: fullHistory, lead_data: leadData,
+                        sales_output: salesOutput, hubspot: result, model_used: model,
+                    }).catch(err => console.error('❌ Failed to re-save with HubSpot result:', err.message));
+                })
+                .catch(err => console.warn('⚠️ HubSpot sync error:', err.message));
         }
 
         // ── Step 4: Save to DB (fire-and-forget style to not delay stream close) ──
@@ -693,17 +742,27 @@ app.post('/api/chat', async (req, res) => {
             { role: 'assistant', content: botReply },
         ];
 
-        db.saveConversation({
+        const savePayload = {
             id: convId, timestamp: new Date().toISOString(),
             history: fullHistory, lead_data: leadData,
             sales_output: salesOutput, hubspot: hubspotResult, model_used: model,
-        }).catch(err => console.error('❌ Failed to save to DB:', err.message));
+        };
+
+        // Save with one automatic retry after 2s
+        db.saveConversation(savePayload).catch(err => {
+            console.warn('⚠️ DB save failed, retrying in 2s:', err.message);
+            setTimeout(() => {
+                db.saveConversation(savePayload)
+                    .catch(e => console.error('❌ DB save retry failed:', e.message));
+            }, 2000);
+        });
 
         // ── Step 5: Send metadata and close stream ──
         res.write(`data: ${JSON.stringify({
             done: true,
             conversation_id: convId,
             timestamp: new Date().toISOString(),
+            leadData,
         })}\n\n`);
         res.end();
 

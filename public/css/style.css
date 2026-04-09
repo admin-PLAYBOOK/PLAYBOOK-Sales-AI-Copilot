@@ -434,11 +434,24 @@ body.client-page {
 }
 
 /* Footer */
+.input-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+    min-height: 18px;
+}
+
+.char-counter {
+    font-size: 0.65rem;
+    color: var(--footer-color);
+    transition: color 0.2s;
+}
+
 .client-footer {
     text-align: center;
     font-size: 0.65rem;
     color: var(--footer-color);
-    margin-top: 8px;
     letter-spacing: 0.3px;
 }
 

@@ -1029,6 +1029,34 @@ body.admin-page {
     align-items: center;
 }
 
+/* Search bar */
+.search-bar {
+    padding: 8px 12px 4px;
+    flex-shrink: 0;
+}
+
+.search-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 7px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--admin-border);
+    background: var(--admin-surface);
+    color: var(--admin-text);
+    font-size: 0.78rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.search-input::placeholder {
+    color: var(--admin-text-muted);
+}
+
+.search-input:focus {
+    border-color: rgba(130,17,201,0.5);
+}
+
 .filter-pill {
     padding: 4px 11px;
     border-radius: 20px;

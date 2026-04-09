@@ -4,7 +4,7 @@
 
 let currentConvId    = null;
 let allConversations = [];
-let activeFilters    = { intent: 'all', emailOnly: false };
+let activeFilters    = { intent: 'all', emailOnly: false, search: '' };
 
 // ─────────────────────────────────────────────
 // LOGIN
@@ -80,6 +80,14 @@ function applyFilters() {
 
     if (activeFilters.emailOnly) {
         filtered = filtered.filter(c => c.lead_data?.email);
+    }
+
+    if (activeFilters.search) {
+        const q = activeFilters.search;
+        filtered = filtered.filter(c =>
+            (c.lead_data?.name  || '').toLowerCase().includes(q) ||
+            (c.lead_data?.email || '').toLowerCase().includes(q)
+        );
     }
 
     renderFeed(filtered);
@@ -419,6 +427,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Filter checkbox — email only
     document.getElementById('filterEmail').addEventListener('change', toggleEmailFilter);
 
+    // Search input
+    document.getElementById('searchInput').addEventListener('input', e => {
+        activeFilters.search = e.target.value.toLowerCase().trim();
+        applyFilters();
+    });
+
     // Running summary toggle
     document.getElementById('summaryToggle').addEventListener('click', () => {
         const textEl    = document.getElementById('runningSummaryText');
@@ -432,10 +446,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('summaryToggle').addEventListener('keydown', e => {
         if (e.key === 'Enter' || e.key === ' ') document.getElementById('summaryToggle').click();
     });
+
+    // Close delete modal on backdrop click
+    document.getElementById('deleteModal').addEventListener('click', e => {
         if (e.target === document.getElementById('deleteModal'))
             document.getElementById('deleteModal').style.display = 'none';
     });
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape')
             document.getElementById('deleteModal').style.display = 'none';
-    });
+    })
+});

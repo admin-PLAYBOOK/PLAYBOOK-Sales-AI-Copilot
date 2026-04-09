@@ -179,10 +179,12 @@ class ChatInstance {
                         if (evt.done) {
                             // Commit to history
                             this.addToHistory('assistant', fullText);
-                            ChatManager.updateTabLabel(this.instanceIndex, null);
                             // Store updated lead data so next turn sends it back
                             if (evt.leadData) {
                                 this.leadData = { ...this.leadData, ...evt.leadData };
+                                if (evt.leadData.name) {
+                                    ChatManager.updateTabLabel(this.instanceIndex, evt.leadData.name);
+                                }
                             }
                         }
 
@@ -409,7 +411,7 @@ class ChatInstance {
                     <div class="client-input-row">
                         <input type="text" id="${cid}-input"
                                placeholder="Message Layla…" autocomplete="off"
-                               aria-label="Type your message">
+                               aria-label="Type your message" maxlength="2000">
                         <button id="${cid}-sendBtn" aria-label="Send message">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                 <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -418,7 +420,10 @@ class ChatInstance {
                             </svg>
                         </button>
                     </div>
-                    <div class="client-footer">Powered by PLAYBOOK</div>
+                    <div class="input-meta-row">
+                        <span class="char-counter" id="${cid}-charCount" aria-live="polite"></span>
+                        <div class="client-footer">Powered by PLAYBOOK</div>
+                    </div>
                 </div>
             </div>`;
 
@@ -432,6 +437,19 @@ class ChatInstance {
 
         this.el('input').addEventListener('keydown', e => {
             if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.sendMessage(); }
+        });
+
+        // Character counter
+        this.el('input').addEventListener('input', () => {
+            const len     = this.el('input').value.length;
+            const counter = this.el('charCount');
+            if (!counter) return;
+            if (len >= 1800) {
+                counter.textContent = `${len}/2000`;
+                counter.style.color = len >= 1950 ? 'var(--color-error, #e74c3c)' : 'var(--color-warning, #f39c12)';
+            } else {
+                counter.textContent = '';
+            }
         });
 
         this.el('quickBtns').addEventListener('click', e => {
