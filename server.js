@@ -600,8 +600,9 @@ app.post('/api/chat', async (req, res) => {
         }
 
         // ── Inject relevant content links based on current message ──
+        // Skip content injection on turn 1 — no signal yet to match against
         try {
-            const relevantContent = findContent(message, 4);
+            const relevantContent = turnCount > 1 ? findContent(message, 3) : [];
             if (relevantContent.length > 0) {
                 const contentBlock = relevantContent
                     .map(item => `- [${item.title}](${item.url}) with ${item.speaker} [${item.type.replace('PLAYBOOK ', '')}]`)
@@ -611,8 +612,10 @@ app.post('/api/chat', async (req, res) => {
         } catch (_) {}
 
 
+        // Once a running summary exists it covers early context — shrink raw history
+        const historyLimit = runningSummary ? 8 : 18;
         const conversationMessages = [
-            ...history.slice(-18).map(m => ({ role: m.role, content: m.content })),
+            ...history.slice(-historyLimit).map(m => ({ role: m.role, content: m.content })),
             { role: 'user', content: message },
         ];
 
@@ -620,7 +623,7 @@ app.post('/api/chat', async (req, res) => {
             enrichedSystemPrompt,
             conversationMessages,
             res,
-            1100
+            700
         );
 
         console.log('💬 Layla:', botReply);
@@ -628,7 +631,8 @@ app.post('/api/chat', async (req, res) => {
         // ── Step 2: Conditional extraction ──
         const turnCount     = history.filter(m => m.role === 'user').length + 1;
         const previousLead  = clientLeadData || {};
-        const runExtraction = shouldExtract(turnCount, message, previousLead);
+        const likelyHasData = message.length > 15 || /[@.]/.test(message);
+        const runExtraction = likelyHasData && shouldExtract(turnCount, message, previousLead);
 
         let leadData = {
             name: previousLead.name || null,

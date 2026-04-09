@@ -160,7 +160,9 @@ const EXTRACTION_SYSTEM = `You are a silent data extractor. Given a conversation
  * @param {Object} previousLeadData     The last known lead data — only update fields that changed
  */
 function buildExtractionPrompt(conversationHistory, latestMessage, previousLeadData = {}) {
+    // Only send the last 6 messages — extraction needs recent context, not full history
     const transcript = conversationHistory
+        .slice(-6)
         .map(m => `${m.role === 'user' ? 'User' : 'Layla'}: ${m.content}`)
         .join('\n');
 
