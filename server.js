@@ -628,24 +628,23 @@ app.post('/api/chat', async (req, res) => {
             enrichedSystemPrompt,
             conversationMessages,
             res,
-            700
+            1400
         );
 
         console.log('💬 Layla:', botReply);
 
-        // ── Send done event immediately so the client re-enables the input ──
-        // Extraction and DB writes happen after this, in the background.
+        // ── Send done immediately — re-enables the client input right away ──
+        // Extraction and DB saves happen below as background work.
         res.write(`data: ${JSON.stringify({
             done: true,
             conversation_id: convId,
             timestamp: new Date().toISOString(),
             leadData: clientLeadData || {},
         })}\n\n`);
-        res.end();
 
         // ── Step 2: Conditional extraction ──
         // Skip all post-processing if the client already disconnected
-        if (clientGone) return;
+        if (clientGone) { res.end(); return; }
 
         const likelyHasData = message.length > 15 || /[@.]/.test(message);
         const runExtraction = likelyHasData && shouldExtract(turnCount, message, previousLead);
@@ -777,7 +776,16 @@ app.post('/api/chat', async (req, res) => {
             }, 2000);
         });
 
-        // ── Step 5: Stream was already closed above — nothing to do here ──
+        // ── Step 5: Send updated lead data now that extraction is done ──
+        // The client uses this to update the tab label and local leadData cache.
+        if (!res.writableEnded) {
+            res.write(`data: ${JSON.stringify({
+                lead_update: true,
+                conversation_id: convId,
+                leadData,
+            })}\n\n`);
+            res.end();
+        }
 
     } catch (error) {
         console.error('❌ Server error:', error.message);

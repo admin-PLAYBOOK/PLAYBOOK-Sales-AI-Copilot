@@ -184,12 +184,20 @@ class ChatInstance {
                             this.el('messages').scrollTop = this.el('messages').scrollHeight;
                             // Commit to history
                             this.addToHistory('assistant', fullText);
-                            // Store updated lead data so next turn sends it back
+                            // Seed leadData with whatever the server echoed back (pre-extraction)
                             if (evt.leadData) {
                                 this.leadData = { ...this.leadData, ...evt.leadData };
                                 if (evt.leadData.name) {
                                     ChatManager.updateTabLabel(this.instanceIndex, evt.leadData.name);
                                 }
+                            }
+                        }
+
+                        // lead_update arrives after extraction completes — update with fresh data
+                        if (evt.lead_update && evt.leadData) {
+                            this.leadData = { ...this.leadData, ...evt.leadData };
+                            if (evt.leadData.name) {
+                                ChatManager.updateTabLabel(this.instanceIndex, evt.leadData.name);
                             }
                         }
 
@@ -410,9 +418,9 @@ class ChatInstance {
                     <div class="quick-btns" id="${cid}-quickBtns"
                          role="group" aria-label="Quick message suggestions">
                         <button class="quick-btn" data-text="I'm thinking about joining — what do I actually get?">✨ Membership</button>
-                        <button class="quick-btn" data-text="I'm curious about angel investing">💰 Invest</button>
-                        <button class="quick-btn" data-text="I want to learn new skills — what masterclasses do you have?">📚 Learn</button>
-                        <button class="quick-btn" data-text="I'm looking for a mentor or to expand my network">🌟 Connect</button>
+                        <button class="quick-btn" data-text="I'm curious about angel investing through Women Spark">💰 Investing</button>
+                        <button class="quick-btn" data-text="I want to learn new skills — what masterclasses do you have?">📚 Masterclasses</button>
+                        <button class="quick-btn" data-text="I'm looking for a mentor or to expand my network">🌟 Mentorship</button>
                     </div>
                     <div class="client-input-row">
                         <input type="text" id="${cid}-input"

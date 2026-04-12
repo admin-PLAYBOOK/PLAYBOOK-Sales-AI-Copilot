@@ -6,6 +6,8 @@ let currentConvId    = null;
 let allConversations = [];
 let activeFilters    = { intent: 'all', emailOnly: false, search: '' };
 
+let refreshInterval = null;
+
 // ─────────────────────────────────────────────
 // LOGIN
 // ─────────────────────────────────────────────
@@ -33,7 +35,8 @@ async function adminLogin() {
             document.getElementById('adminDash').style.display = 'flex';
             await loadStats();
             await loadConversations();
-            setInterval(async () => {
+            if (refreshInterval) clearInterval(refreshInterval);
+            refreshInterval = setInterval(async () => {
                 await loadStats();
                 await loadConversations();
             }, 30_000);
@@ -382,6 +385,7 @@ async function deleteConversation(id) {
 // ─────────────────────────────────────────────
 
 async function adminLogout() {
+    if (refreshInterval) { clearInterval(refreshInterval); refreshInterval = null; }
     try { await fetch('/api/admin/logout', { method: 'POST' }); } catch (_) {}
     location.reload();
 }

@@ -3369,7 +3369,7 @@ const CONTENT_LIBRARY = [
   {
     "title": "Fundamentals of Digital Marketing (Full Masterclass)",
     "speaker": "Hanan Al-Haifi",
-    "speaker_title": "nan",
+    "speaker_title": "",
     "type": "PLAYBOOK Masterclasses",
     "category": "Fundamentals of Digital Marketing",
     "tags": "Masterclass, Digital Marketing, Marketing",
@@ -7860,7 +7860,7 @@ const CONTENT_LIBRARY = [
   {
     "title": "Women & Success: Redefining Power, Day 1",
     "speaker": "Multiple Speakers",
-    "speaker_title": "nan",
+    "speaker_title": "",
     "type": "Partner Workshops",
     "category": "Women & Success Summit",
     "tags": "Leadership, Women, Success, Power",
@@ -7884,7 +7884,7 @@ const CONTENT_LIBRARY = [
   {
     "title": "Women & Success: Redefining Power, Day 2",
     "speaker": "Multiple Speakers",
-    "speaker_title": "nan",
+    "speaker_title": "",
     "type": "Partner Workshops",
     "category": "Women & Success Summit",
     "tags": "Leadership, Women, Success, Power",
@@ -7952,7 +7952,8 @@ function findContent(query, limit = 3) {
 // Claude sends this directly in her reply when recommending content
 function formatContentLink(item) {
     const label = item.type.replace('PLAYBOOK ', '').replace(' Workshops', ' Workshop');
-    return `[![${item.title}](${item.thumbnail})](${item.link})\n**[${item.title}](${item.link})**\n*${label} · ${item.speaker}*`;
+    const speakerLine = item.speaker_title ? `${item.speaker} · ${item.speaker_title}` : item.speaker;
+    return `[![${item.title}](${item.thumbnail})](${item.link})\n**[${item.title}](${item.link})**\n*${label} · ${speakerLine}*`;
 }
 
 module.exports = { findContent, formatContentLink, CONTENT_LIBRARY };
