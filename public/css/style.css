@@ -130,6 +130,7 @@ body.client-page {
     color: var(--text-white);
     flex-shrink: 0;
     transition: all 0.3s ease;
+    overflow: hidden;
 }
 
 .client-header-text { 
@@ -244,6 +245,16 @@ body.client-page {
     justify-content: center;
     flex-shrink: 0;
     align-self: flex-end;
+    overflow: hidden;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 50%;
+    display: block;
 }
 
 .msg-body {
