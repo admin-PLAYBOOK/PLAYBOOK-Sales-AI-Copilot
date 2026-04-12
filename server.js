@@ -69,8 +69,7 @@ async function callClaude(systemPrompt, messages, maxTokens = 600) {
         } catch (error) {
             const status = error.response?.status;
             const msg = error.response?.data?.error?.message || error.message || JSON.stringify(error);
-            console.log(`   ❌ ${model} (stream): ${msg}`, error.code || '');
-            console.log(`   ❌ ${model}: ${msg}`);
+            console.log(`   ❌ ${model}: ${msg}`, error.code || '');
             if (msg.includes('authentication') || msg.includes('api_key')) throw error;
             // On rate limit, wait 8s before trying next model
             if (status === 429) await new Promise(r => setTimeout(r, 8000));
@@ -221,7 +220,7 @@ async function getReturningUserContext(email) {
     return `Returning user: ${profile.name || 'Unknown'}.`
         + ` Previously interested in: ${profile.pillar || 'unknown'}.`
         + ` Stage: ${profile.stage || 'unknown'}.`
-        + ` Greet her by name and reference what she was exploring before.`;
+        + ` Greet them by name and reference what they were exploring before.`;
 }
 
 // ─────────────────────────────────────────────
@@ -550,11 +549,19 @@ app.post('/api/chat', async (req, res) => {
     res.setHeader('Connection',    'keep-alive');
     res.setHeader('X-Accel-Buffering', 'no'); // disable nginx buffering
 
+    // Track if client disconnected — skip extraction/DB work if so
+    let clientGone = false;
+    req.on('close', () => { clientGone = true; });
+
     // Send conversation ID immediately so client can store it
     res.write(`data: ${JSON.stringify({ conversation_id: convId })}\n\n`);
 
     try {
         // ── Step 1: Stream Layla's conversational reply ──
+
+        // turnCount needed before content injection
+        const turnCount    = history.filter(m => m.role === 'user').length + 1;
+        const previousLead = clientLeadData || {};
 
         // Build enriched system prompt with memory context
         let enrichedSystemPrompt = SYSTEM_PROMPT;
@@ -563,9 +570,9 @@ app.post('/api/chat', async (req, res) => {
         const safeLanguage = language === 'ar' ? 'ar' : 'en';
 
         if (safeLanguage === 'ar') {
-            enrichedSystemPrompt = SYSTEM_PROMPT_AR;  // Use Arabic prompt
+            enrichedSystemPrompt = SYSTEM_PROMPT_AR;
         } else {
-            enrichedSystemPrompt = SYSTEM_PROMPT;     // Use English prompt
+            enrichedSystemPrompt = SYSTEM_PROMPT;
         }
 
         const langInstruction = safeLanguage === 'ar'
@@ -599,20 +606,21 @@ app.post('/api/chat', async (req, res) => {
             enrichedSystemPrompt += '\n\n## RETURNING USER\n' + returningCtx;
         }
 
-        // ── Inject relevant content links based on current message ──
+        // ── Inject relevant content — skip turn 1, cap at 3 items ──
         try {
-            const relevantContent = findContent(message, 4);
+            const relevantContent = turnCount > 1 ? findContent(message, 3) : [];
             if (relevantContent.length > 0) {
                 const contentBlock = relevantContent
-                    .map(item => `- [${item.title}](${item.url}) with ${item.speaker} [${item.type.replace('PLAYBOOK ', '')}]`)
-                    .join('\n');
-                enrichedSystemPrompt += '\n\n## RELEVANT CONTENT FOR THIS MESSAGE (use these links if recommending content)\n' + contentBlock;
+                    .map(item => formatContentLink(item))
+                    .join('\n\n');
+                enrichedSystemPrompt += '\n\n## RELEVANT CONTENT FOR THIS MESSAGE (paste these blocks directly when recommending — they include embedded thumbnails)\n\n' + contentBlock;
             }
         } catch (_) {}
 
-
+        // Use summary to justify shorter history window
+        const historyLimit = runningSummary ? 8 : 18;
         const conversationMessages = [
-            ...history.slice(-18).map(m => ({ role: m.role, content: m.content })),
+            ...history.slice(-historyLimit).map(m => ({ role: m.role, content: m.content })),
             { role: 'user', content: message },
         ];
 
@@ -620,15 +628,27 @@ app.post('/api/chat', async (req, res) => {
             enrichedSystemPrompt,
             conversationMessages,
             res,
-            1100
+            700
         );
 
         console.log('💬 Layla:', botReply);
 
+        // ── Send done event immediately so the client re-enables the input ──
+        // Extraction and DB writes happen after this, in the background.
+        res.write(`data: ${JSON.stringify({
+            done: true,
+            conversation_id: convId,
+            timestamp: new Date().toISOString(),
+            leadData: clientLeadData || {},
+        })}\n\n`);
+        res.end();
+
         // ── Step 2: Conditional extraction ──
-        const turnCount     = history.filter(m => m.role === 'user').length + 1;
-        const previousLead  = clientLeadData || {};
-        const runExtraction = shouldExtract(turnCount, message, previousLead);
+        // Skip all post-processing if the client already disconnected
+        if (clientGone) return;
+
+        const likelyHasData = message.length > 15 || /[@.]/.test(message);
+        const runExtraction = likelyHasData && shouldExtract(turnCount, message, previousLead);
 
         let leadData = {
             name: previousLead.name || null,
@@ -639,7 +659,7 @@ app.post('/api/chat', async (req, res) => {
             intent_signals: previousLead.intent_signals || null,
             conversation_vibe: previousLead.conversation_vibe || 'curious',
             vibe_note: previousLead.vibe_note || null,
-            // New fields
+            blocker: previousLead.blocker || null,
             pillar_interest:  previousLead.pillar_interest  || null,
             dialect:          sessionMemory[convId]?.dialect || previousLead.dialect || null,
             channel:          req.body.channel || previousLead.channel || 'Web',
@@ -671,7 +691,7 @@ app.post('/api/chat', async (req, res) => {
                     intent_signals:    parsed.intent_signals    || leadData.intent_signals,
                     conversation_vibe: parsed.conversation_vibe || leadData.conversation_vibe,
                     vibe_note:         parsed.vibe_note         || leadData.vibe_note,
-                    // New fields — preserve or update from extraction
+                    blocker:           parsed.blocker           || leadData.blocker,
                     pillar_interest:  parsed.pillar_interest  || leadData.pillar_interest,
                     dialect:          sessionMemory[convId]?.dialect || leadData.dialect,
                     channel:          leadData.channel,
@@ -757,22 +777,17 @@ app.post('/api/chat', async (req, res) => {
             }, 2000);
         });
 
-        // ── Step 5: Send metadata and close stream ──
-        res.write(`data: ${JSON.stringify({
-            done: true,
-            conversation_id: convId,
-            timestamp: new Date().toISOString(),
-            leadData,
-        })}\n\n`);
-        res.end();
+        // ── Step 5: Stream was already closed above — nothing to do here ──
 
     } catch (error) {
         console.error('❌ Server error:', error.message);
-        // If headers already sent (stream started), send error event
-        try {
-            res.write(`data: ${JSON.stringify({ error: 'Something went wrong. Please try again.' })}\n\n`);
-            res.end();
-        } catch (_) {}
+        // Only write error to client if stream hasn't been closed yet
+        if (!res.writableEnded) {
+            try {
+                res.write(`data: ${JSON.stringify({ error: 'Something went wrong. Please try again.' })}\n\n`);
+                res.end();
+            } catch (_) {}
+        }
     }
 });
 

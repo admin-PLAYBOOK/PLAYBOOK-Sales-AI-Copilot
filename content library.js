@@ -1,2218 +1,7958 @@
-// ─────────────────────────────────────────────
-// content_library.js — Full PLAYBOOK content catalogue with links
-// Auto-generated from Learning Library CMS CSV.
-// Each item: { title, speaker, category, url, tags }
-// ─────────────────────────────────────────────
+// Content library — auto-generated from Playbook Learning Library CSV
+// 331 items with thumbnail URLs
 
-const CONTENT_LIBRARY = {
-  "PLAYBOOK Speaker Series": [
-    {
-      "title": "Hacking Motherhood & Your Career",
-      "speaker": "Dina Abdul Majeed",
-      "category": "Season 1",
-      "url": "https://network.get-playbook.com/posts/speaker-series-recap-hacking-motherhood-your-career-dina-abdul-majeed",
-      "tags": [
-        "Speaker Series",
-        "Career",
-        "Motherhood"
-      ]
-    },
-    {
-      "title": "Transforming Data into Actionable Decision-Making",
-      "speaker": "Hafsa Rubiya Yazdani",
-      "category": "Season 1",
-      "url": "https://network.get-playbook.com/posts/speaker-series-recap-transforming-data-into-actionable-decision-making-hafsa-rubiya-yazdani",
-      "tags": [
-        "Speaker Series",
-        "Tech",
-        "Data"
-      ]
-    },
-    {
-      "title": "The 101 to Launching a FinTech Startup",
-      "speaker": "Dalal AlRayes",
-      "category": "Season 1",
-      "url": "https://network.get-playbook.com/posts/speaker-series-recap-the-101-to-launching-a-fintech-startup-dalal-alrayes",
-      "tags": [
-        "Speaker Series",
-        "FinTech",
-        "Startup"
-      ]
-    },
-    {
-      "title": "Closing the Gap Through Investing",
-      "speaker": "Tamara Abdel-Jaber",
-      "category": "Season 1",
-      "url": "https://network.get-playbook.com/posts/speaker-series-recap-closing-the-gap-through-investing-tamara-abdel-jaber",
-      "tags": [
-        "Speaker Series",
-        "Investing",
-        "VC"
-      ]
-    },
-    {
-      "title": "The Art of Living with Positive Intensity",
-      "speaker": "Tatiana Poliakova",
-      "category": "Season 1",
-      "url": "https://network.get-playbook.com/posts/speaker-series-recap-the-art-of-living-with-positive-intensity-tatiana-poliakova",
-      "tags": [
-        "Speaker Series",
-        "Leadership",
-        "Wellness"
-      ]
-    },
-    {
-      "title": "Rising Through The Ranks",
-      "speaker": "Shada El Borno",
-      "category": "Season 1",
-      "url": "https://network.get-playbook.com/posts/speaker-series-recap-rising-through-the-ranks-shada-el-borno",
-      "tags": [
-        "Speaker Series",
-        "Career",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "Whyise Focusing on Data That Matters",
-      "speaker": "Reem Khouri",
-      "category": "Season 1",
-      "url": "https://network.get-playbook.com/posts/speaker-series-recap-whyise-focusing-on-data-that-matters-reem-khouri",
-      "tags": [
-        "Speaker Series",
-        "Data",
-        "Tech"
-      ]
-    },
-    {
-      "title": "Acquisition & Exit: What to Know & How to Prepare",
-      "speaker": "Dana Baki",
-      "category": "Season 1",
-      "url": "https://network.get-playbook.com/posts/speaker-series-recap-acquisition-exit-what-to-know-how-to-prepare-dana-baki",
-      "tags": [
-        "Speaker Series",
-        "Exit",
-        "Entrepreneurship"
-      ]
-    },
-    {
-      "title": "Navigating Your Way To The Top",
-      "speaker": "Navid Nazemian",
-      "category": "Season 2",
-      "url": "https://network.get-playbook.com/posts/speaker-series-recap-navigating-your-way-to-the-top-navid-nazemian",
-      "tags": [
-        "Speaker Series",
-        "Career",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "Navigating Career Pivots",
-      "speaker": "Muna AbuSulayman",
-      "category": "Season 2",
-      "url": "https://network.get-playbook.com/posts/speaker-series-recap-navigating-career-pivots-with-muna-abusulayman",
-      "tags": [
-        "Speaker Series",
-        "Career",
-        "Pivot"
-      ]
-    }
-  ],
-  "Women Spark Workshops": [
-    {
-      "title": "Investing in the Venture Capital Asset Class",
-      "speaker": "Zafer Younis",
-      "category": "Angel Investor Workshops",
-      "url": "https://network.get-playbook.com/posts/investor-lounge-investing-in-the-venture-capital-asset-class-with-zafer-younis-62805054",
-      "tags": [
-        "Investing",
-        "VC",
-        "Angel"
-      ]
-    },
-    {
-      "title": "Principles of Successful Angel Investing",
-      "speaker": "Jed Ng",
-      "category": "Angel Investor Workshops",
-      "url": "https://network.get-playbook.com/posts/investor-lounge-principles-of-angel-investing-with-jed-ng-62805232",
-      "tags": [
-        "Investing",
-        "Angel Investing"
-      ]
-    },
-    {
-      "title": "How to become an investor",
-      "speaker": "Giovanna Melfi",
-      "category": "Angel Investor Workshops",
-      "url": "https://network.get-playbook.com/posts/investor-lounge-how-to-become-an-investor-with-giovanna-melfi",
-      "tags": [
-        "Investing",
-        "Finance"
-      ]
-    },
-    {
-      "title": "Legal Essentials in Angel Investment Transactions",
-      "speaker": "Noor Alnaqeeb",
-      "category": "Angel Investor Workshops",
-      "url": "https://network.get-playbook.com/posts/investor-lounge-legal-essentials-in-angel-investment-transactions-with-noor-al-naqeeb",
-      "tags": [
-        "Investing",
-        "Legal"
-      ]
-    },
-    {
-      "title": "Networking Hacks for Angel Investors",
-      "speaker": "Chef Suman Ali",
-      "category": "Angel Investor Workshops",
-      "url": "https://network.get-playbook.com/posts/investor-lounge-networking-hacks-for-angel-investors-with-chef-suman-ali-sayed",
-      "tags": [
-        "Investing",
-        "Networking"
-      ]
-    },
-    {
-      "title": "Personal Branding for Investors",
-      "speaker": "Mariam Yasin",
-      "category": "Angel Investor Workshops",
-      "url": "https://network.get-playbook.com/posts/investor-lounge-personal-branding-for-investors-with-mariam-yasin-77224811",
-      "tags": [
-        "Investing",
-        "Personal Branding"
-      ]
-    },
-    {
-      "title": "Investing made Simple: Beginner's Guide to Building Wealth",
-      "speaker": "Nelly Mounayar",
-      "category": "Angel Investor Workshops",
-      "url": "https://network.get-playbook.com/posts/investor-lounge-investing-made-simple-beginners-guide-to-building-wealth-with-nelly-mounayar",
-      "tags": [
-        "Investing",
-        "Wealth",
-        "Beginner"
-      ]
-    },
-    {
-      "title": "Decoding Financial Jargon",
-      "speaker": "Mais Jauhary",
-      "category": "Female Founder Club Workshops",
-      "url": "https://network.get-playbook.com/posts/female-founder-club-decoding-financial-jargon-with-mais-jauhary-62806309",
-      "tags": [
-        "Finance",
-        "Startups",
-        "Female Founders"
-      ]
-    },
-    {
-      "title": "Perfecting your Pitch",
-      "speaker": "Hidayet Ayadi",
-      "category": "Female Founder Club Workshops",
-      "url": "https://network.get-playbook.com/posts/female-founder-club-perfecting-your-pitch-by-hidayet-ayadi-62806824",
-      "tags": [
-        "Pitch",
-        "Startup",
-        "Female Founders"
-      ]
-    },
-    {
-      "title": "Legal Essentials in Angel Investment Transactions",
-      "speaker": "Noor Alnaqeeb",
-      "category": "Female Founder Club Workshops",
-      "url": "https://network.get-playbook.com/posts/female-founder-club-the-power-of-partnerships-for-startup-growth-with-roaa-ahmed-62807101",
-      "tags": [
-        "Legal",
-        "Investing",
-        "Female Founders"
-      ]
-    },
-    {
-      "title": "The Power of Partnerships for Startup Growth",
-      "speaker": "Roaa Ahmed",
-      "category": "Female Founder Club Workshops",
-      "url": "https://network.get-playbook.com/posts/female-founder-club-innovative-marketing-tactics-for-your-startup-with-dr-hanan-el-basha",
-      "tags": [
-        "Startup",
-        "Partnerships",
-        "Growth"
-      ]
-    },
-    {
-      "title": "Fundraising Hacks for Female Founders",
-      "speaker": "Latifa Sowaileh",
-      "category": "Female Founder Club Workshops",
-      "url": "https://network.get-playbook.com/posts/female-founder-club-fundraising-hacks-for-female-founders-with-latifa-sowaileh",
-      "tags": [
-        "Fundraising",
-        "Female Founders"
-      ]
-    },
-    {
-      "title": "Innovative marketing tactics for your startup",
-      "speaker": "Hanan El Basha",
-      "category": "Female Founder Club Workshops",
-      "url": "https://network.get-playbook.com/posts/female-founder-club-playbook-exclusive-hacking-revenue-for-startups-with-maria-frangieh",
-      "tags": [
-        "Marketing",
-        "Startup"
-      ]
-    },
-    {
-      "title": "How to Manage Investor Relations",
-      "speaker": "Joseph Tyan",
-      "category": "Female Founder Club Workshops",
-      "url": "https://network.get-playbook.com/posts/female-founder-club-how-to-manage-investor-relations-with-joseph-tyan-is-now-available",
-      "tags": [
-        "Investor Relations",
-        "Startup"
-      ]
-    },
-    {
-      "title": "Measuring Impact for female founders",
-      "speaker": "Kristina Cordero",
-      "category": "Female Founder Club Workshops",
-      "url": "https://network.get-playbook.com/posts/female-founder-club-measuring-impact-for-female-founders-with-kristina-cordero",
-      "tags": [
-        "Impact",
-        "Female Founders"
-      ]
-    },
-    {
-      "title": "Mindset secrets of successful founders",
-      "speaker": "Margreet Magdy",
-      "category": "Female Founder Club Workshops",
-      "url": "https://network.get-playbook.com/posts/female-founder-club-playbook-exclusive-mindset-secrets-of-successful-founders-with-margreet-magdy",
-      "tags": [
-        "Mindset",
-        "Founders"
-      ]
-    },
-    {
-      "title": "Hacking Revenue for Startups",
-      "speaker": "Maria Frangieh",
-      "category": "Female Founder Club Workshops",
-      "url": "https://network.get-playbook.com/posts/demo-day-ignite-your-potential-to-grow-with-the-sophia-collective",
-      "tags": [
-        "Revenue",
-        "Startup",
-        "Growth"
-      ]
-    },
-    {
-      "title": "Ignite Your Potential to Grow with The Sophia Collective",
-      "speaker": "The Sophia Collective (Clare Stafford Taylaur)",
-      "category": "Female Founder Club Workshops",
-      "url": "https://network.get-playbook.com/posts/demo-day-launchpad-ksa-build-your-business-in-saudi-arabia",
-      "tags": [
-        "Growth",
-        "Leadership",
-        "Female Founders"
-      ]
-    },
-    {
-      "title": "Launchpad KSA: Build Your Business in Saudi Arabia",
-      "speaker": "Saeed Al-Ansari",
-      "category": "Female Founder Club Workshops",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-cultivating-mental-fitness-for-success-by-ghada-khalifeh%F0%9F%8C%9F",
-      "tags": [
-        "KSA",
-        "Startup",
-        "Saudi Arabia"
-      ]
-    }
-  ],
-  "PLAYBOOK Workshops": [
-    {
-      "title": "Mental Fitness to Thrive Through Challenges",
-      "speaker": "Rula Husseini",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-mental-fitness-to-thrive-through-challenges-by-rula-husseini%F0%9F%A7%A0%E2%9C%A8",
-      "tags": [
-        "Personal Development",
-        "Mental Health"
-      ]
-    },
-    {
-      "title": "Cultivating Mental Fitness for Success",
-      "speaker": "Ghada Khalifeh",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-cultivating-mental-fitness-for-success-by-ghada-khalifeh%F0%9F%8C%9F",
-      "tags": [
-        "Personal Development",
-        "Mental Fitness"
-      ]
-    },
-    {
-      "title": "Navigating Imposter Syndrome with Powerful Communication",
-      "speaker": "Arshy Ahmad",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-navigating-imposter-syndrome-with-powerful-communication-by-arshy-ahmad%F0%9F%97%A3%EF%B8%8F%E2%9C%A8",
-      "tags": [
-        "Personal Development",
-        "Imposter Syndrome"
-      ]
-    },
-    {
-      "title": "Cultivating a Growth Mindset for Success",
-      "speaker": "Dina El-Mofty",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-cultivating-a-growth-mindset-for-success-with-dina-el-mofty%F0%9F%8C%B1%F0%9F%92%BC",
-      "tags": [
-        "Personal Development",
-        "Growth Mindset"
-      ]
-    },
-    {
-      "title": "Discover Your Human Design to Unlock Your Full Potential",
-      "speaker": "Maria Amiouni",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-discover-your-human-design-to-unlock-your-full-potential-with-maria-amiouni%F0%9F%94%90%F0%9F%92%AB",
-      "tags": [
-        "Personal Development",
-        "Human Design"
-      ]
-    },
-    {
-      "title": "Unlock Choice Theory to Take Charge of Your Life",
-      "speaker": "Mona Al-Fajem",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-unlock-choice-theory-to-take-charge-of-your-life-with-mona-al-fajem%F0%9F%94%93%F0%9F%8C%B1",
-      "tags": [
-        "Personal Development",
-        "Choice Theory"
-      ]
-    },
-    {
-      "title": "Resolve Internal Conflict: Harnessing The Booster Pill Approach",
-      "speaker": "Fatima Ibrahim",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-resolve-internal-conflict-harnessing-the-booster-pill-approach-with-fatima-ibrahim%F0%9F%97%A3%EF%B8%8F%F0%9F%92%A5",
-      "tags": [
-        "Personal Development",
-        "Conflict Resolution"
-      ]
-    },
-    {
-      "title": "Achieving Work-Life Balance: Priorities, Boundaries, and Healthy Habits",
-      "speaker": "Reem Abdullatif",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-achieving-work-life-balance-priorities-boundaries-and-healthy-habits-with-reem-al-abdullatif",
-      "tags": [
-        "Personal Development",
-        "Work-Life Balance"
-      ]
-    },
-    {
-      "title": "Developing Emotional Intelligence: The Key to Success",
-      "speaker": "Bashayer Jumaa",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-developing-emotional-intelligence-the-key-to-success-in-the-workplace-with-bashayer-al-jumaa%F0%9F%93%88%F0%9F%8C%9F",
-      "tags": [
-        "Personal Development",
-        "Emotional Intelligence"
-      ]
-    },
-    {
-      "title": "Becoming Judgement Free: Overcome Bias and Labels",
-      "speaker": "Fatima Ibrahim",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-unlock-choice-theory-to-take-charge-of-your-lifhttps:/network.get-playbook.com/posts/playbook-workshops-becoming-judgement-free-overcome-bias-and-labels-with-fatima-ibrahim",
-      "tags": [
-        "Personal Development",
-        "Bias",
-        "Mindset"
-      ]
-    },
-    {
-      "title": "Navigating Life's Compass: Discovering Your True Purpose",
-      "speaker": "Faiza Saeed",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-navigating-lifes-compass-discovering-your-true-purpose-with-faiza-saeed",
-      "tags": [
-        "Personal Development",
-        "Purpose"
-      ]
-    },
-    {
-      "title": "Nurturing Self Identity in Relationships",
-      "speaker": "Nevine Coutry",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-nurturing-self-identity-in-relationships-how-to-not-lose-me-when-becoming-we-with-nevine-coutry%E2%9C%A8%F0%9F%94%91",
-      "tags": [
-        "Personal Development",
-        "Relationships"
-      ]
-    },
-    {
-      "title": "Life's Success System: Women's Blueprint for Personal and Professional Fulfilment",
-      "speaker": "Angela Tella",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-lifes-success-system-womens-blueprint-for-personal-and-professional-fulfilment-with-angela-tella",
-      "tags": [
-        "Personal Development",
-        "Success"
-      ]
-    },
-    {
-      "title": "The Art of Assertive Female Negotiation",
-      "speaker": "Katherina Dalka",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-the-art-of-assertive-female-negotiation-with-katherina-dalka",
-      "tags": [
-        "Personal Development",
-        "Negotiation"
-      ]
-    },
-    {
-      "title": "Accelerated Manifestation for your Dream Life",
-      "speaker": "Ketki Chandavarkar",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-accelerated-manifestation-for-your-dream-life-with-ketki-chandavarkar",
-      "tags": [
-        "Personal Development",
-        "Manifestation"
-      ]
-    },
-    {
-      "title": "An introduction to Executive Presence: Get Noticed",
-      "speaker": "Laurel Herman",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-an-introduction-to-executive-presence-get-noticed-with-laurel-herman",
-      "tags": [
-        "Personal Development",
-        "Executive Presence"
-      ]
-    },
-    {
-      "title": "Burnout Prevention for Women",
-      "speaker": "Bedoor Alomran",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-burnout-prevention-for-women-with-bedoor-al-omran",
-      "tags": [
-        "Personal Development",
-        "Burnout",
-        "Wellness"
-      ]
-    },
-    {
-      "title": "Power of Persuasion",
-      "speaker": "Tessa Veenboer",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-power-of-persuasion-with-tessa-veenboer",
-      "tags": [
-        "Personal Development",
-        "Persuasion"
-      ]
-    },
-    {
-      "title": "Storytelling in Public Speaking",
-      "speaker": "Basma Eletreby",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-storytelling-in-public-speaking-with-basma-eletreby",
-      "tags": [
-        "Personal Development",
-        "Public Speaking"
-      ]
-    },
-    {
-      "title": "From Passion to Profit with Purpose",
-      "speaker": "Zai Miztiq",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-from-passion-to-profit-with-purpose-with-zai-miztiq",
-      "tags": [
-        "Personal Development",
-        "Entrepreneurship"
-      ]
-    },
-    {
-      "title": "Storytelling to Evoke Change",
-      "speaker": "Dana Abulaban",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-storytelling-to-evoke-change-with-dana-abulaban",
-      "tags": [
-        "Personal Development",
-        "Storytelling"
-      ]
-    },
-    {
-      "title": "Finding Your Creative Genius",
-      "speaker": "Kashesh Bhatia Garg",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-finding-your-creative-genius-with-kashesh-bhatia-garg",
-      "tags": [
-        "Personal Development",
-        "Creativity"
-      ]
-    },
-    {
-      "title": "Difficult Conversations Made Easy: A Framework For Tough Talks",
-      "speaker": "Samar Helmy",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-difficult-conversations-made-easy-a-framework-for-tough-talks-with-samar-helmy",
-      "tags": [
-        "Personal Development",
-        "Communication"
-      ]
-    },
-    {
-      "title": "Skills for a Better Life: Real Happiness, Not Hype",
-      "speaker": "Louise Lambert",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-skills-for-a-better-life-real-happiness-not-hype-with-louise-lambert",
-      "tags": [
-        "Personal Development",
-        "Happiness"
-      ]
-    },
-    {
-      "title": "Clearing The Fog: A Simplified Approach to Business Finance",
-      "speaker": "Hanan Mughrabi",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-clearing-the-fog-a-simplified-approach-to-business-finance-with-hanan-mughrabi",
-      "tags": [
-        "Financial Literacy",
-        "Business Finance"
-      ]
-    },
-    {
-      "title": "Embrace Personal Budgeting to Achieve Financial Freedom",
-      "speaker": "Agne Saade",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-embrace-personal-budgeting-to-achieve-financial-freedom-with-agne-saade%F0%9F%93%88%F0%9F%92%B0%F0%9F%93%8A",
-      "tags": [
-        "Financial Literacy",
-        "Budgeting"
-      ]
-    },
-    {
-      "title": "How to become an investor",
-      "speaker": "Giovanna Melfi",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-embrace-personal-budgeting-to-achieve-financial-freedom-with-agnes-saade%F0%9F%93%88%F0%9F%92%B0%F0%9F%93%8A",
-      "tags": [
-        "Financial Literacy",
-        "Investing"
-      ]
-    },
-    {
-      "title": "Limiting Beliefs around Money",
-      "speaker": "Kristina Kutan",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-limiting-beliefs-around-money-with-kristina-kutan",
-      "tags": [
-        "Financial Literacy",
-        "Mindset"
-      ]
-    },
-    {
-      "title": "Money Mindset for Financial Success",
-      "speaker": "Faiza Gulzar",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-money-mindset-for-financial-success-with-faiza-gulzar",
-      "tags": [
-        "Financial Literacy",
-        "Mindset"
-      ]
-    },
-    {
-      "title": "Financial Leadership: Secrets From The Top",
-      "speaker": "Baroness Helena Morrissey",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-financial-leadership-secrets-from-the-top-from-baroness-helena-morrissey",
-      "tags": [
-        "Financial Literacy",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "Raising Financially Savvy Kids",
-      "speaker": "Baroness Helena Morrissey",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-workshop-raising-financially-savvy-kids-with-baroness-helena-morrissey-75771491",
-      "tags": [
-        "Financial Literacy",
-        "Parenting"
-      ]
-    },
-    {
-      "title": "Rewire Your Money Mindset",
-      "speaker": "Kristina Kutan",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-rewire-your-money-mindset-with-kristina-kutan",
-      "tags": [
-        "Financial Literacy",
-        "Mindset"
-      ]
-    },
-    {
-      "title": "Build Your Investment Plan",
-      "speaker": "Muiz Alaradi",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-build-your-investment-plan-with-muiz-alaradi",
-      "tags": [
-        "Financial Literacy",
-        "Investing"
-      ]
-    },
-    {
-      "title": "Assessing Risk in Investment",
-      "speaker": "Abeer Albaitam",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-assessing-risk-in-investment-with-abeer-albaitam",
-      "tags": [
-        "Financial Literacy",
-        "Risk",
-        "Investing"
-      ]
-    },
-    {
-      "title": "Redesign Your Wealth",
-      "speaker": "Tatiana Dudyez",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-redesign-your-wealth-with-tatiana-dudyez",
-      "tags": [
-        "Financial Literacy",
-        "Wealth"
-      ]
-    },
-    {
-      "title": "Financial Wellness Wheel",
-      "speaker": "Nina Abi Fadel",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-financial-wellness-wheel-with-nina-abi-fadel",
-      "tags": [
-        "Financial Literacy",
-        "Wellness"
-      ]
-    },
-    {
-      "title": "Own Your Financial Power",
-      "speaker": "Agne Saade",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-own-your-financial-power-with-agne-saade",
-      "tags": [
-        "Financial Literacy",
-        "Financial Power"
-      ]
-    },
-    {
-      "title": "Raising Financially Savvy Kids",
-      "speaker": "Rasha AlShubaian",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-raising-financially-savvy-kids-with-rasha-alshubaian",
-      "tags": [
-        "Financial Literacy",
-        "Parenting"
-      ]
-    },
-    {
-      "title": "Unlocking Business Growth with Financial Models",
-      "speaker": "Ali Al-Hammam",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-unlocking-business-growth-with-financial-models-with-ali-al-hammam",
-      "tags": [
-        "Financial Literacy",
-        "Business Growth"
-      ]
-    },
-    {
-      "title": "Abundant & Aligned: Activate Your Wealth Frequency in Business",
-      "speaker": "Jana Osta",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-abundant-aligned-activate-your-wealth-frequency-in-business-with-jana-osta",
-      "tags": [
-        "Financial Literacy",
-        "Wealth",
-        "Mindset"
-      ]
-    },
-    {
-      "title": "Guiding Mothers: Navigating Coding Education in Schools and Colleges",
-      "speaker": "Sadaf Rehman",
-      "category": "Motherhood and Parenting",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-guiding-mothers-navigating-coding-education-in-schools-and-colleges-with-sadaf-rehman",
-      "tags": [
-        "Motherhood",
-        "Education",
-        "Tech"
-      ]
-    },
-    {
-      "title": "Synergizing Motherhood and Leadership: Mindset for Dual Success",
-      "speaker": "Dina El Mofty",
-      "category": "Motherhood and Parenting",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-synergizing-motherhood-and-leadership-mindset-for-dual-success",
-      "tags": [
-        "Motherhood",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "Side Hustles for Mothers",
-      "speaker": "Dina Abdulmajeed",
-      "category": "Motherhood and Parenting",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-side-hustles-for-mothers-with-dina-abdulmajeed",
-      "tags": [
-        "Motherhood",
-        "Entrepreneurship"
-      ]
-    },
-    {
-      "title": "Addressing the Break: Reigniting your Career After Motherhood",
-      "speaker": "Hadil AlKhatib",
-      "category": "Motherhood and Parenting",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-addressing-the-break-reigniting-your-career-after-motherhood-with-hadil-alkhatib",
-      "tags": [
-        "Motherhood",
-        "Career"
-      ]
-    },
-    {
-      "title": "Conquer High-Stakes Interviews For Professional Success",
-      "speaker": "Rima Hadid",
-      "category": "Career Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-conquer-high-stakes-interviews-for-professional-success-with-rima-hadid%F0%9F%91%A9%F0%9F%8F%BB%F0%9F%92%BC%F0%9F%9A%80",
-      "tags": [
-        "Career",
-        "Interviews"
-      ]
-    },
-    {
-      "title": "Unlocking Board Roles: Visionary Leadership in Strategic Action",
-      "speaker": "Bedor Alrashoudi",
-      "category": "Career Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-unlocking-board-roles-visionary-leadership-in-strategic-action-with-bedor-alrashoudi%F0%9F%92%A1%F0%9F%94%91",
-      "tags": [
-        "Career",
-        "Board",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "Freeing Your Voice: Women's Guide to Confident Public Speaking",
-      "speaker": "Rachel Pether",
-      "category": "Career Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-freeing-your-voice-womens-guide-to-confident-public-speaking-by-rachel-pether",
-      "tags": [
-        "Career",
-        "Public Speaking"
-      ]
-    },
-    {
-      "title": "Positioning Yourself for Promotion: Female Leadership Strategies",
-      "speaker": "Navid Nazeman",
-      "category": "Career Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-positioning-yourself-for-promotion-female-leadership-strategies-with-navid-nazeman",
-      "tags": [
-        "Career",
-        "Promotion",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "Career Pivot: How to Switch to Emerging Tech Careers Like A Pro",
-      "speaker": "Salama Belghali",
-      "category": "Career Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-career-pivot-how-to-switch-to-emerging-tech-careers-like-a-pro-with-salama-belghali",
-      "tags": [
-        "Career",
-        "Tech",
-        "Pivot"
-      ]
-    },
-    {
-      "title": "From Serbian Farmfields to American Aerospace Dreams",
-      "speaker": "Mariana & Ivan Polic",
-      "category": "Career Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-from-serbian-farmfields-to-american-aerospace-dreams-how-grit-grace-strategy-took-one-woman-from-farmland-to-boardroom-power-with-mariana-and-ivan-polic",
-      "tags": [
-        "Career",
-        "Inspiration"
-      ]
-    },
-    {
-      "title": "Mastering the Art of Career Change",
-      "speaker": "Zainab Farah",
-      "category": "Career Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-mastering-the-art-of-career-change-with-zainab-farah",
-      "tags": [
-        "Career",
-        "Career Change"
-      ]
-    },
-    {
-      "title": "Growth Hacking with Data: The Digital Marketing Cheat Sheet",
-      "speaker": "Megha Kapoor",
-      "category": "Sales and Marketing",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-growth-hacking-with-data-the-digital-marketing-cheat-sheet-with-megha-kapoor%F0%9F%91%A9%F0%9F%8F%BD%F0%9F%92%BB%E2%9A%A0%EF%B8%8F",
-      "tags": [
-        "Marketing",
-        "Growth Hacking",
-        "Data"
-      ]
-    },
-    {
-      "title": "Mastering Brand Management and Marketing Fundamentals for Lasting Success",
-      "speaker": "Rand Yahya",
-      "category": "Sales and Marketing",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-mastering-brand-management-and-marketing-fundamentals-for-lasting-success-with-rand-yahya%F0%9F%92%BC%F0%9F%93%88",
-      "tags": [
-        "Marketing",
-        "Brand Management"
-      ]
-    },
-    {
-      "title": "Art of Persuasion and Building Consumer Loyalty",
-      "speaker": "Anastasiia Stoiatska",
-      "category": "Sales and Marketing",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-email-marketing-building-and-growing-a-forever-audience-with-katerina-drako",
-      "tags": [
-        "Marketing",
-        "Sales",
-        "Consumer Loyalty"
-      ]
-    },
-    {
-      "title": "Implement Effective Marketing Tactics for SMB Growth",
-      "speaker": "Nadia Bouslama",
-      "category": "Sales and Marketing",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-implement-effective-marketing-tactics-for-smb-growth-with-nadia-bouslama%F0%9F%8C%B1%F0%9F%93%88",
-      "tags": [
-        "Marketing",
-        "SMB",
-        "Growth"
-      ]
-    },
-    {
-      "title": "Adopting a Sales Mindset for Career Growth",
-      "speaker": "Sanaz Falahatpisheh",
-      "category": "Sales and Marketing",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-adopting-a-sales-mindset-for-career-growth-with-sanaz-falahatpisheh%F0%9F%93%88%F0%9F%93%B6",
-      "tags": [
-        "Sales",
-        "Mindset",
-        "Career"
-      ]
-    },
-    {
-      "title": "B2B Marketing Secrets",
-      "speaker": "Natasha Salleh",
-      "category": "Sales and Marketing",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-b2b-marketing-secrets-with-natasha-salleh",
-      "tags": [
-        "Marketing",
-        "B2B"
-      ]
-    },
-    {
-      "title": "Navigating Personal and Professional Branding for Female Leaders",
-      "speaker": "Alia El Khatib",
-      "category": "Content Marketing & Online Presence",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-navigating-personal-and-professional-branding-for-female-leaders-with-alia-el-khatib%F0%9F%91%A9%F0%9F%8F%BB%F0%9F%92%BC%F0%9F%8C%9F",
-      "tags": [
-        "Content Marketing",
-        "Branding"
-      ]
-    },
-    {
-      "title": "Creating a Winning Content Strategy",
-      "speaker": "Tahani Alhajri",
-      "category": "Content Marketing & Online Presence",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-creating-a-winning-content-strategy-by-tahani-alhajri",
-      "tags": [
-        "Content Marketing",
-        "Strategy"
-      ]
-    },
-    {
-      "title": "Level Up Your LinkedIn",
-      "speaker": "Moumita Das Roy",
-      "category": "Content Marketing & Online Presence",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-level-up-your-linkedin-by-moumita-das-roy%F0%9F%93%88%F0%9F%86%99",
-      "tags": [
-        "Content Marketing",
-        "LinkedIn"
-      ]
-    },
-    {
-      "title": "Craft Captivating Biographies Through Effective Storytelling Techniques",
-      "speaker": "Fatima Alsaad",
-      "category": "Content Marketing & Online Presence",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-craft-captivating-biographies-through-effective-storytelling-techniques",
-      "tags": [
-        "Content Marketing",
-        "Storytelling",
-        "Writing"
-      ]
-    },
-    {
-      "title": "Authoring Your Impact: Writing a Book to Influence Others",
-      "speaker": "Shikha Sarkar",
-      "category": "Content Marketing & Online Presence",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-authoring-your-impact-writing-a-book-to-influence-others-with-shikha-sarkar",
-      "tags": [
-        "Content Marketing",
-        "Writing",
-        "Book"
-      ]
-    },
-    {
-      "title": "The Art of Blogging",
-      "speaker": "Tahani AlHajri",
-      "category": "Content Marketing & Online Presence",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-the-art-of-blogging-with-tahani-alhajri",
-      "tags": [
-        "Content Marketing",
-        "Blogging"
-      ]
-    },
-    {
-      "title": "Email Marketing: Building and Growing A Forever Audience",
-      "speaker": "Katerina Drako",
-      "category": "Content Marketing & Online Presence",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-building-a-brand-with-a-busy-life-with-olga-sterkhova",
-      "tags": [
-        "Content Marketing",
-        "Email Marketing"
-      ]
-    },
-    {
-      "title": "Hacking Content Creation with AI",
-      "speaker": "Alia Elkhatib",
-      "category": "Content Marketing & Online Presence",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-hacking-content-creation-with-ai-with-alia-elkhatib",
-      "tags": [
-        "Content Marketing",
-        "AI",
-        "Content Creation"
-      ]
-    },
-    {
-      "title": "How to Grow a Community",
-      "speaker": "Hanan Ezzeldin",
-      "category": "Content Marketing & Online Presence",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-how-to-grow-a-community-with-hanan-ezzeldin",
-      "tags": [
-        "Content Marketing",
-        "Community"
-      ]
-    },
-    {
-      "title": "Finish your first novel",
-      "speaker": "Komal Verma",
-      "category": "Content Marketing & Online Presence",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-finish-your-first-novel-with-komal-verma",
-      "tags": [
-        "Content Marketing",
-        "Writing"
-      ]
-    },
-    {
-      "title": "Building a brand with a busy life",
-      "speaker": "Olga Sterkhova",
-      "category": "Content Marketing & Online Presence",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-building-a-retail-brand-that-thrives-on-community-with-hazar-al-zadjali",
-      "tags": [
-        "Content Marketing",
-        "Personal Branding"
-      ]
-    },
-    {
-      "title": "Digital Marketing Secrets for Businesses",
-      "speaker": "Arantxa Beltran Del Toro",
-      "category": "Content Marketing & Online Presence",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-digital-marketing-secrets-for-businesses-with-arantxa-beltran-del-toro",
-      "tags": [
-        "Content Marketing",
-        "Digital Marketing"
-      ]
-    },
-    {
-      "title": "It's Not Personal, It's Branding: How to Turn Ideas into Business That Matters",
-      "speaker": "Dana Alhanbali",
-      "category": "Content Marketing & Online Presence",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-its-not-personal-its-branding-how-to-turn-ideas-into-business-that-matters-with-dana-alhanbali",
-      "tags": [
-        "Content Marketing",
-        "Branding"
-      ]
-    },
-    {
-      "title": "Building Hormonal Harmony For Yourself",
-      "speaker": "Sara Tarek",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-building-hormonal-harmony-for-yourself-by-sara-tarek",
-      "tags": [
-        "Health",
-        "Hormonal Health",
-        "Nutrition"
-      ]
-    },
-    {
-      "title": "Navigating PCOS Challenges for Holistic Health",
-      "speaker": "Dr. Dana Al-Saeed & Dr. Aarti Javeri-Mehta",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-overcoming-speech-challenges-innovative-approaches-to-speech-therapy-with-firouza-eshonova",
-      "tags": [
-        "Health",
-        "PCOS",
-        "Wellness"
-      ]
-    },
-    {
-      "title": "Discover Educational Kinesiology for Enhanced Mental Clarity",
-      "speaker": "Mona Al-Fajem",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-discover-educational-kinesiology-for-enhanced-mental-clarity-with-mona-al-fajem%F0%9F%A7%A0%E2%9C%A8",
-      "tags": [
-        "Health",
-        "Mental Health",
-        "Kinesiology"
-      ]
-    },
-    {
-      "title": "Foundations of Radiation Safety: Essential Practices for Healthcare Professionals",
-      "speaker": "Bedoor Alomran",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-foundations-of-radiation-safety-essential-practices-for-healthcare-professionals-with-dr-bedoor-al-omran%F0%9F%A5%BC%E2%9C%A8",
-      "tags": [
-        "Health",
-        "Radiation Safety",
-        "Healthcare"
-      ]
-    },
-    {
-      "title": "Overcoming Speech Challenges: Innovative Approaches to Speech Therapy",
-      "speaker": "Firouza Eshonova",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-keynote-speech-with-he-dr-aisha-bin-bishr",
-      "tags": [
-        "Health",
-        "Speech Therapy"
-      ]
-    },
-    {
-      "title": "Navigating Safe Spaces: Building Resilience and ResponseAbility",
-      "speaker": "Jan Daudi",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-navigating-safe-spaces-building-resilience-and-responseability-with-jan-daudi",
-      "tags": [
-        "Health",
-        "Resilience",
-        "Wellness"
-      ]
-    },
-    {
-      "title": "Hacking Gut Health for Hormone Balance",
-      "speaker": "Ruby Saharan",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-hacking-gut-health-for-hormone-balance-with-ruby-saharan",
-      "tags": [
-        "Health",
-        "Gut Health",
-        "Hormones"
-      ]
-    },
-    {
-      "title": "Mental Health Insights: Investing in Your Emotional Life",
-      "speaker": "Melvina Sifri",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-mental-health-insights-investing-in-your-emotional-life-with-melvina-sifri",
-      "tags": [
-        "Health",
-        "Mental Health"
-      ]
-    },
-    {
-      "title": "Healing with Art Therapy",
-      "speaker": "Dr. Mona El Rubi",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-healing-with-art-therapy-with-dr-mona-el-rubi",
-      "tags": [
-        "Health",
-        "Art Therapy",
-        "Mental Health"
-      ]
-    },
-    {
-      "title": "From Burnout to Flow",
-      "speaker": "Dalia Al Mahmood",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-from-burnout-to-flow-with-dalia-al-mahmood",
-      "tags": [
-        "Health",
-        "Burnout",
-        "Wellness"
-      ]
-    },
-    {
-      "title": "Mind-Body-Breath",
-      "speaker": "Sahar Kazemini",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-mind-body-breath-with-sahar-kazemini",
-      "tags": [
-        "Health",
-        "Mindfulness",
-        "Wellness"
-      ]
-    },
-    {
-      "title": "Menopause & ADHD: Roadmap for Women Leaders",
-      "speaker": "Hazleen Ahmed",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-menopause-adhd-roadmap-for-women-leaders-with-hazleen-ahmed-panayiotou",
-      "tags": [
-        "Health",
-        "Menopause",
-        "ADHD"
-      ]
-    },
-    {
-      "title": "Acupressure for Perimenopause",
-      "speaker": "Hengameh Ebrahimi",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-acupressure-for-perimenopause-with-hengameh-ebrahimi",
-      "tags": [
-        "Health",
-        "Acupressure",
-        "Menopause"
-      ]
-    },
-    {
-      "title": "Work-Life Balance for Corporate Leaders",
-      "speaker": "Jodiann Goulter",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-work-life-balance-for-corporate-leaders-with-jodiann-goulter",
-      "tags": [
-        "Health",
-        "Work-Life Balance"
-      ]
-    },
-    {
-      "title": "Corporate Health: Nutrition Beyond Your Plate",
-      "speaker": "Tina Chagoury",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-corporate-health-nutrition-beyond-your-plate-with-tina-chagoury",
-      "tags": [
-        "Health",
-        "Nutrition",
-        "Corporate Wellness"
-      ]
-    },
-    {
-      "title": "Menopause 101: What Every Woman Needs to Know",
-      "speaker": "Gayu Lewis",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-menopause-101-what-every-woman-needs-to-know-with-gayu-lewis",
-      "tags": [
-        "Health",
-        "Menopause"
-      ]
-    },
-    {
-      "title": "The Media Mindset: How Media Shapes Confidence, Identity and Influence",
-      "speaker": "Dr. Kholod Huneiti",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-the-media-mindset-how-media-shapes-confidence-identity-and-influence-with-dr-kholod-huneiti",
-      "tags": [
-        "Health",
-        "Media",
-        "Mental Health"
-      ]
-    },
-    {
-      "title": "Healthy Eating Hacks When Traveling",
-      "speaker": "Fatima Hallal",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-healthy-eating-hacks-when-traveling-with-fatima-hallal",
-      "tags": [
-        "Health",
-        "Nutrition",
-        "Travel"
-      ]
-    },
-    {
-      "title": "Meal Planning for Busy Women",
-      "speaker": "Sara Tarek",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-meal-planning-for-busy-women-with-sara-tarek",
-      "tags": [
-        "Health",
-        "Nutrition",
-        "Meal Planning"
-      ]
-    },
-    {
-      "title": "Introduction to AI",
-      "speaker": "Tom Szekeres",
-      "category": "Technology and Innovation",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-introduction-to-ai-with-tom-szekeres",
-      "tags": [
-        "Technology",
-        "AI",
-        "Innovation"
-      ]
-    },
-    {
-      "title": "Demystifying DAOs: The Future of Work",
-      "speaker": "Sharene Lee",
-      "category": "Technology and Innovation",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-demystifying-daos-the-future-of-work-with-sharene-lee",
-      "tags": [
-        "Technology",
-        "Web3",
-        "DAO"
-      ]
-    },
-    {
-      "title": "Crafting Corporate Usage Policies around AI",
-      "speaker": "Hind Habbach",
-      "category": "Technology and Innovation",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-crafting-corporate-usage-policies-around-ai-with-hind-habbach",
-      "tags": [
-        "Technology",
-        "AI",
-        "Legal"
-      ]
-    },
-    {
-      "title": "AI for Small Businesses",
-      "speaker": "Beenish Saeed",
-      "category": "Technology and Innovation",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-ai-for-small-businesses-with-beenish-saeed",
-      "tags": [
-        "Technology",
-        "AI",
-        "SMB"
-      ]
-    },
-    {
-      "title": "ChatGPT Unlocked: Redefining Corporate Communication and Efficiency",
-      "speaker": "Beenish Saeed",
-      "category": "Technology and Innovation",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-chatgpt-unlocked-redefining-corporate-communication-and-efficiency-with-beenish-saeed",
-      "tags": [
-        "Technology",
-        "AI",
-        "ChatGPT"
-      ]
-    },
-    {
-      "title": "Mastering Legal Contracts for Startup Success",
-      "speaker": "Bushra Asif & Marjorie Sudrow",
-      "category": "Startup and Entrepreneurship",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-mastering-legal-contracts-for-startup-success-by-bushra-asif-and-marjorie-sudrow",
-      "tags": [
-        "Startup",
-        "Legal",
-        "Contracts"
-      ]
-    },
-    {
-      "title": "Leadership as an entrepreneur in the fashion industry",
-      "speaker": "Altaf Hindi",
-      "category": "Startup and Entrepreneurship",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-psychological-safety-for-entrepreneurs-with-faiza-saeed",
-      "tags": [
-        "Startup",
-        "Fashion",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "The Startup Sprint to Launch Your Big Idea",
-      "speaker": "Dina El Mofty",
-      "category": "Startup and Entrepreneurship",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-the-startup-sprint-to-launch-your-big-idea-by-dina-el-mofty",
-      "tags": [
-        "Startup",
-        "Launch",
-        "Entrepreneurship"
-      ]
-    },
-    {
-      "title": "Mastering The Art of Recruitment To Build Your Dream Team",
-      "speaker": "Nadia Jazairli",
-      "category": "Startup and Entrepreneurship",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-mastering-the-art-of-recruitment-to-build-your-dream-team-by-nadia-jazairli",
-      "tags": [
-        "Startup",
-        "Recruitment",
-        "HR"
-      ]
-    },
-    {
-      "title": "Driving Social Impact: A CSR Strategies Workshop",
-      "speaker": "Shahmeen Islam",
-      "category": "Startup and Entrepreneurship",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-driving-social-impact-a-csr-strategies-workshop",
-      "tags": [
-        "Startup",
-        "CSR",
-        "Social Impact"
-      ]
-    },
-    {
-      "title": "Psychological Safety for Entrepreneurs",
-      "speaker": "Faiza Saeed",
-      "category": "Startup and Entrepreneurship",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-welcome-address-from-wafa-alobaidat",
-      "tags": [
-        "Startup",
-        "Psychological Safety"
-      ]
-    },
-    {
-      "title": "From Vision to Impact",
-      "speaker": "Nina Abi Fadel",
-      "category": "Startup and Entrepreneurship",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-from-vision-to-impact-with-nina-abi-fadel",
-      "tags": [
-        "Startup",
-        "Vision",
-        "Impact"
-      ]
-    },
-    {
-      "title": "Building a Retail Brand That Thrives on Community",
-      "speaker": "Hazar Al Zadjali",
-      "category": "Startup and Entrepreneurship",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-welcome-remarks-from-dalal-behbehani",
-      "tags": [
-        "Startup",
-        "Retail",
-        "Brand"
-      ]
-    },
-    {
-      "title": "Corporate Excellence: Precision Feedback for Elevating Employee Performance and Growth",
-      "speaker": "Noor Al-Ajeel",
-      "category": "Leadership and Management",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-corporate-excellence-precision-feedback-for-elevating-employee-performance-and-growth-with-noor-al-ajeel",
-      "tags": [
-        "Leadership",
-        "Management",
-        "Performance"
-      ]
-    },
-    {
-      "title": "Communicating with Impact During Times of Change",
-      "speaker": "Mai El Kinawi",
-      "category": "Leadership and Management",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-communicating-with-impact-during-times-of-change-with-mai-el-kinawi",
-      "tags": [
-        "Leadership",
-        "Communication",
-        "Change"
-      ]
-    },
-    {
-      "title": "Inclusive Leadership in 2025",
-      "speaker": "Lara Khouri",
-      "category": "Leadership and Management",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-inclusive-leadership-in-2025-with-lara-khouri",
-      "tags": [
-        "Leadership",
-        "Inclusive Leadership"
-      ]
-    },
-    {
-      "title": "Strategic Event Planning and Execution For Impactful Events",
-      "speaker": "Nadine Farrag",
-      "category": "Entertainment and Arts",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-strategic-event-planning-and-execution-for-impactful-events-with-nadine-farrag%F0%9F%92%A1%F0%9F%92%AB",
-      "tags": [
-        "Arts",
-        "Events",
-        "Strategy"
-      ]
-    },
-    {
-      "title": "From Vision to Screen: Navigating Legal and Commercial Aspects of Film Making",
-      "speaker": "Dr. Moira Sullivan & Marjorie Sudrow",
-      "category": "Entertainment and Arts",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-from-vision-to-screen-navigating-legal-and-commercial-aspects-of-film-making-with-dr-moira-sullivan-and-marjorie-sudrow%F0%9F%8F%AC%F0%9F%8E%9E%EF%B8%8F",
-      "tags": [
-        "Arts",
-        "Film",
-        "Legal"
-      ]
-    },
-    {
-      "title": "Newbie to Pro: Essential Tips for Making the Most of Your First Job",
-      "speaker": "Wafa AlObaidat",
-      "category": "Mini Masterclass Recap",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-newbie-to-pro-essential-tips-for-making-the-most-of-your-first-job-wafa-alobaidat",
-      "tags": [
-        "Career",
-        "First Job",
-        "Tips"
-      ]
-    },
-    {
-      "title": "Curating your Career",
-      "speaker": "Wafa AlObaidat",
-      "category": "Mini Masterclass Recap",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-curating-your-career-with-wafa-alobaidat%F0%9F%92%BC%F0%9F%92%A1",
-      "tags": [
-        "Career",
-        "Development"
-      ]
-    },
-    {
-      "title": "Discovering Health Through Mindful Living",
-      "speaker": "Iman Cheffi",
-      "category": "Hybrid Workshop",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-discovering-health-through-mindful-living-with-iman-cheffi%F0%9F%A7%A0%F0%9F%8C%90",
-      "tags": [
-        "Health",
-        "Mindfulness"
-      ]
-    },
-    {
-      "title": "Turning your Instagram into a High-Converting Funnel",
-      "speaker": "Alia ElKhatib",
-      "category": "Learn in 5",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-turning-your-instagram-into-a-high-converting-funnel-with-alia-elkhatib",
-      "tags": [
-        "Marketing",
-        "Instagram",
-        "Social Media"
-      ]
-    },
-    {
-      "title": "How to Recognize and Overcome Bias – Especially When You're the Target",
-      "speaker": "Cristina Muntean",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-how-to-recognize-and-overcome-bias-especially-when-youre-the-target-with-cristina-muntean",
-      "tags": [
-        "Personal Development",
-        "Bias",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "The Inner Edge of Growth: Feminine Intelligence, Visibility and Founder Confidence",
-      "speaker": "Sophie Belle",
-      "category": "Personal Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-playbook-webinars-the-inner-edge-of-growth-feminine-intelligence-visibility-and-founder-confidence",
-      "tags": [
-        "Personal Development",
-        "Feminine Intelligence",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "Your Next Step in Playbook: Unlock the Power of the Membership Pledge",
-      "speaker": "Wafa AlObaidat",
-      "category": "Financial Literacy",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-your-next-step-in-playbook-unlock-the-power-of-the-membership-pledge",
-      "tags": [
-        "Financial Literacy",
-        "Membership",
-        "Playbook"
-      ]
-    },
-    {
-      "title": "How to use LinkedIn as your sales funnel",
-      "speaker": "Alia ElKhatib",
-      "category": "Career Development",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-how-to-use-linkedin-as-your-sales-funnel-with-alia-el-khatib",
-      "tags": [
-        "Career Development",
-        "LinkedIn",
-        "Sales"
-      ]
-    },
-    {
-      "title": "The Happy Model: Unlock Explosive Growth For Free Using Other People's Audiences",
-      "speaker": "Nagi Salloum",
-      "category": "Sales and Marketing",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-the-happy-model-unlock-explosive-growth-for-free-using-other-peoples-audiences-with-nagi-salloum",
-      "tags": [
-        "Marketing",
-        "Growth",
-        "Audience Building"
-      ]
-    },
-    {
-      "title": "The Nervous System Advantage: Unlocking Energy, Focus & Confidence in Business",
-      "speaker": "Susie Bower",
-      "category": "Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-the-nervous-system-advantage-unlocking-energy-focus-confidene-in-business-with-susie-bower",
-      "tags": [
-        "Health",
-        "Wellness",
-        "Nervous System",
-        "Business"
-      ]
-    },
-    {
-      "title": "Build Your AI Dream Team: Custom GPTs That Do the Work of 5 Employees Without the Payroll",
-      "speaker": "Nidhima Kohli",
-      "category": "Technology and Innovation",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-build-your-ai-dream-team-custom-gpts-that-do-the-work-of-5-employees-without-the-payroll-with-nidhima-kohli",
-      "tags": [
-        "Technology",
-        "AI",
-        "GPT",
-        "Business Automation"
-      ]
-    },
-    {
-      "title": "The AI Agent That Answers Every Call: How to Never Lose a Customer",
-      "speaker": "Asmaa AlKuwari",
-      "category": "Technology and Innovation",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-the-ai-agent-that-answers-every-call-how-to-never-lose-a-customer",
-      "tags": [
-        "Technology",
-        "AI",
-        "Customer Service"
-      ]
-    },
-    {
-      "title": "Leading yourself in Times of Stress & Uncertainty",
-      "speaker": "Asmaa AlKuwari",
-      "category": "Wellness and Leadership Series",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-leading-yourself-in-times-of-stress-uncertainty-with-asmaa-alkuwari",
-      "tags": [
-        "Wellness",
-        "Leadership",
-        "Stress",
-        "Resilience"
-      ]
-    },
-    {
-      "title": "Strong Mothers, Safe Children: Helping Our Kids Stay Calm, Confident, and Faithful in Uncertain Times",
-      "speaker": "Rasha AlShubaian",
-      "category": "Wellness and Leadership Series",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-strong-mothers-safe-children-helping-our-kids-stay-calm-confident-and-faithful-in-uncertain-times-with-rasha-alshubaian",
-      "tags": [
-        "Wellness",
-        "Motherhood",
-        "Parenting",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "From Reaction to Action: A Practical Shift for Uncertain Times",
-      "speaker": "Dr. Louise Lambert",
-      "category": "Wellness and Leadership Series",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-from-reaction-to-action-a-practical-shift-for-uncertain-times-with-dr-louise-lambert",
-      "tags": [
-        "Wellness",
-        "Leadership",
-        "Resilience",
-        "Mindset"
-      ]
-    },
-    {
-      "title": "Women as Pillars of Family Stability in Times of Conflict: Building Resilient Families in Times of Crisis",
-      "speaker": "Dr. Kholod Huneiti",
-      "category": "Wellness and Leadership Series",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-women-as-pillars-of-family-stability-in-times-of-conflict-building-resilient-families-in-times-of-crisis-with-dr-kholod-huneiti",
-      "tags": [
-        "Wellness",
-        "Family",
-        "Resilience",
-        "Crisis"
-      ]
-    },
-    {
-      "title": "Inner Stability as a Leadership Strategy",
-      "speaker": "Haya Al-Khalifa",
-      "category": "Wellness and Leadership Series",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-inner-stability-as-a-leadership-strategy-with-haya-al-khalifa",
-      "tags": [
-        "Wellness",
-        "Leadership",
-        "Stability",
-        "Mindset"
-      ]
-    },
-    {
-      "title": "The Founder Reset: Align Your Life, Scale Your Business",
-      "speaker": "Avneet Kohli",
-      "category": "Wellness and Leadership Series",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-the-founder-reset-align-your-life-scale-your-business-with-avneet-kohil",
-      "tags": [
-        "Wellness",
-        "Leadership",
-        "Founder",
-        "Business"
-      ]
-    },
-    {
-      "title": "Leadership as an Entrepreneur in the Fashion Industry (Arabic)",
-      "speaker": "Altaf Hindi",
-      "category": "Startup and Entrepreneurship",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-%D8%A7%D9%84%D9%82%D9%8A%D8%A7%D8%AF%D8%A9-%D9%83%D8%B1%D8%A7%D8%A6%D8%AF%D8%A9-%D8%A3%D8%B9%D9%85%D8%A7%D9%84-%D9%81%D9%8A-%D8%B5%D9%86%D8%A7%D8%B9%D8%A9-%D8%A7%D9%84%D9%85%D9%88%D8%B6%D8%A9-%D9%88-%D8%A7%D9%84%D8%A7%D8%B2%D9%8A%D8%A7%D8%A1%F0%9F%8C%9F",
-      "tags": [
-        "Startup",
-        "Fashion",
-        "Leadership",
-        "Arabic"
-      ]
-    }
-  ],
-  "Partner Workshops": [
-    {
-      "title": "AI for Education",
-      "speaker": "nybl Team",
-      "category": "nybl",
-      "url": "https://network.get-playbook.com/posts/partner-workshops-1-ai-for-education",
-      "tags": [
-        "AI",
-        "Education",
-        "Tech"
-      ]
-    },
-    {
-      "title": "AI for Healthcare",
-      "speaker": "nybl Team",
-      "category": "nybl",
-      "url": "https://network.get-playbook.com/posts/partner-workshops-2-ai-for-healthcare",
-      "tags": [
-        "AI",
-        "Healthcare",
-        "Tech"
-      ]
-    },
-    {
-      "title": "AI for Retail",
-      "speaker": "nybl Team",
-      "category": "nybl",
-      "url": "https://network.get-playbook.com/posts/partner-workshops-3-ai-for-retail",
-      "tags": [
-        "AI",
-        "Retail",
-        "Tech"
-      ]
-    },
-    {
-      "title": "Future Tech for Women Leaders",
-      "speaker": "nybl Team",
-      "category": "nybl",
-      "url": "https://network.get-playbook.com/posts/partner-workshops-4-future-tech-for-women-leaders",
-      "tags": [
-        "AI",
-        "Women in Tech",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "The Entrepreneurs Boardroom",
-      "speaker": "nybl Team",
-      "category": "nybl",
-      "url": "https://network.get-playbook.com/posts/partner-workshops-5-the-entrepreneurs-boardroom",
-      "tags": [
-        "AI",
-        "Entrepreneurship"
-      ]
-    },
-    {
-      "title": "AI for Sustainability",
-      "speaker": "nybl Team",
-      "category": "nybl",
-      "url": "https://network.get-playbook.com/posts/partner-workshops-6-ai-for-sustainability",
-      "tags": [
-        "AI",
-        "Sustainability"
-      ]
-    },
-    {
-      "title": "AI for Energy",
-      "speaker": "nybl Team",
-      "category": "nybl",
-      "url": "https://network.get-playbook.com/posts/partner-workshops-7-ai-for-energy",
-      "tags": [
-        "AI",
-        "Energy"
-      ]
-    },
-    {
-      "title": "Deep Tech",
-      "speaker": "nybl Team",
-      "category": "nybl",
-      "url": "https://network.get-playbook.com/posts/partner-workshops-8-deep-tech",
-      "tags": [
-        "AI",
-        "Deep Tech"
-      ]
-    },
-    {
-      "title": "Funding for AI",
-      "speaker": "nybl Team",
-      "category": "nybl",
-      "url": "https://network.get-playbook.com/posts/partner-workshops-9-funding-for-ai",
-      "tags": [
-        "AI",
-        "Funding"
-      ]
-    },
-    {
-      "title": "The Secrets of CX's Journey and Digital Minds",
-      "speaker": "Dr. Lama Shanti",
-      "category": "AWE",
-      "url": "https://network.get-playbook.com/posts/partner-workshops-the-secrets-of-cxs-journey-and-digital-minds-with-dr-lama-shanti",
-      "tags": [
-        "CX",
-        "Digital",
-        "Tech"
-      ]
-    },
-    {
-      "title": "Overcoming Imposter Syndrome: Rebuilding Confidence and Recognizing Your Self-Worth",
-      "speaker": "Jana Osta",
-      "category": "Baghdad Business School",
-      "url": "https://network.get-playbook.com/posts/partner-workshops-overcoming-imposter-syndrome-rebuilding-confidence-and-recognizing-your-self-worth-with-jana-osta",
-      "tags": [
-        "Mindset",
-        "Confidence",
-        "Imposter Syndrome"
-      ]
-    },
-    {
-      "title": "Mastering the Art of Boundaries and Emotional Intelligence",
-      "speaker": "Asmaa AlKuwari",
-      "category": "Baghdad Business School",
-      "url": "https://network.get-playbook.com/posts/partner-workshops-mastering-the-art-of-boundaries-and-emotional-intelligence-with-asmaa-alkuwari",
-      "tags": [
-        "Leadership",
-        "Emotional Intelligence",
-        "Boundaries"
-      ]
-    },
-    {
-      "title": "Strategic Opportunity Hunting",
-      "speaker": "Wafa AlObaidat",
-      "category": "Baghdad Business School",
-      "url": "https://network.get-playbook.com/posts/partner-workshops-strategic-opportunity-hunting-with-wafa-alobaidat",
-      "tags": [
-        "Strategy",
-        "Entrepreneurship"
-      ]
-    },
-    {
-      "title": "Navigating Private Market Investments",
-      "speaker": "Ismail Badereldine",
-      "category": "FINBURSA",
-      "url": "https://network.get-playbook.com/posts/partner-workshops-navigating-private-market-investments-with-ismail-badereldine",
-      "tags": [
-        "Finance",
-        "Private Markets",
-        "Investing"
-      ]
-    },
-    {
-      "title": "Get Started with Investing",
-      "speaker": "Denise Lim & Phil M",
-      "category": "Junify",
-      "url": "https://network.get-playbook.com/posts/partner-workshops-get-started-with-investing-with-denise-lim-phil-m",
-      "tags": [
-        "Finance",
-        "Investing",
-        "Beginner"
-      ]
-    },
-    {
-      "title": "Women & Success: Redefining Power, Day 1",
-      "speaker": "Multiple Speakers",
-      "category": "Women & Success Summit",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-playbook-webinars-women-success-redefining-power-day-1",
-      "tags": [
-        "Leadership",
-        "Women",
-        "Success",
-        "Power"
-      ]
-    },
-    {
-      "title": "Women & Success: Redefining Power, Day 2",
-      "speaker": "Multiple Speakers",
-      "category": "Women & Success Summit",
-      "url": "https://network.get-playbook.com/posts/playbook-workshops-playbook-webinars-women-success-redefining-power-day-2",
-      "tags": [
-        "Leadership",
-        "Women",
-        "Success",
-        "Power"
-      ]
-    }
-  ],
-  "PLAYBOOK Masterclasses": [
-    {
-      "title": "Graphic Design and Creative Expression (Full Masterclass)",
-      "speaker": "Rana Salam",
-      "category": "Graphic Design and Creative Expression",
-      "url": "https://network.get-playbook.com/posts/graphic-design-and-creative-expression-the-wow-and-wonderful-world-of-rana-salam",
-      "tags": [
-        "Masterclass",
-        "Design",
-        "Creativity"
-      ]
-    },
-    {
-      "title": "Social Media Influence & Authenticity (Full Masterclass)",
-      "speaker": "Yalda Golsharifi",
-      "category": "Social Media Influence & Authenticity",
-      "url": "https://network.get-playbook.com/posts/social-media-influence-authenticity-meet-yalda-golsharifi",
-      "tags": [
-        "Masterclass",
-        "Social Media",
-        "Authenticity"
-      ]
-    },
-    {
-      "title": "Scaling a Business (Full Masterclass)",
-      "speaker": "Roaya Saleh",
-      "category": "Scaling a Business",
-      "url": "https://network.get-playbook.com/posts/scaling-a-business-meet-roaya-saleh-تعرفي-على-رؤيا-صالح",
-      "tags": [
-        "Masterclass",
-        "Business",
-        "Scaling"
-      ]
-    },
-    {
-      "title": "Starting a Business (Full Masterclass)",
-      "speaker": "Wafa AlObaidat",
-      "category": "Starting a Business",
-      "url": "https://network.get-playbook.com/posts/starting-a-business-meet-wafa-alobaidat-تعرفي-على-وفاء-العبيدات",
-      "tags": [
-        "Masterclass",
-        "Startup",
-        "Entrepreneurship"
-      ]
-    },
-    {
-      "title": "Fundamentals of Digital Marketing (Full Masterclass)",
-      "speaker": "Hanan Al-Haifi",
-      "category": "Fundamentals of Digital Marketing",
-      "url": "https://network.get-playbook.com/posts/fundamentals-of-digital-marketing-meet-hanan-al-haifi-تعرفي-على-حنان-الحيفي",
-      "tags": [
-        "Masterclass",
-        "Digital Marketing",
-        "Marketing"
-      ]
-    },
-    {
-      "title": "Feminine Health and Wellness (Full Masterclass)",
-      "speaker": "Emaan Abbass",
-      "category": "Feminine Health and Wellness",
-      "url": "https://network.get-playbook.com/posts/feminine-health-and-wellness-meet-emaan-abbass-تعرفي-على-إيمان-عباس",
-      "tags": [
-        "Masterclass",
-        "Health",
-        "Feminine Wellness"
-      ]
-    },
-    {
-      "title": "Board Membership & Advisory (Full Masterclass)",
-      "speaker": "Elham Hassan",
-      "category": "Board Membership & Advisory",
-      "url": "https://network.get-playbook.com/posts/board-membership-advisory-board-membership-as-a-full-time-job-26162137",
-      "tags": [
-        "Masterclass",
-        "Board",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "Mental Health (Full Masterclass)",
-      "speaker": "HH Sayyida Basma Al-Said",
-      "category": "Mental Health",
-      "url": "https://network.get-playbook.com/posts/mental-health-meet-hh-sayyida-basma-al-said-تعرفي-على-صاحبة-السمو-السيدة-بسمة-آل-سعيد",
-      "tags": [
-        "Masterclass",
-        "Mental Health",
-        "Wellness"
-      ]
-    },
-    {
-      "title": "Feminism and Women Crisis Advocacy (Full Masterclass)",
-      "speaker": "Mary-Justine Todd",
-      "category": "Feminism and Women Crisis Advocacy",
-      "url": "https://network.get-playbook.com/posts/feminism-and-women-crisis-advocacy-meet-mary-justine-todd",
-      "tags": [
-        "Masterclass",
-        "Feminism",
-        "Advocacy"
-      ]
-    },
-    {
-      "title": "Climbing The Corporate Ladder (Full Masterclass)",
-      "speaker": "Amal Al Kooheji",
-      "category": "Climbing The Corporate Ladder",
-      "url": "https://network.get-playbook.com/posts/climbing-the-corporate-ladder-meet-amal-al-kooheji",
-      "tags": [
-        "Masterclass",
-        "Career",
-        "Corporate"
-      ]
-    },
-    {
-      "title": "The Investor Mindset (Full Masterclass)",
-      "speaker": "Amal Dokhan",
-      "category": "The Investor Mindset",
-      "url": "https://network.get-playbook.com/posts/the-investor-mindset-meet-amal-dokhan-24076588",
-      "tags": [
-        "Masterclass",
-        "Investing",
-        "VC"
-      ]
-    },
-    {
-      "title": "Stepping into Feminine Power and Scaling (Full Masterclass)",
-      "speaker": "Deena Al-Ansari",
-      "category": "Stepping into Feminine Power and Scaling",
-      "url": "https://network.get-playbook.com/posts/stepping-into-feminine-power-and-scaling-meet-deena-ansari-تعرفي-على-دينا-الأنصاري",
-      "tags": [
-        "Masterclass",
-        "Leadership",
-        "Feminine Power"
-      ]
-    },
-    {
-      "title": "Leading A Family Business (Full Masterclass)",
-      "speaker": "Suzy Kanoo",
-      "category": "Leading A Family Business",
-      "url": "https://network.get-playbook.com/posts/leading-a-family-business-meet-suzy-kanoo-تعرفي-على-سوزي-كانو",
-      "tags": [
-        "Masterclass",
-        "Family Business",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "Colour Consulting and Expression (Full Masterclass)",
-      "speaker": "Fatima Alshirawi",
-      "category": "Colour Consulting and Expression",
-      "url": "https://network.get-playbook.com/posts/colour-consulting-and-expression-meet-fatima-al-shirawi-تعرف-على-فاطمة-الشيراوي",
-      "tags": [
-        "Masterclass",
-        "Colour",
-        "Branding"
-      ]
-    },
-    {
-      "title": "Early-Stage Fundraising (Full Masterclass)",
-      "speaker": "Ameena Bucheeri",
-      "category": "Early-Stage Fundraising",
-      "url": "https://network.get-playbook.com/posts/early-stage-fundraising-meet-ameena-bucheeri-تعرف-على-أمينة-بوچيري",
-      "tags": [
-        "Masterclass",
-        "Fundraising",
-        "Startup"
-      ]
-    },
-    {
-      "title": "Thriving in Government (Full Masterclass)",
-      "speaker": "Dr. Fatima Al-Balooshi",
-      "category": "Thriving in Government",
-      "url": "https://network.get-playbook.com/posts/thriving-in-government-meet-drfatima-al-balooshi-تعرف-على-الدكتورة-فاطمة-البلوشي",
-      "tags": [
-        "Masterclass",
-        "Government",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "Authenticity in Sales (Full Masterclass)",
-      "speaker": "Nada Alawi",
-      "category": "Authenticity in Sales",
-      "url": "https://network.get-playbook.com/posts/authenticity-in-sales-meet-nada-alawi-تعرفِ-على-ندى-علوي",
-      "tags": [
-        "Masterclass",
-        "Sales",
-        "Authenticity"
-      ]
-    },
-    {
-      "title": "The A-Player Mindset (Full Masterclass)",
-      "speaker": "Enas Asiri",
-      "category": "The A-Player Mindset",
-      "url": "https://network.get-playbook.com/posts/the-a-player-mindset-meet-enas-asiri",
-      "tags": [
-        "Masterclass",
-        "Mindset",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "Strategic Career Growth (Full Masterclass)",
-      "speaker": "Afaf Zainalabedin",
-      "category": "Strategic Career Growth",
-      "url": "https://network.get-playbook.com/posts/strategic-career-growth-meet-afaf-zainalabedin",
-      "tags": [
-        "Masterclass",
-        "Career",
-        "Strategy"
-      ]
-    },
-    {
-      "title": "Building Financial Independence (Full Masterclass)",
-      "speaker": "Nandini Joshi",
-      "category": "Building Financial Independence",
-      "url": "https://network.get-playbook.com/posts/building-financial-independence-meet-nandini-joshi",
-      "tags": [
-        "Masterclass",
-        "Finance",
-        "Independence"
-      ]
-    },
-    {
-      "title": "Managing Stakeholder Relations (Full Masterclass)",
-      "speaker": "Deemah AlYahya",
-      "category": "Managing Stakeholder Relations",
-      "url": "https://network.get-playbook.com/posts/managing-stakeholder-relations-shaping-a-tech-enthusiast-from-childhood",
-      "tags": [
-        "Masterclass",
-        "Stakeholder",
-        "Leadership"
-      ]
-    },
-    {
-      "title": "Palestinian Culture and Heritage (Full Masterclass)",
-      "speaker": "Mayssoun Azzam",
-      "category": "Palestinian Culture and Heritage",
-      "url": "https://network.get-playbook.com/posts/palestinian-culture-and-heritage-lesson-0-لقاء-مع-المدرب-تعرف-على-ميسون-عزام-meet-the-instructor-introducing-mayssoun-azzam",
-      "tags": [
-        "Masterclass",
-        "Culture",
-        "Heritage"
-      ]
-    }
-  ],
-  "PLAYBOOK Bootcamps": [
-    {
-      "title": "Mastering Strategic Networking (4-week Bootcamp)",
-      "speaker": "Wafa AlObaidat",
-      "category": "Strategic Networking",
-      "url": "https://network.get-playbook.com/posts/89177440",
-      "tags": [
-        "Bootcamp",
-        "Networking",
-        "Career"
-      ]
-    }
-  ],
-  "PLAYBOOK Sessions": [
-    {
-      "title": "Creating a Scalable Product",
-      "speaker": "Playbook Team",
-      "category": "The Playbook Guide to Raising Capital",
-      "url": "https://network.get-playbook.com/posts/playbook-sessions-creating-a-scalable-product",
-      "tags": [
-        "Sessions",
-        "Fundraising",
-        "Startup"
-      ]
-    },
-    {
-      "title": "Traction is King",
-      "speaker": "Playbook Team",
-      "category": "The Playbook Guide to Raising Capital",
-      "url": "https://network.get-playbook.com/posts/playbook-sessions-traction-is-king",
-      "tags": [
-        "Sessions",
-        "Fundraising",
-        "Traction"
-      ]
-    },
-    {
-      "title": "The Art of Asking and Saying Yes",
-      "speaker": "Playbook Team",
-      "category": "The Playbook Guide to Raising Capital",
-      "url": "https://network.get-playbook.com/posts/playbook-sessions-the-art-of-asking-and-saying-yes",
-      "tags": [
-        "Sessions",
-        "Fundraising",
-        "Pitch"
-      ]
-    },
-    {
-      "title": "A Guide to Entering the Investor Space",
-      "speaker": "Playbook Team",
-      "category": "The Playbook Guide to Raising Capital",
-      "url": "https://network.get-playbook.com/posts/playbook-sessions-a-guide-to-entering-the-investor-space",
-      "tags": [
-        "Sessions",
-        "Investing",
-        "Fundraising"
-      ]
-    },
-    {
-      "title": "Dealing With Rejection",
-      "speaker": "Playbook Team",
-      "category": "The Playbook Guide to Raising Capital",
-      "url": "https://network.get-playbook.com/posts/playbook-sessions-dealing-with-rejection",
-      "tags": [
-        "Sessions",
-        "Fundraising",
-        "Mindset"
-      ]
-    },
-    {
-      "title": "The Art of Saying Yes",
-      "speaker": "Playbook Team",
-      "category": "The Playbook Guide to Raising Capital",
-      "url": "https://network.get-playbook.com/posts/playbook-sessions-the-art-of-saying-yes",
-      "tags": [
-        "Sessions",
-        "Fundraising"
-      ]
-    },
-    {
-      "title": "Finding the Right Investor for You",
-      "speaker": "Playbook Team",
-      "category": "The Playbook Guide to Raising Capital",
-      "url": "https://network.get-playbook.com/posts/playbook-sessions-finding-the-right-investor-for-you",
-      "tags": [
-        "Sessions",
-        "Fundraising",
-        "Investors"
-      ]
-    }
-  ]
-};
+const CONTENT_LIBRARY = [
+  {
+    "title": "Hacking Motherhood & Your Career",
+    "speaker": "Dina Abdul Majeed",
+    "speaker_title": "CEO of 360Moms",
+    "type": "PLAYBOOK Speaker Series",
+    "category": "Season 1",
+    "tags": "Speaker Series, Career, Motherhood",
+    "link": "https://network.get-playbook.com/posts/speaker-series-recap-hacking-motherhood-your-career-dina-abdul-majeed",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8c98422570f0734bd2447b9a30f1d81d05f0bc6d/uploads/2026-04-09T08-47-26-746Z-9mq7q79nl.png",
+    "keywords": [
+      "abdul",
+      "career",
+      "dina",
+      "hacking",
+      "majeed",
+      "motherhood",
+      "playbook",
+      "season",
+      "series",
+      "speaker"
+    ]
+  },
+  {
+    "title": "Transforming Data into Actionable Decision-Making",
+    "speaker": "Hafsa Rubiya Yazdani",
+    "speaker_title": "Chief Software Engineer at nybl, Member of Google's Women Techmakers",
+    "type": "PLAYBOOK Speaker Series",
+    "category": "Season 1",
+    "tags": "Speaker Series, Tech, Data",
+    "link": "https://network.get-playbook.com/posts/speaker-series-recap-transforming-data-into-actionable-decision-making-hafsa-rubiya-yazdani",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@284b5b5082af66f4f8654b0f14accf269a90e787/uploads/2026-04-09T08-45-53-317Z-dkcc1gr76.png",
+    "keywords": [
+      "actionable",
+      "data",
+      "decision",
+      "hafsa",
+      "making",
+      "playbook",
+      "rubiya",
+      "season",
+      "series",
+      "speaker",
+      "tech",
+      "transforming",
+      "yazdani"
+    ]
+  },
+  {
+    "title": "The 101 to Launching a FinTech Startup",
+    "speaker": "Dalal AlRayes",
+    "speaker_title": "CEO and Co-Founder of Spare",
+    "type": "PLAYBOOK Speaker Series",
+    "category": "Season 1",
+    "tags": "Speaker Series, FinTech, Startup",
+    "link": "https://network.get-playbook.com/posts/speaker-series-recap-the-101-to-launching-a-fintech-startup-dalal-alrayes",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@43145bc1a640f562673f0efc479abd16ad983bfe/uploads/2026-04-09T08-44-15-127Z-l9383o9kt.png",
+    "keywords": [
+      "101",
+      "alrayes",
+      "dalal",
+      "fintech",
+      "launching",
+      "playbook",
+      "season",
+      "series",
+      "speaker",
+      "startup"
+    ]
+  },
+  {
+    "title": "Closing the Gap Through Investing",
+    "speaker": "Tamara Abdel-Jaber",
+    "speaker_title": "Partner at Amam Ventures",
+    "type": "PLAYBOOK Speaker Series",
+    "category": "Season 1",
+    "tags": "Speaker Series, Investing, VC",
+    "link": "https://network.get-playbook.com/posts/speaker-series-recap-closing-the-gap-through-investing-tamara-abdel-jaber",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@30d15cb3ca6338ab4969a7b7b8542ed1bcc9cac5/uploads/2026-04-09T08-42-40-957Z-g9cgskpxs.png",
+    "keywords": [
+      "abdel",
+      "closing",
+      "gap",
+      "investing",
+      "jaber",
+      "playbook",
+      "season",
+      "series",
+      "speaker",
+      "tamara",
+      "through"
+    ]
+  },
+  {
+    "title": "The Art of Living with Positive Intensity",
+    "speaker": "Tatiana Poliakova",
+    "speaker_title": "Transformational Coach, Facilitator, and Leadership Consultant",
+    "type": "PLAYBOOK Speaker Series",
+    "category": "Season 1",
+    "tags": "Speaker Series, Leadership, Wellness",
+    "link": "https://network.get-playbook.com/posts/speaker-series-recap-the-art-of-living-with-positive-intensity-tatiana-poliakova",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@56d4bcb4b01aa49e3e79d95c9c9155f8f62640c3/uploads/2026-04-09T08-39-06-598Z-lsahjtpda.png",
+    "keywords": [
+      "art",
+      "intensity",
+      "leadership",
+      "living",
+      "playbook",
+      "poliakova",
+      "positive",
+      "season",
+      "series",
+      "speaker",
+      "tatiana",
+      "wellness"
+    ]
+  },
+  {
+    "title": "Rising Through The Ranks",
+    "speaker": "Shada El Borno",
+    "speaker_title": "Managing Director & Regional Head Global Subsidiaries, Standard Chartered Bank",
+    "type": "PLAYBOOK Speaker Series",
+    "category": "Season 1",
+    "tags": "Speaker Series, Career, Leadership",
+    "link": "https://network.get-playbook.com/posts/speaker-series-recap-rising-through-the-ranks-shada-el-borno",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@bd4d61e951a968fcbbd02d3c10d3500b5da65d6e/uploads/2026-04-08T08-25-56-791Z-9h1j7xiib.png",
+    "keywords": [
+      "borno",
+      "career",
+      "leadership",
+      "playbook",
+      "ranks",
+      "rising",
+      "season",
+      "series",
+      "shada",
+      "speaker",
+      "through"
+    ]
+  },
+  {
+    "title": "Whyise Focusing on Data That Matters",
+    "speaker": "Reem Khouri",
+    "speaker_title": "Co-Founder and Chairwoman of Whyise",
+    "type": "PLAYBOOK Speaker Series",
+    "category": "Season 1",
+    "tags": "Speaker Series, Data, Tech",
+    "link": "https://network.get-playbook.com/posts/speaker-series-recap-whyise-focusing-on-data-that-matters-reem-khouri",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@358de83cc66ac8ab9871477d63c3eccb74198c93/uploads/2026-04-08T08-28-59-447Z-l5mqnwt6p.png",
+    "keywords": [
+      "data",
+      "focusing",
+      "khouri",
+      "matters",
+      "playbook",
+      "reem",
+      "season",
+      "series",
+      "speaker",
+      "tech",
+      "whyise"
+    ]
+  },
+  {
+    "title": "Acquisition & Exit: What to Know & How to Prepare",
+    "speaker": "Dana Baki",
+    "speaker_title": "Former Co-Founder & COO of MUNCH:ON",
+    "type": "PLAYBOOK Speaker Series",
+    "category": "Season 1",
+    "tags": "Speaker Series, Exit, Entrepreneurship",
+    "link": "https://network.get-playbook.com/posts/speaker-series-recap-acquisition-exit-what-to-know-how-to-prepare-dana-baki",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@f8c4314e5b559ac32411a255d39c654ecb646d52/uploads/2026-04-08T08-31-36-057Z-hbuvm7hbf.png",
+    "keywords": [
+      "acquisition",
+      "baki",
+      "dana",
+      "entrepreneurship",
+      "exit",
+      "exit:",
+      "know",
+      "playbook",
+      "prepare",
+      "season",
+      "series",
+      "speaker"
+    ]
+  },
+  {
+    "title": "Navigating Your Way To The Top",
+    "speaker": "Navid Nazemian",
+    "speaker_title": "Award Winning Executive Coach, Bestselling Author, CEO of Navid Nazemian Executive Coaching FZCO",
+    "type": "PLAYBOOK Speaker Series",
+    "category": "Season 2",
+    "tags": "Speaker Series, Career, Leadership",
+    "link": "https://network.get-playbook.com/posts/speaker-series-recap-navigating-your-way-to-the-top-navid-nazemian",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@332f3972b6ff9f9f6a0343b96ae96b77dfa94d61/uploads/2026-04-08T08-33-32-545Z-pw0szfwv2.png",
+    "keywords": [
+      "career",
+      "leadership",
+      "navid",
+      "navigating",
+      "nazemian",
+      "playbook",
+      "season",
+      "series",
+      "speaker",
+      "top",
+      "way"
+    ]
+  },
+  {
+    "title": "Navigating Career Pivots",
+    "speaker": "Muna AbuSulayman",
+    "speaker_title": "Award-winning Strategic Development Leader, Founder & CEO",
+    "type": "PLAYBOOK Speaker Series",
+    "category": "Season 2",
+    "tags": "Speaker Series, Career, Pivot",
+    "link": "https://network.get-playbook.com/posts/speaker-series-recap-navigating-career-pivots-with-muna-abusulayman",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@a9b01d3b5f14c51be0e20d9380d0994d6715bb12/uploads/2026-04-08T08-35-10-117Z-i7o01gj1x.png",
+    "keywords": [
+      "abusulayman",
+      "career",
+      "muna",
+      "navigating",
+      "pivot",
+      "pivots",
+      "playbook",
+      "season",
+      "series",
+      "speaker"
+    ]
+  },
+  {
+    "title": "Investing in the Venture Capital Asset Class",
+    "speaker": "Zafer Younis",
+    "speaker_title": "Tech Investor, VC advisor, Founder of SVVI",
+    "type": "Women Spark Workshops",
+    "category": "Angel Investor Workshops",
+    "tags": "Investing, VC, Angel",
+    "link": "https://network.get-playbook.com/posts/investor-lounge-investing-in-the-venture-capital-asset-class-with-zafer-younis-62805054",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@939239c628505c89360f7b928b797a4670dd0fba/uploads/2026-04-08T08-37-42-980Z-23wkayn8j.png",
+    "keywords": [
+      "angel",
+      "asset",
+      "capital",
+      "class",
+      "investing",
+      "investor",
+      "spark",
+      "venture",
+      "women",
+      "workshops",
+      "younis",
+      "zafer"
+    ]
+  },
+  {
+    "title": "Principles of Successful Angel Investing",
+    "speaker": "Jed Ng",
+    "speaker_title": "Unicorn Angel Investor, Founder of Angel School",
+    "type": "Women Spark Workshops",
+    "category": "Angel Investor Workshops",
+    "tags": "Investing, Angel Investing",
+    "link": "https://network.get-playbook.com/posts/investor-lounge-principles-of-angel-investing-with-jed-ng-62805232",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@c2daad439c08442209a074cfbdb6adba890f33b0/uploads/2026-04-08T08-40-05-762Z-qplqczn94.jpg",
+    "keywords": [
+      "angel",
+      "investing",
+      "investor",
+      "jed",
+      "principles",
+      "spark",
+      "successful",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "How to become an investor",
+    "speaker": "Giovanna Melfi",
+    "speaker_title": "Serial Entrepreneur, Investor, Finance Expert",
+    "type": "Women Spark Workshops",
+    "category": "Angel Investor Workshops",
+    "tags": "Investing, Finance",
+    "link": "https://network.get-playbook.com/posts/investor-lounge-how-to-become-an-investor-with-giovanna-melfi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@36bae29f6d62251f4e5b53748acedce9d4421591/uploads/2026-04-08T08-42-12-509Z-g84uzr606.jpg",
+    "keywords": [
+      "angel",
+      "become",
+      "finance",
+      "giovanna",
+      "investing",
+      "investor",
+      "melfi",
+      "spark",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Networking Hacks for Angel Investors",
+    "speaker": "Chef Suman Ali",
+    "speaker_title": "Award winning chef, Media Personality, Investor",
+    "type": "Women Spark Workshops",
+    "category": "Angel Investor Workshops",
+    "tags": "Investing, Networking",
+    "link": "https://network.get-playbook.com/posts/investor-lounge-networking-hacks-for-angel-investors-with-chef-suman-ali-sayed",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@f15cdae25fd72dab6fb5571d2ec5671505643bb5/uploads/2026-04-08T08-44-21-215Z-53cu4qtjc.png",
+    "keywords": [
+      "ali",
+      "angel",
+      "chef",
+      "hacks",
+      "investing",
+      "investor",
+      "investors",
+      "networking",
+      "spark",
+      "suman",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Personal Branding for Investors",
+    "speaker": "Mariam Yasin",
+    "speaker_title": "Founder of The Brand Botox, Branding & Content Expert",
+    "type": "Women Spark Workshops",
+    "category": "Angel Investor Workshops",
+    "tags": "Investing, Personal Branding",
+    "link": "https://network.get-playbook.com/posts/investor-lounge-personal-branding-for-investors-with-mariam-yasin-77224811",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@467f557c9da0280487639d96d60049456007e60e/uploads/2026-04-08T08-47-12-305Z-5tdrmu1if.png",
+    "keywords": [
+      "angel",
+      "branding",
+      "investing",
+      "investor",
+      "investors",
+      "mariam",
+      "personal",
+      "spark",
+      "women",
+      "workshops",
+      "yasin"
+    ]
+  },
+  {
+    "title": "Investing made Simple: Beginner's Guide to Building Wealth",
+    "speaker": "Nelly Mounayar",
+    "speaker_title": "Managing Partner at Green Wealth Partners, Investment instruments Expert",
+    "type": "Women Spark Workshops",
+    "category": "Angel Investor Workshops",
+    "tags": "Investing, Wealth, Beginner",
+    "link": "https://network.get-playbook.com/posts/investor-lounge-investing-made-simple-beginners-guide-to-building-wealth-with-nelly-mounayar",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@71fa0f0f567d89346aa0b35aff450c7ccfb6d1fc/uploads/2026-04-08T08-49-51-426Z-2do85hpd0.png",
+    "keywords": [
+      "angel",
+      "beginner",
+      "beginner's",
+      "building",
+      "guide",
+      "investing",
+      "investor",
+      "made",
+      "mounayar",
+      "nelly",
+      "simple:",
+      "spark",
+      "wealth",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Decoding Financial Jargon",
+    "speaker": "Mais Jauhary",
+    "speaker_title": "Cofounder & CDO WeGro Business, Business Architect",
+    "type": "Women Spark Workshops",
+    "category": "Female Founder Club Workshops",
+    "tags": "Finance, Startups, Female Founders",
+    "link": "https://network.get-playbook.com/posts/female-founder-club-decoding-financial-jargon-with-mais-jauhary-62806309",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@404ed420bf0e18991eb19ed31654bdc2a4ce9353/uploads/2026-04-08T08-52-08-894Z-r2zyzogya.png",
+    "keywords": [
+      "club",
+      "decoding",
+      "female",
+      "finance",
+      "financial",
+      "founder",
+      "founders",
+      "jargon",
+      "jauhary",
+      "mais",
+      "spark",
+      "startups",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Perfecting your Pitch",
+    "speaker": "Hidayet Ayadi",
+    "speaker_title": "CEO & Co-Founder of Sghartoon, Startup Mentor",
+    "type": "Women Spark Workshops",
+    "category": "Female Founder Club Workshops",
+    "tags": "Pitch, Startup, Female Founders",
+    "link": "https://network.get-playbook.com/posts/female-founder-club-perfecting-your-pitch-by-hidayet-ayadi-62806824",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@04c46032ae88da99b68a9dba29af131d7efee2a0/uploads/2026-04-08T08-55-34-494Z-wr3tw1mdk.jpg",
+    "keywords": [
+      "ayadi",
+      "club",
+      "female",
+      "founder",
+      "founders",
+      "hidayet",
+      "perfecting",
+      "pitch",
+      "spark",
+      "startup",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "The Power of Partnerships for Startup Growth",
+    "speaker": "Roaa Ahmed",
+    "speaker_title": "Country Advisor & Business Coach at CFYE, Head of Strategy & Growth at Chefaa",
+    "type": "Women Spark Workshops",
+    "category": "Female Founder Club Workshops",
+    "tags": "Startup, Partnerships, Growth",
+    "link": "https://network.get-playbook.com/posts/female-founder-club-innovative-marketing-tactics-for-your-startup-with-dr-hanan-el-basha",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@c5662430ec0b68c4e988c2bb12e01eb8033d2150/uploads/2026-04-08T08-57-07-299Z-oepsqa28u.jpg",
+    "keywords": [
+      "ahmed",
+      "club",
+      "female",
+      "founder",
+      "growth",
+      "partnerships",
+      "power",
+      "roaa",
+      "spark",
+      "startup",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Fundraising Hacks for Female Founders",
+    "speaker": "Latifa Sowaileh",
+    "speaker_title": "Corporate Innovation Manager at Brinc, Startup Mentor",
+    "type": "Women Spark Workshops",
+    "category": "Female Founder Club Workshops",
+    "tags": "Fundraising, Female Founders",
+    "link": "https://network.get-playbook.com/posts/female-founder-club-fundraising-hacks-for-female-founders-with-latifa-sowaileh",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@c24ffdae9fc345df83d25e4ba5afd3af4ffeef6f/uploads/2026-04-08T09-43-06-890Z-15lmre9b6.png",
+    "keywords": [
+      "club",
+      "female",
+      "founder",
+      "founders",
+      "fundraising",
+      "hacks",
+      "latifa",
+      "sowaileh",
+      "spark",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "How to Manage Investor Relations",
+    "speaker": "Joseph Tyan",
+    "speaker_title": "Strategy, Growth & Transformation Consultant",
+    "type": "Women Spark Workshops",
+    "category": "Female Founder Club Workshops",
+    "tags": "Investor Relations, Startup",
+    "link": "https://network.get-playbook.com/posts/female-founder-club-how-to-manage-investor-relations-with-joseph-tyan-is-now-available",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@ff1dd0a77faed0aa34523bf0a69150819861ecac/uploads/2026-04-08T09-45-02-085Z-3nnwlr50d.png",
+    "keywords": [
+      "club",
+      "female",
+      "founder",
+      "investor",
+      "joseph",
+      "manage",
+      "relations",
+      "spark",
+      "startup",
+      "tyan",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Measuring Impact for female founders",
+    "speaker": "Kristina Cordero",
+    "speaker_title": "Researcher, tool developer, professor in literacy & literature",
+    "type": "Women Spark Workshops",
+    "category": "Female Founder Club Workshops",
+    "tags": "Impact, Female Founders",
+    "link": "https://network.get-playbook.com/posts/female-founder-club-measuring-impact-for-female-founders-with-kristina-cordero",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@ce1e5adc8c04c1a84bc2da2b7eca784c18ca76d9/uploads/2026-04-08T09-46-30-124Z-imkvi82jr.png",
+    "keywords": [
+      "club",
+      "cordero",
+      "female",
+      "founder",
+      "founders",
+      "impact",
+      "kristina",
+      "measuring",
+      "spark",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Mindset secrets of successful founders",
+    "speaker": "Margreet Magdy",
+    "speaker_title": "Co-founder and Board Member, Youth Entrepreneur's Network",
+    "type": "Women Spark Workshops",
+    "category": "Female Founder Club Workshops",
+    "tags": "Mindset, Founders",
+    "link": "https://network.get-playbook.com/posts/female-founder-club-playbook-exclusive-mindset-secrets-of-successful-founders-with-margreet-magdy",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@249e7b08a7ef3a4f93471bb16dc822e7fe82762f/uploads/2026-04-08T09-48-01-258Z-a7q5sk9ba.png",
+    "keywords": [
+      "club",
+      "female",
+      "founder",
+      "founders",
+      "magdy",
+      "margreet",
+      "mindset",
+      "secrets",
+      "spark",
+      "successful",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Hacking Revenue for Startups",
+    "speaker": "Maria Frangieh",
+    "speaker_title": "Founder and CEO Socialprise, Digital Transformation & Business Growth",
+    "type": "Women Spark Workshops",
+    "category": "Female Founder Club Workshops",
+    "tags": "Revenue, Startup, Growth",
+    "link": "https://network.get-playbook.com/posts/demo-day-ignite-your-potential-to-grow-with-the-sophia-collective",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8d69cbe9114f3cd30c46d03359daa9378de3313e/uploads/2026-04-08T09-49-22-890Z-fjb8owwxj.png",
+    "keywords": [
+      "club",
+      "female",
+      "founder",
+      "frangieh",
+      "growth",
+      "hacking",
+      "maria",
+      "revenue",
+      "spark",
+      "startup",
+      "startups",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Launchpad KSA: Build Your Business in Saudi Arabia",
+    "speaker": "Saeed Al-Ansari",
+    "speaker_title": "CEO of Tawaref, Tech Investments and Startup Services",
+    "type": "Women Spark Workshops",
+    "category": "Female Founder Club Workshops",
+    "tags": "KSA, Startup, Saudi Arabia",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-cultivating-mental-fitness-for-success-by-ghada-khalifeh%F0%9F%8C%9F",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@f661486bc684ad232b1e9e3cca4daa68012721c8/uploads/2026-04-08T09-50-37-276Z-cf7vg9gd8.png",
+    "keywords": [
+      "ansari",
+      "arabia",
+      "build",
+      "business",
+      "club",
+      "female",
+      "founder",
+      "ksa",
+      "ksa:",
+      "launchpad",
+      "saeed",
+      "saudi",
+      "spark",
+      "startup",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Mental Fitness to Thrive Through Challenges",
+    "speaker": "Rula Husseini",
+    "speaker_title": "Executive and Mental Fitness Coach",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Mental Health",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-mental-fitness-to-thrive-through-challenges-by-rula-husseini%F0%9F%A7%A0%E2%9C%A8",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@aee7779b29687a84aa6ce37c30d7cd5d69aa4188/uploads/2026-04-08T09-52-24-727Z-lmrvf2vqg.png",
+    "keywords": [
+      "challenges",
+      "development",
+      "fitness",
+      "health",
+      "husseini",
+      "mental",
+      "personal",
+      "playbook",
+      "rula",
+      "thrive",
+      "through",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Cultivating Mental Fitness for Success",
+    "speaker": "Ghada Khalifeh",
+    "speaker_title": "Mentor and Coach",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Mental Fitness",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-cultivating-mental-fitness-for-success-by-ghada-khalifeh%F0%9F%8C%9F",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@7d87a86b8cd7308d5d7c4a64c3b13c8b3e91eae8/uploads/2026-04-08T09-57-05-139Z-eqn64jgz2.png",
+    "keywords": [
+      "cultivating",
+      "development",
+      "fitness",
+      "ghada",
+      "khalifeh",
+      "mental",
+      "personal",
+      "playbook",
+      "success",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Navigating Imposter Syndrome with Powerful Communication",
+    "speaker": "Arshy Ahmad",
+    "speaker_title": "Executive Career Coach, Founder Flying Hedgehogs",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Imposter Syndrome",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-navigating-imposter-syndrome-with-powerful-communication-by-arshy-ahmad%F0%9F%97%A3%EF%B8%8F%E2%9C%A8",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@35ade414003207ff2ddcc24f2d62d906dbf57e3b/uploads/2026-04-08T09-58-16-714Z-6va4eam72.png",
+    "keywords": [
+      "ahmad",
+      "arshy",
+      "communication",
+      "development",
+      "imposter",
+      "navigating",
+      "personal",
+      "playbook",
+      "powerful",
+      "syndrome",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Cultivating a Growth Mindset for Success",
+    "speaker": "Dina El-Mofty",
+    "speaker_title": "Entrepreneur and Angel Investor",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Growth Mindset",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-cultivating-a-growth-mindset-for-success-with-dina-el-mofty%F0%9F%8C%B1%F0%9F%92%BC",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@559242279a2e4657774d0811ecefb140db490f88/uploads/2026-04-08T10-00-22-281Z-hq9ic3jwm.png",
+    "keywords": [
+      "cultivating",
+      "development",
+      "dina",
+      "growth",
+      "mindset",
+      "mofty",
+      "personal",
+      "playbook",
+      "success",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Discover Your Human Design to Unlock Your Full Potential",
+    "speaker": "Maria Amiouni",
+    "speaker_title": "Spiritual and Holistic Health Coach, Human Design Reader",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Human Design",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-discover-your-human-design-to-unlock-your-full-potential-with-maria-amiouni%F0%9F%94%90%F0%9F%92%AB",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@21dbe8b041af589abf5fc1679cf98c7774b3ce9d/uploads/2026-04-08T10-01-36-151Z-ux4rl37p2.png",
+    "keywords": [
+      "amiouni",
+      "design",
+      "development",
+      "discover",
+      "full",
+      "human",
+      "maria",
+      "personal",
+      "playbook",
+      "potential",
+      "unlock",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Unlock Choice Theory to Take Charge of Your Life",
+    "speaker": "Mona Al-Fajem",
+    "speaker_title": "Kinesiologist and Mental Health Educator",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Choice Theory",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-unlock-choice-theory-to-take-charge-of-your-life-with-mona-al-fajem%F0%9F%94%93%F0%9F%8C%B1",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@784b0797361ad865e2850841337f98a14a510a2d/uploads/2026-04-08T10-03-00-213Z-fabqfujom.png",
+    "keywords": [
+      "charge",
+      "choice",
+      "development",
+      "fajem",
+      "life",
+      "mona",
+      "personal",
+      "playbook",
+      "take",
+      "theory",
+      "unlock",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Resolve Internal Conflict: Harnessing The Booster Pill Approach",
+    "speaker": "Fatima Ibrahim",
+    "speaker_title": "Executive Coach",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Conflict Resolution",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-resolve-internal-conflict-harnessing-the-booster-pill-approach-with-fatima-ibrahim%F0%9F%97%A3%EF%B8%8F%F0%9F%92%A5",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@2f02a223b1715e1d8fea36f205f3bc83da076fbe/uploads/2026-04-08T10-05-40-847Z-i6mlhzzmf.png",
+    "keywords": [
+      "approach",
+      "booster",
+      "conflict",
+      "conflict:",
+      "development",
+      "fatima",
+      "harnessing",
+      "ibrahim",
+      "internal",
+      "personal",
+      "pill",
+      "playbook",
+      "resolution",
+      "resolve",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Achieving Work-Life Balance: Priorities, Boundaries, and Healthy Habits",
+    "speaker": "Reem Abdullatif",
+    "speaker_title": "Leadership and Career & Wellness Coach",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Work-Life Balance",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-achieving-work-life-balance-priorities-boundaries-and-healthy-habits-with-reem-al-abdullatif",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@5cc89aecd2803814ee08f5a40922fd6a0482f263/uploads/2026-04-08T10-06-54-346Z-wnk36i2oh.png",
+    "keywords": [
+      "abdullatif",
+      "achieving",
+      "balance",
+      "balance:",
+      "boundaries",
+      "development",
+      "habits",
+      "healthy",
+      "life",
+      "personal",
+      "playbook",
+      "priorities",
+      "reem",
+      "work",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Developing Emotional Intelligence: The Key to Success",
+    "speaker": "Bashayer Jumaa",
+    "speaker_title": "Teacher, Trainer, Writer, and Instructor",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Emotional Intelligence",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-developing-emotional-intelligence-the-key-to-success-in-the-workplace-with-bashayer-al-jumaa%F0%9F%93%88%F0%9F%8C%9F",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@11236c5c68a4fd67565da8d7c7db6d58bf57a048/uploads/2026-04-08T10-08-15-249Z-p9pxhtz4h.png",
+    "keywords": [
+      "bashayer",
+      "developing",
+      "development",
+      "emotional",
+      "intelligence",
+      "intelligence:",
+      "jumaa",
+      "key",
+      "personal",
+      "playbook",
+      "success",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Becoming Judgement Free: Overcome Bias and Labels",
+    "speaker": "Fatima Ibrahim",
+    "speaker_title": "Executive Coach",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Bias, Mindset",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-unlock-choice-theory-to-take-charge-of-your-lifhttps:/network.get-playbook.com/posts/playbook-workshops-becoming-judgement-free-overcome-bias-and-labels-with-fatima-ibrahim",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@40c2aab0fe6905dbbe171ae28ee61425d2dd8f52/uploads/2026-04-08T10-09-23-923Z-zd3tq8h1k.png",
+    "keywords": [
+      "becoming",
+      "bias",
+      "development",
+      "fatima",
+      "free:",
+      "ibrahim",
+      "judgement",
+      "labels",
+      "mindset",
+      "overcome",
+      "personal",
+      "playbook",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Navigating Life's Compass: Discovering Your True Purpose",
+    "speaker": "Faiza Saeed",
+    "speaker_title": "Certified Trainer, Franklin Covey MENA, Self Development Coach",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Purpose",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-navigating-lifes-compass-discovering-your-true-purpose-with-faiza-saeed",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8d9c791b3c946546414496e4b95e9ca451f5f243/uploads/2026-04-08T10-10-56-661Z-2a3dyny35.png",
+    "keywords": [
+      "compass:",
+      "development",
+      "discovering",
+      "faiza",
+      "life's",
+      "navigating",
+      "personal",
+      "playbook",
+      "purpose",
+      "saeed",
+      "true",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Nurturing Self Identity in Relationships",
+    "speaker": "Nevine Coutry",
+    "speaker_title": "Entrepreneur, Founder of Dating App Playdate, Marketer",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Relationships",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-nurturing-self-identity-in-relationships-how-to-not-lose-me-when-becoming-we-with-nevine-coutry%E2%9C%A8%F0%9F%94%91",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@f47407d4726bbde91524eb9fd3c7a44199b2a4a0/uploads/2026-04-08T10-12-03-737Z-iiuirtlnr.png",
+    "keywords": [
+      "coutry",
+      "development",
+      "identity",
+      "nevine",
+      "nurturing",
+      "personal",
+      "playbook",
+      "relationships",
+      "self",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Life's Success System: Women's Blueprint for Personal and Professional Fulfilment",
+    "speaker": "Angela Tella",
+    "speaker_title": "The Masterpiece Mentor for Life and Business",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Success",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-lifes-success-system-womens-blueprint-for-personal-and-professional-fulfilment-with-angela-tella",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@4fc8b5d50cff15f1920870a328a24883a709f1b4/uploads/2026-04-08T10-13-07-402Z-99khcnyoq.png",
+    "keywords": [
+      "angela",
+      "blueprint",
+      "development",
+      "fulfilment",
+      "life's",
+      "personal",
+      "playbook",
+      "professional",
+      "success",
+      "system:",
+      "tella",
+      "women's",
+      "workshops"
+    ]
+  },
+  {
+    "title": "The Art of Assertive Female Negotiation",
+    "speaker": "Katherina Dalka",
+    "speaker_title": "Assertive Female Negotiation Trainer, Tech Investment and Strategy Advisor",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Negotiation",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-the-art-of-assertive-female-negotiation-with-katherina-dalka",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@0e6c528adda03abff27e230393347bb52f24e71d/uploads/2026-04-08T10-14-12-138Z-08h4n13ci.png",
+    "keywords": [
+      "art",
+      "assertive",
+      "dalka",
+      "development",
+      "female",
+      "katherina",
+      "negotiation",
+      "personal",
+      "playbook",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Accelerated Manifestation for your Dream Life",
+    "speaker": "Ketki Chandavarkar",
+    "speaker_title": "Certified Trainer, Franklin Covey MENA, Self Development Coach",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Manifestation",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-accelerated-manifestation-for-your-dream-life-with-ketki-chandavarkar",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@f222b86412288970452d7adc2cf3dc70b515329a/uploads/2026-04-08T10-15-17-442Z-tycl1gqog.png",
+    "keywords": [
+      "accelerated",
+      "chandavarkar",
+      "development",
+      "dream",
+      "ketki",
+      "life",
+      "manifestation",
+      "personal",
+      "playbook",
+      "workshops"
+    ]
+  },
+  {
+    "title": "An introduction to Executive Presence: Get Noticed",
+    "speaker": "Laurel Herman",
+    "speaker_title": "CEO, Positive Presence, Author, Speaker, Entrepreneur",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Executive Presence",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-an-introduction-to-executive-presence-get-noticed-with-laurel-herman",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@98ae6499de5e6cfbf35fb1daf13703718b1aadef/uploads/2026-04-08T10-16-17-620Z-oth2ojm8w.png",
+    "keywords": [
+      "development",
+      "executive",
+      "get",
+      "herman",
+      "introduction",
+      "laurel",
+      "noticed",
+      "personal",
+      "playbook",
+      "presence",
+      "presence:",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Burnout Prevention for Women",
+    "speaker": "Bedoor Alomran",
+    "speaker_title": "Doctor Multipotentialite",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Burnout, Wellness",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-burnout-prevention-for-women-with-bedoor-al-omran",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@a960a2ab11c8a5e8298cb5d0c72773254bb8a2a6/uploads/2026-04-08T10-17-22-548Z-m5l88l3sv.png",
+    "keywords": [
+      "alomran",
+      "bedoor",
+      "burnout",
+      "development",
+      "personal",
+      "playbook",
+      "prevention",
+      "wellness",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Power of Persuasion",
+    "speaker": "Tessa Veenboer",
+    "speaker_title": "Former Fortune 500 Company Director turned Coach & Co-Founder",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Persuasion",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-power-of-persuasion-with-tessa-veenboer",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@4d645e5266507125c5e17636b56ceb8f8097542b/uploads/2026-04-08T10-18-46-599Z-sluhczs9h.png",
+    "keywords": [
+      "development",
+      "personal",
+      "persuasion",
+      "playbook",
+      "power",
+      "tessa",
+      "veenboer",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Storytelling in Public Speaking",
+    "speaker": "Basma Eletreby",
+    "speaker_title": "Strategy, Public Policy, International Relations, Middle East & Africa",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Public Speaking",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-storytelling-in-public-speaking-with-basma-eletreby",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@867c2294fac9810f0d0b1d23e80821d8b161f5e2/uploads/2026-04-08T10-20-08-151Z-ve5ty8m5b.png",
+    "keywords": [
+      "basma",
+      "development",
+      "eletreby",
+      "personal",
+      "playbook",
+      "public",
+      "speaking",
+      "storytelling",
+      "workshops"
+    ]
+  },
+  {
+    "title": "From Passion to Profit with Purpose",
+    "speaker": "Zai Miztiq",
+    "speaker_title": "Global Empowerment Leader, Speaker, Author, Coach",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Entrepreneurship",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-from-passion-to-profit-with-purpose-with-zai-miztiq",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@7abac61cd6ee2c05fb09c299897b3acb99fac51c/uploads/2026-04-08T10-21-46-878Z-0yzg7qre9.png",
+    "keywords": [
+      "development",
+      "entrepreneurship",
+      "miztiq",
+      "passion",
+      "personal",
+      "playbook",
+      "profit",
+      "purpose",
+      "workshops",
+      "zai"
+    ]
+  },
+  {
+    "title": "Storytelling to Evoke Change",
+    "speaker": "Dana Abulaban",
+    "speaker_title": "Senior Journalist, TV anchor, Lecturer",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Storytelling",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-storytelling-to-evoke-change-with-dana-abulaban",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@a1adaf6e26a563ee77ba41b61a13c5c29b21bb17/uploads/2026-04-08T10-23-09-238Z-8xbz53f16.png",
+    "keywords": [
+      "abulaban",
+      "change",
+      "dana",
+      "development",
+      "evoke",
+      "personal",
+      "playbook",
+      "storytelling",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Finding Your Creative Genius",
+    "speaker": "Kashesh Bhatia Garg",
+    "speaker_title": "Creative Director, Founder of Konscious Kollective & Kashesh Global",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Creativity",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-finding-your-creative-genius-with-kashesh-bhatia-garg",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@362c1b862efdb27cb58da4a777faca5046ecf836/uploads/2026-04-08T10-24-39-617Z-jh73fejqw.png",
+    "keywords": [
+      "bhatia",
+      "creative",
+      "creativity",
+      "development",
+      "finding",
+      "garg",
+      "genius",
+      "kashesh",
+      "personal",
+      "playbook",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Difficult Conversations Made Easy: A Framework For Tough Talks",
+    "speaker": "Samar Helmy",
+    "speaker_title": "Director of Projects at Gruber Logistics, ICF-certified Coach, OD Expert",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Communication",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-difficult-conversations-made-easy-a-framework-for-tough-talks-with-samar-helmy",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@ebb133efe729d8555acf6c169987a9c1a79167d2/uploads/2026-04-08T10-26-00-598Z-v7ra4ecav.png",
+    "keywords": [
+      "communication",
+      "conversations",
+      "development",
+      "difficult",
+      "easy:",
+      "framework",
+      "helmy",
+      "made",
+      "personal",
+      "playbook",
+      "samar",
+      "talks",
+      "tough",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Skills for a Better Life: Real Happiness, Not Hype",
+    "speaker": "Louise Lambert",
+    "speaker_title": "Founder of HappinessMatters.org",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Happiness",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-skills-for-a-better-life-real-happiness-not-hype-with-louise-lambert",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@de5e6ed8be54eb866c9ae13de839c64407e625e9/uploads/2026-04-08T10-27-07-258Z-0xmfnoqep.png",
+    "keywords": [
+      "better",
+      "development",
+      "happiness",
+      "hype",
+      "lambert",
+      "life:",
+      "louise",
+      "not",
+      "personal",
+      "playbook",
+      "real",
+      "skills",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Clearing The Fog: A Simplified Approach to Business Finance",
+    "speaker": "Hanan Mughrabi",
+    "speaker_title": "Financial strategist, Founder of Muronah Consulting",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Business Finance",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-clearing-the-fog-a-simplified-approach-to-business-finance-with-hanan-mughrabi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@e3f172857bc00661b404af233225a41283a69ea9/uploads/2026-04-08T10-28-19-004Z-ku6ww5etv.png",
+    "keywords": [
+      "approach",
+      "business",
+      "clearing",
+      "finance",
+      "financial",
+      "fog:",
+      "hanan",
+      "literacy",
+      "mughrabi",
+      "playbook",
+      "simplified",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Embrace Personal Budgeting to Achieve Financial Freedom",
+    "speaker": "Agne Saade",
+    "speaker_title": "Finance Director and Board Member",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Budgeting",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-embrace-personal-budgeting-to-achieve-financial-freedom-with-agne-saade%F0%9F%93%88%F0%9F%92%B0%F0%9F%93%8A",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@a9699b2077f6440e2b0eeb31f82ad456d41e6c7d/uploads/2026-04-08T10-29-23-695Z-1wekw0vt4.png",
+    "keywords": [
+      "achieve",
+      "agne",
+      "budgeting",
+      "embrace",
+      "financial",
+      "freedom",
+      "literacy",
+      "personal",
+      "playbook",
+      "saade",
+      "workshops"
+    ]
+  },
+  {
+    "title": "How to become an investor",
+    "speaker": "Giovanna Melfi",
+    "speaker_title": "Serial Entrepreneur, Investor, Finance Expert",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Investing",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-embrace-personal-budgeting-to-achieve-financial-freedom-with-agnes-saade%F0%9F%93%88%F0%9F%92%B0%F0%9F%93%8A",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@6920481e8d68ca800df6fed187e63bd8a6aa3e5e/uploads/2026-04-08T10-30-28-896Z-puwmjma1v.jpg",
+    "keywords": [
+      "become",
+      "financial",
+      "giovanna",
+      "investing",
+      "investor",
+      "literacy",
+      "melfi",
+      "playbook",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Limiting Beliefs around Money",
+    "speaker": "Kristina Kutan",
+    "speaker_title": "Transformational Coach Leadership Development Expert, Life Craft Method Author",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Mindset",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-limiting-beliefs-around-money-with-kristina-kutan",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@dc50ffb1bd70df850dde8f93858a9e5486378de4/uploads/2026-04-08T10-31-48-084Z-cqdbgv6si.png",
+    "keywords": [
+      "around",
+      "beliefs",
+      "financial",
+      "kristina",
+      "kutan",
+      "limiting",
+      "literacy",
+      "mindset",
+      "money",
+      "playbook",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Money Mindset for Financial Success",
+    "speaker": "Faiza Gulzar",
+    "speaker_title": "Seasoned Banker, Investor, Entrepreneur",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Mindset",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-money-mindset-for-financial-success-with-faiza-gulzar",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@778c213f631034a2702a43b08fb7e5ff4d2ba2eb/uploads/2026-04-08T10-33-18-494Z-4iybahk5r.png",
+    "keywords": [
+      "faiza",
+      "financial",
+      "gulzar",
+      "literacy",
+      "mindset",
+      "money",
+      "playbook",
+      "success",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Financial Leadership: Secrets From The Top",
+    "speaker": "Baroness Helena Morrissey",
+    "speaker_title": "Founder of 30% Club, Member of The House of Lords",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Leadership",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-financial-leadership-secrets-from-the-top-from-baroness-helena-morrissey",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@050e565cc5295c09801a63311a28ef050a2d4612/uploads/2026-04-08T10-34-31-998Z-6hnjt290c.png",
+    "keywords": [
+      "baroness",
+      "financial",
+      "helena",
+      "leadership",
+      "leadership:",
+      "literacy",
+      "morrissey",
+      "playbook",
+      "secrets",
+      "top",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Raising Financially Savvy Kids",
+    "speaker": "Baroness Helena Morrissey",
+    "speaker_title": "Founder of 30% Club, Member of The House of Lords",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Parenting",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-workshop-raising-financially-savvy-kids-with-baroness-helena-morrissey-75771491",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@02df972712f3e34343c924ce9a539aa0191e8f11/uploads/2026-04-08T10-35-35-777Z-e2q66dej9.png",
+    "keywords": [
+      "baroness",
+      "financial",
+      "financially",
+      "helena",
+      "kids",
+      "literacy",
+      "morrissey",
+      "parenting",
+      "playbook",
+      "raising",
+      "savvy",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Rewire Your Money Mindset",
+    "speaker": "Kristina Kutan",
+    "speaker_title": "Leadership Coach, Founder of the New Age Leadership Agency",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Mindset",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-rewire-your-money-mindset-with-kristina-kutan",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@df9235274b8b9ca78d670de3c9bdb99197391d2d/uploads/2026-04-08T10-36-46-741Z-no3h0p6w7.png",
+    "keywords": [
+      "financial",
+      "kristina",
+      "kutan",
+      "literacy",
+      "mindset",
+      "money",
+      "playbook",
+      "rewire",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Build Your Investment Plan",
+    "speaker": "Muiz Alaradi",
+    "speaker_title": "Managing Partner at Quantum Advisory Services",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Investing",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-build-your-investment-plan-with-muiz-alaradi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@6513f7f1600118b9e11df7b66d4d787730b59d64/uploads/2026-04-08T10-37-49-996Z-3nfq3f66p.png",
+    "keywords": [
+      "alaradi",
+      "build",
+      "financial",
+      "investing",
+      "investment",
+      "literacy",
+      "muiz",
+      "plan",
+      "playbook",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Assessing Risk in Investment",
+    "speaker": "Abeer Albaitam",
+    "speaker_title": "Visionary Leader, Risk Management Expert",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Risk, Investing",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-assessing-risk-in-investment-with-abeer-albaitam",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@f28dabb826f0db679acb9d97056bf70417a9a9f7/uploads/2026-04-08T10-38-43-456Z-t99kv1bkw.png",
+    "keywords": [
+      "abeer",
+      "albaitam",
+      "assessing",
+      "financial",
+      "investing",
+      "investment",
+      "literacy",
+      "playbook",
+      "risk",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Redesign Your Wealth",
+    "speaker": "Tatiana Dudyez",
+    "speaker_title": "CEO and Chief of Wealth Intelligence at METACHIEF",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Wealth",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-redesign-your-wealth-with-tatiana-dudyez",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@afba85646792d6f8ace8d1b5f98572d2184def4f/uploads/2026-04-08T10-39-18-552Z-woj3ax6ks.png",
+    "keywords": [
+      "dudyez",
+      "financial",
+      "literacy",
+      "playbook",
+      "redesign",
+      "tatiana",
+      "wealth",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Financial Wellness Wheel",
+    "speaker": "Nina Abi Fadel",
+    "speaker_title": "Founder of the MoneySmart Financial Literacy Program",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Wellness",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-financial-wellness-wheel-with-nina-abi-fadel",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@06657c22c6abf079243268b3f269c3ed43ddd1ea/uploads/2026-04-08T10-39-49-005Z-1hbnk0cav.png",
+    "keywords": [
+      "abi",
+      "fadel",
+      "financial",
+      "literacy",
+      "nina",
+      "playbook",
+      "wellness",
+      "wheel",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Own Your Financial Power",
+    "speaker": "Agne Saade",
+    "speaker_title": "Finance Executive, Qualified Accountant (ACCA), Certified Transformational Coach",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Financial Power",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-own-your-financial-power-with-agne-saade",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@5c7f44cb2d97925029ce4ad20d4a109729ae83b5/uploads/2026-04-08T10-40-29-327Z-xkzigoc9f.png",
+    "keywords": [
+      "agne",
+      "financial",
+      "literacy",
+      "own",
+      "playbook",
+      "power",
+      "saade",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Raising Financially Savvy Kids",
+    "speaker": "Rasha AlShubaian",
+    "speaker_title": "ICF-accredited Leadership Coach, Org. Culture Consultant, Liveful Founder",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Parenting",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-raising-financially-savvy-kids-with-rasha-alshubaian",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@e89e9c2dfc97a776e51dbc7cac7ab80aa8bb9aec/uploads/2026-04-08T10-41-00-504Z-uunr1tp3l.png",
+    "keywords": [
+      "alshubaian",
+      "financial",
+      "financially",
+      "kids",
+      "literacy",
+      "parenting",
+      "playbook",
+      "raising",
+      "rasha",
+      "savvy",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Unlocking Business Growth with Financial Models",
+    "speaker": "Ali Al-Hammam",
+    "speaker_title": "Qualified Financial Expert, Valuations, M & A, CEO of IS Advisory",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Business Growth",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-unlocking-business-growth-with-financial-models-with-ali-al-hammam",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@a47afce8fcb31998af7b6c25211e5edcc474dce5/uploads/2026-04-08T10-41-37-269Z-y4jcl43fq.png",
+    "keywords": [
+      "ali",
+      "business",
+      "financial",
+      "growth",
+      "hammam",
+      "literacy",
+      "models",
+      "playbook",
+      "unlocking",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Abundant & Aligned: Activate Your Wealth Frequency in Business",
+    "speaker": "Jana Osta",
+    "speaker_title": "TEDx Speaker, Somatic Hypnotherapist, Expert in Mindset & Energetics",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Wealth, Mindset",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-abundant-aligned-activate-your-wealth-frequency-in-business-with-jana-osta",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@bbc3faa51bf130e539f9b9e609df9f963840f71c/uploads/2026-04-08T10-42-04-712Z-vzjfvnr7c.png",
+    "keywords": [
+      "abundant",
+      "activate",
+      "aligned:",
+      "business",
+      "financial",
+      "frequency",
+      "jana",
+      "literacy",
+      "mindset",
+      "osta",
+      "playbook",
+      "wealth",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Guiding Mothers: Navigating Coding Education in Schools and Colleges",
+    "speaker": "Sadaf Rehman",
+    "speaker_title": "Co-founder of Code School",
+    "type": "PLAYBOOK Workshops",
+    "category": "Motherhood and Parenting",
+    "tags": "Motherhood, Education, Tech",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-guiding-mothers-navigating-coding-education-in-schools-and-colleges-with-sadaf-rehman",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@d1132774be21c12f1e35efef2983cbe549cb3bd5/uploads/2026-04-08T10-42-32-239Z-zchnmlyoh.png",
+    "keywords": [
+      "coding",
+      "colleges",
+      "education",
+      "guiding",
+      "motherhood",
+      "mothers:",
+      "navigating",
+      "parenting",
+      "playbook",
+      "rehman",
+      "sadaf",
+      "schools",
+      "tech",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Synergizing Motherhood and Leadership: Mindset for Dual Success",
+    "speaker": "Dina El Mofty",
+    "speaker_title": "Founder & Board member, Injaz Egypt, Investor on Shark Tank Egypt",
+    "type": "PLAYBOOK Workshops",
+    "category": "Motherhood and Parenting",
+    "tags": "Motherhood, Leadership",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-synergizing-motherhood-and-leadership-mindset-for-dual-success",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@0d82915f6b660f8c17d2e77583a444954f21a40d/uploads/2026-04-08T10-42-59-602Z-9xvfhznwm.png",
+    "keywords": [
+      "dina",
+      "dual",
+      "leadership",
+      "leadership:",
+      "mindset",
+      "mofty",
+      "motherhood",
+      "parenting",
+      "playbook",
+      "success",
+      "synergizing",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Side Hustles for Mothers",
+    "speaker": "Dina Abdulmajeed",
+    "speaker_title": "CEO of 360moms",
+    "type": "PLAYBOOK Workshops",
+    "category": "Motherhood and Parenting",
+    "tags": "Motherhood, Entrepreneurship",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-side-hustles-for-mothers-with-dina-abdulmajeed",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@322804859625db90894510fc66f8b7715df14628/uploads/2026-04-08T10-44-54-999Z-tuyu0iw72.png",
+    "keywords": [
+      "abdulmajeed",
+      "dina",
+      "entrepreneurship",
+      "hustles",
+      "motherhood",
+      "mothers",
+      "parenting",
+      "playbook",
+      "side",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Addressing the Break: Reigniting your Career After Motherhood",
+    "speaker": "Hadil AlKhatib",
+    "speaker_title": "Certified gut health coach, Nutrition Expert, Founder of The Broth Lab",
+    "type": "PLAYBOOK Workshops",
+    "category": "Motherhood and Parenting",
+    "tags": "Motherhood, Career",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-addressing-the-break-reigniting-your-career-after-motherhood-with-hadil-alkhatib",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@35e873a9af548b676aee2823b5b1db753905dfaf/uploads/2026-04-08T10-48-12-487Z-7ps5bob8f.png",
+    "keywords": [
+      "addressing",
+      "after",
+      "alkhatib",
+      "break:",
+      "career",
+      "hadil",
+      "motherhood",
+      "parenting",
+      "playbook",
+      "reigniting",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Conquer High-Stakes Interviews For Professional Success",
+    "speaker": "Rima Hadid",
+    "speaker_title": "General Counsel & International Legal Consultant",
+    "type": "PLAYBOOK Workshops",
+    "category": "Career Development",
+    "tags": "Career, Interviews",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-conquer-high-stakes-interviews-for-professional-success-with-rima-hadid%F0%9F%91%A9%F0%9F%8F%BB%F0%9F%92%BC%F0%9F%9A%80",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@5b2fa84781039a9add19cb5b044ea556c681d940/uploads/2026-04-08T10-52-33-005Z-mv4zkd4x2.png",
+    "keywords": [
+      "career",
+      "conquer",
+      "development",
+      "hadid",
+      "high",
+      "interviews",
+      "playbook",
+      "professional",
+      "rima",
+      "stakes",
+      "success",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Unlocking Board Roles: Visionary Leadership in Strategic Action",
+    "speaker": "Bedor Alrashoudi",
+    "speaker_title": "Chair Woman, Investor, Executive and Board Director",
+    "type": "PLAYBOOK Workshops",
+    "category": "Career Development",
+    "tags": "Career, Board, Leadership",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-unlocking-board-roles-visionary-leadership-in-strategic-action-with-bedor-alrashoudi%F0%9F%92%A1%F0%9F%94%91",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@966213c82168db443c3769bb8088472ebafd433d/uploads/2026-04-08T10-55-41-474Z-ukq14f8yz.png",
+    "keywords": [
+      "action",
+      "alrashoudi",
+      "bedor",
+      "board",
+      "career",
+      "development",
+      "leadership",
+      "playbook",
+      "roles:",
+      "strategic",
+      "unlocking",
+      "visionary",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Freeing Your Voice: Women's Guide to Confident Public Speaking",
+    "speaker": "Rachel Pether",
+    "speaker_title": "TV host, FintechTV, Co-Founder, The Speakeasy Club",
+    "type": "PLAYBOOK Workshops",
+    "category": "Career Development",
+    "tags": "Career, Public Speaking",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-freeing-your-voice-womens-guide-to-confident-public-speaking-by-rachel-pether",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8c68edcb99cf67c5113b2e260dd1fdd1ed57826a/uploads/2026-04-08T10-58-12-652Z-745tfopw5.png",
+    "keywords": [
+      "career",
+      "confident",
+      "development",
+      "freeing",
+      "guide",
+      "pether",
+      "playbook",
+      "public",
+      "rachel",
+      "speaking",
+      "voice:",
+      "women's",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Positioning Yourself for Promotion: Female Leadership Strategies",
+    "speaker": "Navid Nazeman",
+    "speaker_title": "Ranked as World's #1 Executive Coach (CEO Today)",
+    "type": "PLAYBOOK Workshops",
+    "category": "Career Development",
+    "tags": "Career, Promotion, Leadership",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-positioning-yourself-for-promotion-female-leadership-strategies-with-navid-nazeman",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@92c0132b42cb7a9c619df6bb5feac1d034e28905/uploads/2026-04-08T11-01-02-794Z-7ckrglb72.png",
+    "keywords": [
+      "career",
+      "development",
+      "female",
+      "leadership",
+      "navid",
+      "nazeman",
+      "playbook",
+      "positioning",
+      "promotion",
+      "promotion:",
+      "strategies",
+      "workshops",
+      "yourself"
+    ]
+  },
+  {
+    "title": "Career Pivot: How to Switch to Emerging Tech Careers Like A Pro",
+    "speaker": "Salama Belghali",
+    "speaker_title": "Coach, Speaker, Featured in Forbes, Founder of The Web3 Coaching Program",
+    "type": "PLAYBOOK Workshops",
+    "category": "Career Development",
+    "tags": "Career, Tech, Pivot",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-career-pivot-how-to-switch-to-emerging-tech-careers-like-a-pro-with-salama-belghali",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@dc1cbeee1a7e5c259d96fd8a2e917ecb0a0cb29f/uploads/2026-04-08T11-05-45-833Z-s4dhy7fxg.png",
+    "keywords": [
+      "belghali",
+      "career",
+      "careers",
+      "development",
+      "emerging",
+      "like",
+      "pivot",
+      "pivot:",
+      "playbook",
+      "pro",
+      "salama",
+      "switch",
+      "tech",
+      "workshops"
+    ]
+  },
+  {
+    "title": "From Serbian Farmfields to American Aerospace Dreams",
+    "speaker": "Mariana & Ivan Polic",
+    "speaker_title": "Executives in the Aerospace Industry, Advisors, Co-Authors",
+    "type": "PLAYBOOK Workshops",
+    "category": "Career Development",
+    "tags": "Career, Inspiration",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-from-serbian-farmfields-to-american-aerospace-dreams-how-grit-grace-strategy-took-one-woman-from-farmland-to-boardroom-power-with-mariana-and-ivan-polic",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@bc442b1e61b8202e8f7bd2bbf06c2f5eeb881609/uploads/2026-04-08T11-07-57-488Z-40vqqeeqf.png",
+    "keywords": [
+      "aerospace",
+      "american",
+      "career",
+      "development",
+      "dreams",
+      "farmfields",
+      "inspiration",
+      "ivan",
+      "mariana",
+      "playbook",
+      "polic",
+      "serbian",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Mastering the Art of Career Change",
+    "speaker": "Zainab Farah",
+    "speaker_title": "Artist and Poet, Engineer, Airline Commercial Planning Professional, Fashion Stylist",
+    "type": "PLAYBOOK Workshops",
+    "category": "Career Development",
+    "tags": "Career, Career Change",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-mastering-the-art-of-career-change-with-zainab-farah",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@f94a8f4bbc47105337aa61a1d9c73492184345d4/uploads/2026-04-08T11-10-45-932Z-41ivb5zaw.png",
+    "keywords": [
+      "art",
+      "career",
+      "change",
+      "development",
+      "farah",
+      "mastering",
+      "playbook",
+      "workshops",
+      "zainab"
+    ]
+  },
+  {
+    "title": "Growth Hacking with Data: The Digital Marketing Cheat Sheet",
+    "speaker": "Megha Kapoor",
+    "speaker_title": "Co-Founder & Chief Marketing Officer at ODLA & Metaads.me",
+    "type": "PLAYBOOK Workshops",
+    "category": "Sales and Marketing",
+    "tags": "Marketing, Growth Hacking, Data",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-growth-hacking-with-data-the-digital-marketing-cheat-sheet-with-megha-kapoor%F0%9F%91%A9%F0%9F%8F%BD%F0%9F%92%BB%E2%9A%A0%EF%B8%8F",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@fffa647e09e46ca042888ab8632bd81f1800892e/uploads/2026-04-08T11-13-07-132Z-5le5gsbls.png",
+    "keywords": [
+      "cheat",
+      "data",
+      "data:",
+      "digital",
+      "growth",
+      "hacking",
+      "kapoor",
+      "marketing",
+      "megha",
+      "playbook",
+      "sales",
+      "sheet",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Mastering Brand Management and Marketing Fundamentals for Lasting Success",
+    "speaker": "Rand Yahya",
+    "speaker_title": "Marketing and Brand Consultant",
+    "type": "PLAYBOOK Workshops",
+    "category": "Sales and Marketing",
+    "tags": "Marketing, Brand Management",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-mastering-brand-management-and-marketing-fundamentals-for-lasting-success-with-rand-yahya%F0%9F%92%BC%F0%9F%93%88",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@0cea2646d58d652d9d77dc5ffdee87ddd7dcf034/uploads/2026-04-08T11-15-00-224Z-z5x2f0x3y.png",
+    "keywords": [
+      "brand",
+      "fundamentals",
+      "lasting",
+      "management",
+      "marketing",
+      "mastering",
+      "playbook",
+      "rand",
+      "sales",
+      "success",
+      "workshops",
+      "yahya"
+    ]
+  },
+  {
+    "title": "Art of Persuasion and Building Consumer Loyalty",
+    "speaker": "Anastasiia Stoiatska",
+    "speaker_title": "Founder of Cross-Cultural Connection LLC",
+    "type": "PLAYBOOK Workshops",
+    "category": "Sales and Marketing",
+    "tags": "Marketing, Sales, Consumer Loyalty",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-email-marketing-building-and-growing-a-forever-audience-with-katerina-drako",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8479a462d9a9ace270675d4e56b10ec5babdf7b1/uploads/2026-04-08T11-19-22-609Z-nlmjc8tmi.png",
+    "keywords": [
+      "anastasiia",
+      "art",
+      "building",
+      "consumer",
+      "loyalty",
+      "marketing",
+      "persuasion",
+      "playbook",
+      "sales",
+      "stoiatska",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Implement Effective Marketing Tactics for SMB Growth",
+    "speaker": "Nadia Bouslama",
+    "speaker_title": "Regional Marketing Communications Manager at OMICRON electronics",
+    "type": "PLAYBOOK Workshops",
+    "category": "Sales and Marketing",
+    "tags": "Marketing, SMB, Growth",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-implement-effective-marketing-tactics-for-smb-growth-with-nadia-bouslama%F0%9F%8C%B1%F0%9F%93%88",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@76ff2a92b2d905db96625e08072d4aa59d515a0d/uploads/2026-04-08T11-41-45-722Z-3fzwkvm7i.png",
+    "keywords": [
+      "bouslama",
+      "effective",
+      "growth",
+      "implement",
+      "marketing",
+      "nadia",
+      "playbook",
+      "sales",
+      "smb",
+      "tactics",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Adopting a Sales Mindset for Career Growth",
+    "speaker": "Sanaz Falahatpisheh",
+    "speaker_title": "Founder of Athena Advisory Group",
+    "type": "PLAYBOOK Workshops",
+    "category": "Sales and Marketing",
+    "tags": "Sales, Mindset, Career",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-adopting-a-sales-mindset-for-career-growth-with-sanaz-falahatpisheh%F0%9F%93%88%F0%9F%93%B6",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@3ea4e4850201d067c44083940b52406cc44ea5dc/uploads/2026-04-08T11-43-38-195Z-b369uwjeb.png",
+    "keywords": [
+      "adopting",
+      "career",
+      "falahatpisheh",
+      "growth",
+      "marketing",
+      "mindset",
+      "playbook",
+      "sales",
+      "sanaz",
+      "workshops"
+    ]
+  },
+  {
+    "title": "B2B Marketing Secrets",
+    "speaker": "Natasha Salleh",
+    "speaker_title": "Senior Education Lead, Global Marketer Education at LinkedIn",
+    "type": "PLAYBOOK Workshops",
+    "category": "Sales and Marketing",
+    "tags": "Marketing, B2B",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-b2b-marketing-secrets-with-natasha-salleh",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@ee98bcf8860b46705ce2e3cd1aaca9ad1cfabab8/uploads/2026-04-08T11-45-46-361Z-ncnqi4ds5.png",
+    "keywords": [
+      "b2b",
+      "marketing",
+      "natasha",
+      "playbook",
+      "sales",
+      "salleh",
+      "secrets",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Navigating Personal and Professional Branding for Female Leaders",
+    "speaker": "Alia El Khatib",
+    "speaker_title": "Business and Marketing Strategist & Coach",
+    "type": "PLAYBOOK Workshops",
+    "category": "Content Marketing & Online Presence",
+    "tags": "Content Marketing, Branding",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-navigating-personal-and-professional-branding-for-female-leaders-with-alia-el-khatib%F0%9F%91%A9%F0%9F%8F%BB%F0%9F%92%BC%F0%9F%8C%9F",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@64ab1d3fe5323268ccbb59fad389522ad44e1c7a/uploads/2026-04-08T11-47-59-439Z-b1v1ykm75.png",
+    "keywords": [
+      "alia",
+      "branding",
+      "content",
+      "female",
+      "khatib",
+      "leaders",
+      "marketing",
+      "navigating",
+      "online",
+      "personal",
+      "playbook",
+      "presence",
+      "professional",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Creating a Winning Content Strategy",
+    "speaker": "Tahani Alhajri",
+    "speaker_title": "Author, Content Creator, Certified Success Coach",
+    "type": "PLAYBOOK Workshops",
+    "category": "Content Marketing & Online Presence",
+    "tags": "Content Marketing, Strategy",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-creating-a-winning-content-strategy-by-tahani-alhajri",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@86ad963e1676c5da56dde0a4337c5d97f875fae0/uploads/2026-04-08T11-50-12-119Z-50rzqza4n.png",
+    "keywords": [
+      "alhajri",
+      "content",
+      "creating",
+      "marketing",
+      "online",
+      "playbook",
+      "presence",
+      "strategy",
+      "tahani",
+      "winning",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Level Up Your LinkedIn",
+    "speaker": "Moumita Das Roy",
+    "speaker_title": "Marketing Communications Manager - Dulux New Zealand",
+    "type": "PLAYBOOK Workshops",
+    "category": "Content Marketing & Online Presence",
+    "tags": "Content Marketing, LinkedIn",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-level-up-your-linkedin-by-moumita-das-roy%F0%9F%93%88%F0%9F%86%99",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@5f8a693448f54e3f295b79f7f4dfddbd5e98ae12/uploads/2026-04-08T11-52-00-449Z-dcby84g28.png",
+    "keywords": [
+      "content",
+      "das",
+      "level",
+      "linkedin",
+      "marketing",
+      "moumita",
+      "online",
+      "playbook",
+      "presence",
+      "roy",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Craft Captivating Biographies Through Effective Storytelling Techniques",
+    "speaker": "Fatima Alsaad",
+    "speaker_title": "Educator, Writer, and Wellness Practitioner",
+    "type": "PLAYBOOK Workshops",
+    "category": "Content Marketing & Online Presence",
+    "tags": "Content Marketing, Storytelling, Writing",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-craft-captivating-biographies-through-effective-storytelling-techniques",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@4bd76bf3228ab13f3a2bc504d5620d212a76335e/uploads/2026-04-08T11-53-43-218Z-phrufvpb4.png",
+    "keywords": [
+      "alsaad",
+      "biographies",
+      "captivating",
+      "content",
+      "craft",
+      "effective",
+      "fatima",
+      "marketing",
+      "online",
+      "playbook",
+      "presence",
+      "storytelling",
+      "techniques",
+      "through",
+      "workshops",
+      "writing"
+    ]
+  },
+  {
+    "title": "Authoring Your Impact: Writing a Book to Influence Others",
+    "speaker": "Shikha Sarkar",
+    "speaker_title": "Co-Founder & Director at Global Influencers Publishing House Pte Ltd",
+    "type": "PLAYBOOK Workshops",
+    "category": "Content Marketing & Online Presence",
+    "tags": "Content Marketing, Writing, Book",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-authoring-your-impact-writing-a-book-to-influence-others-with-shikha-sarkar",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@d4143b96b59850dafe2cb9c7bbd2606736e8987e/uploads/2026-04-08T11-55-21-505Z-8k16na5mj.png",
+    "keywords": [
+      "authoring",
+      "book",
+      "content",
+      "impact:",
+      "influence",
+      "marketing",
+      "online",
+      "others",
+      "playbook",
+      "presence",
+      "sarkar",
+      "shikha",
+      "workshops",
+      "writing"
+    ]
+  },
+  {
+    "title": "The Art of Blogging",
+    "speaker": "Tahani AlHajri",
+    "speaker_title": "Author, Content Creator, Certified Success Coach",
+    "type": "PLAYBOOK Workshops",
+    "category": "Content Marketing & Online Presence",
+    "tags": "Content Marketing, Blogging",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-the-art-of-blogging-with-tahani-alhajri",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@bf12b490ba06ccad40adaca3c284c3413834f507/uploads/2026-04-08T11-57-07-977Z-8pl6c4rd1.png",
+    "keywords": [
+      "alhajri",
+      "art",
+      "blogging",
+      "content",
+      "marketing",
+      "online",
+      "playbook",
+      "presence",
+      "tahani",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Email Marketing: Building and Growing A Forever Audience",
+    "speaker": "Katerina Drako",
+    "speaker_title": "Seasoned Entrepreneur, Startup Mentor, Marketing Guru",
+    "type": "PLAYBOOK Workshops",
+    "category": "Content Marketing & Online Presence",
+    "tags": "Content Marketing, Email Marketing",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-building-a-brand-with-a-busy-life-with-olga-sterkhova",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@7151567cd2a1c6f012b77690f70518e8f569e986/uploads/2026-04-08T11-58-43-565Z-bjk2o35eg.png",
+    "keywords": [
+      "audience",
+      "building",
+      "content",
+      "drako",
+      "email",
+      "forever",
+      "growing",
+      "katerina",
+      "marketing",
+      "marketing:",
+      "online",
+      "playbook",
+      "presence",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Hacking Content Creation with AI",
+    "speaker": "Alia Elkhatib",
+    "speaker_title": "Marketing Strategist, Business Consultant",
+    "type": "PLAYBOOK Workshops",
+    "category": "Content Marketing & Online Presence",
+    "tags": "Content Marketing, AI, Content Creation",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-hacking-content-creation-with-ai-with-alia-elkhatib",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@efeca51636f516ee1442480feeb2268e958d01f0/uploads/2026-04-08T12-01-57-249Z-xcydst6zb.png",
+    "keywords": [
+      "alia",
+      "content",
+      "creation",
+      "elkhatib",
+      "hacking",
+      "marketing",
+      "online",
+      "playbook",
+      "presence",
+      "workshops"
+    ]
+  },
+  {
+    "title": "How to Grow a Community",
+    "speaker": "Hanan Ezzeldin",
+    "speaker_title": "Founder of The Family Hub, Podcast Host Speaker",
+    "type": "PLAYBOOK Workshops",
+    "category": "Content Marketing & Online Presence",
+    "tags": "Content Marketing, Community",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-how-to-grow-a-community-with-hanan-ezzeldin",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@17902fe7ad9a2f85a17ab7fee230d764b6bad641/uploads/2026-04-08T12-04-09-776Z-lvymzg870.png",
+    "keywords": [
+      "community",
+      "content",
+      "ezzeldin",
+      "grow",
+      "hanan",
+      "marketing",
+      "online",
+      "playbook",
+      "presence",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Finish your first novel",
+    "speaker": "Komal Verma",
+    "speaker_title": "Copywriter, Novelist, Senior Creative Producer, Video Director at FLETCHERWILSON",
+    "type": "PLAYBOOK Workshops",
+    "category": "Content Marketing & Online Presence",
+    "tags": "Content Marketing, Writing",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-finish-your-first-novel-with-komal-verma",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@b0d417d5f0932b54e9b4160f1f4b1458413aeae2/uploads/2026-04-08T12-05-44-046Z-02x5lsz93.png",
+    "keywords": [
+      "content",
+      "finish",
+      "first",
+      "komal",
+      "marketing",
+      "novel",
+      "online",
+      "playbook",
+      "presence",
+      "verma",
+      "workshops",
+      "writing"
+    ]
+  },
+  {
+    "title": "Building a brand with a busy life",
+    "speaker": "Olga Sterkhova",
+    "speaker_title": "Personal Branding Expert, Digital Marketer, ICF Coach",
+    "type": "PLAYBOOK Workshops",
+    "category": "Content Marketing & Online Presence",
+    "tags": "Content Marketing, Personal Branding",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-building-a-retail-brand-that-thrives-on-community-with-hazar-al-zadjali",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@614cc4316db2d8f14840defd20943418a7f05dac/uploads/2026-04-08T12-07-14-721Z-hi5t3ssvy.png",
+    "keywords": [
+      "brand",
+      "branding",
+      "building",
+      "busy",
+      "content",
+      "life",
+      "marketing",
+      "olga",
+      "online",
+      "personal",
+      "playbook",
+      "presence",
+      "sterkhova",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Digital Marketing Secrets for Businesses",
+    "speaker": "Arantxa Beltran Del Toro",
+    "speaker_title": "Founder of Meta You, ICED Agency, and IF Legends, Ex-Google, Ex-Amazon",
+    "type": "PLAYBOOK Workshops",
+    "category": "Content Marketing & Online Presence",
+    "tags": "Content Marketing, Digital Marketing",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-digital-marketing-secrets-for-businesses-with-arantxa-beltran-del-toro",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@6613efc473e1b329f2c17404ed21c9f334c25609/uploads/2026-04-08T12-08-52-443Z-a2vfgv6m2.png",
+    "keywords": [
+      "arantxa",
+      "beltran",
+      "businesses",
+      "content",
+      "del",
+      "digital",
+      "marketing",
+      "online",
+      "playbook",
+      "presence",
+      "secrets",
+      "toro",
+      "workshops"
+    ]
+  },
+  {
+    "title": "It's Not Personal, It's Branding: How to Turn Ideas into Business That Matters",
+    "speaker": "Dana Alhanbali",
+    "speaker_title": "Entrepreneur, Strategist, Writer",
+    "type": "PLAYBOOK Workshops",
+    "category": "Content Marketing & Online Presence",
+    "tags": "Content Marketing, Branding",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-its-not-personal-its-branding-how-to-turn-ideas-into-business-that-matters-with-dana-alhanbali",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@09ef3e2f049028c08efbd636b124e632cbe2eca2/uploads/2026-04-08T12-12-57-355Z-ojubpzfkh.jpg",
+    "keywords": [
+      "alhanbali",
+      "branding",
+      "branding:",
+      "business",
+      "content",
+      "dana",
+      "ideas",
+      "it's",
+      "marketing",
+      "matters",
+      "not",
+      "online",
+      "personal",
+      "playbook",
+      "presence",
+      "turn",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Building Hormonal Harmony For Yourself",
+    "speaker": "Sara Tarek",
+    "speaker_title": "Canadian Certified Nutritional Practitioner",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Hormonal Health, Nutrition",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-building-hormonal-harmony-for-yourself-by-sara-tarek",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@b733af91bdc2a5b924f57ad7534ab63cc9630e5d/uploads/2026-04-08T12-14-41-534Z-7u0djaukg.png",
+    "keywords": [
+      "building",
+      "harmony",
+      "health",
+      "hormonal",
+      "nutrition",
+      "playbook",
+      "sara",
+      "tarek",
+      "wellness",
+      "workshops",
+      "yourself"
+    ]
+  },
+  {
+    "title": "Navigating PCOS Challenges for Holistic Health",
+    "speaker": "Dr. Dana Al-Saeed & Dr. Aarti Javeri-Mehta",
+    "speaker_title": "Lifestyle Medicine Physician / Specialist Internal Medicine & Lifestyle, Medicine Physician",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, PCOS, Wellness",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-overcoming-speech-challenges-innovative-approaches-to-speech-therapy-with-firouza-eshonova",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8ae3fe51c20f7b9dc0714f650a78d149f62f49ee/uploads/2026-04-08T12-17-49-441Z-geinr7pf1.png",
+    "keywords": [
+      "aarti",
+      "challenges",
+      "dana",
+      "dr.",
+      "health",
+      "holistic",
+      "javeri",
+      "mehta",
+      "navigating",
+      "pcos",
+      "playbook",
+      "saeed",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Discover Educational Kinesiology for Enhanced Mental Clarity",
+    "speaker": "Mona Al-Fajem",
+    "speaker_title": "Kinesiologist and Mental Health Educator",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Mental Health, Kinesiology",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-discover-educational-kinesiology-for-enhanced-mental-clarity-with-mona-al-fajem%F0%9F%A7%A0%E2%9C%A8",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@71867f6da572f0506e179cde56f28e4e4694877b/uploads/2026-04-08T12-19-36-408Z-69njp4vdn.png",
+    "keywords": [
+      "clarity",
+      "discover",
+      "educational",
+      "enhanced",
+      "fajem",
+      "health",
+      "kinesiology",
+      "mental",
+      "mona",
+      "playbook",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Foundations of Radiation Safety: Essential Practices for Healthcare Professionals",
+    "speaker": "Bedoor Alomran",
+    "speaker_title": "Chief of Radiology at BDF",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Radiation Safety, Healthcare",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-foundations-of-radiation-safety-essential-practices-for-healthcare-professionals-with-dr-bedoor-al-omran%F0%9F%A5%BC%E2%9C%A8",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@edd28fa94d22cc6d8e10332b1fb5637af631cf2e/uploads/2026-04-08T12-23-09-035Z-dcmz0m8qs.png",
+    "keywords": [
+      "alomran",
+      "bedoor",
+      "essential",
+      "foundations",
+      "health",
+      "healthcare",
+      "playbook",
+      "practices",
+      "professionals",
+      "radiation",
+      "safety",
+      "safety:",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Overcoming Speech Challenges: Innovative Approaches to Speech Therapy",
+    "speaker": "Firouza Eshonova",
+    "speaker_title": "Founder of EZ Speech by Mila4AI",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Speech Therapy",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-keynote-speech-with-he-dr-aisha-bin-bishr",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@fbd029615a9361895bf0e7d33912b20aaa48d224/uploads/2026-04-08T12-25-13-790Z-4vttxn6gj.png",
+    "keywords": [
+      "approaches",
+      "challenges:",
+      "eshonova",
+      "firouza",
+      "health",
+      "innovative",
+      "overcoming",
+      "playbook",
+      "speech",
+      "therapy",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Navigating Safe Spaces: Building Resilience and ResponseAbility",
+    "speaker": "Jan Daudi",
+    "speaker_title": "Journalist, CEO of MissCommuniTeam, Author, Public Speaker",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Resilience, Wellness",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-navigating-safe-spaces-building-resilience-and-responseability-with-jan-daudi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@1ccb2509a8b1f81a86912cd7e87be78c0320ce1f/uploads/2026-04-08T12-27-46-971Z-ulkpxh7r6.jpg",
+    "keywords": [
+      "building",
+      "daudi",
+      "health",
+      "jan",
+      "navigating",
+      "playbook",
+      "resilience",
+      "responseability",
+      "safe",
+      "spaces:",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Hacking Gut Health for Hormone Balance",
+    "speaker": "Ruby Saharan",
+    "speaker_title": "Gut Health Scientist & Nutrition Practitioner, Jigsaw Scientific Wellness Ltd.",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Gut Health, Hormones",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-hacking-gut-health-for-hormone-balance-with-ruby-saharan",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@d446c9fc2c506b766297cf735dd2f9f2d4dff285/uploads/2026-04-08T12-29-58-795Z-vqiyawy9v.png",
+    "keywords": [
+      "balance",
+      "gut",
+      "hacking",
+      "health",
+      "hormone",
+      "hormones",
+      "playbook",
+      "ruby",
+      "saharan",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Mental Health Insights: Investing in Your Emotional Life",
+    "speaker": "Melvina Sifri",
+    "speaker_title": "School Counselor, Mental Health Advocate",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Mental Health",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-mental-health-insights-investing-in-your-emotional-life-with-melvina-sifri",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@9a8b92ae0176535bb5b99cc34ce0344bbfb1efeb/uploads/2026-04-08T12-31-43-963Z-onofhvw9r.png",
+    "keywords": [
+      "emotional",
+      "health",
+      "insights:",
+      "investing",
+      "life",
+      "melvina",
+      "mental",
+      "playbook",
+      "sifri",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Healing with Art Therapy",
+    "speaker": "Dr. Mona El Rubi",
+    "speaker_title": "Art Therapist, CBT Consultant",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Art Therapy, Mental Health",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-healing-with-art-therapy-with-dr-mona-el-rubi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@1f21a9e3fc5141a373d9df1ab4b9cd43f0cceacd/uploads/2026-04-08T12-33-22-300Z-knoiz8fte.png",
+    "keywords": [
+      "art",
+      "dr.",
+      "healing",
+      "health",
+      "mental",
+      "mona",
+      "playbook",
+      "rubi",
+      "therapy",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "From Burnout to Flow",
+    "speaker": "Dalia Al Mahmood",
+    "speaker_title": "Leadership Coach",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Burnout, Wellness",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-from-burnout-to-flow-with-dalia-al-mahmood",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@eca6e3f3aff86d2437871cbd6de8018ecb29911a/uploads/2026-04-08T12-34-56-151Z-h4jpodg17.png",
+    "keywords": [
+      "burnout",
+      "dalia",
+      "flow",
+      "health",
+      "mahmood",
+      "playbook",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Mind-Body-Breath",
+    "speaker": "Sahar Kazemini",
+    "speaker_title": "Wellbeing Educator, Mind-Body Practitioner",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Mindfulness, Wellness",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-mind-body-breath-with-sahar-kazemini",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@294ea21c7d08f25695afaacf1daea226364d4747/uploads/2026-04-08T12-36-37-114Z-thyex0yg3.png",
+    "keywords": [
+      "body",
+      "breath",
+      "health",
+      "kazemini",
+      "mind",
+      "mindfulness",
+      "playbook",
+      "sahar",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Menopause & ADHD: Roadmap for Women Leaders",
+    "speaker": "Hazleen Ahmed",
+    "speaker_title": "Founder and CEO Neuropower World",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Menopause, ADHD",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-menopause-adhd-roadmap-for-women-leaders-with-hazleen-ahmed-panayiotou",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@ca3618f14bde3b64001041b0abaf6b080568eb4c/uploads/2026-04-08T12-38-36-222Z-r01n40bpl.png",
+    "keywords": [
+      "adhd",
+      "adhd:",
+      "ahmed",
+      "hazleen",
+      "health",
+      "leaders",
+      "menopause",
+      "playbook",
+      "roadmap",
+      "wellness",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Acupressure for Perimenopause",
+    "speaker": "Hengameh Ebrahimi",
+    "speaker_title": "Doctor of Acupuncture and Traditional Chinese Medicine",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Acupressure, Menopause",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-acupressure-for-perimenopause-with-hengameh-ebrahimi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@a298bc2595062d4760a1fbcec3645647f8a926f0/uploads/2026-04-08T12-40-53-263Z-17i8gsj03.png",
+    "keywords": [
+      "acupressure",
+      "ebrahimi",
+      "health",
+      "hengameh",
+      "menopause",
+      "perimenopause",
+      "playbook",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Work-Life Balance for Corporate Leaders",
+    "speaker": "Jodiann Goulter",
+    "speaker_title": "Intuitive Energy Alignment Coach, Behaviour Consultant",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Work-Life Balance",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-work-life-balance-for-corporate-leaders-with-jodiann-goulter",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@30d9fb33fc58c9212d1c87dc2e4ff0126b9a88ae/uploads/2026-04-08T12-43-06-891Z-jqf8r3ywg.png",
+    "keywords": [
+      "balance",
+      "corporate",
+      "goulter",
+      "health",
+      "jodiann",
+      "leaders",
+      "life",
+      "playbook",
+      "wellness",
+      "work",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Corporate Health: Nutrition Beyond Your Plate",
+    "speaker": "Tina Chagoury",
+    "speaker_title": "DHA Licensed Clinical Dietician, Founder of Savoir Health, Podcast Host",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Nutrition, Corporate Wellness",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-corporate-health-nutrition-beyond-your-plate-with-tina-chagoury",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@9055b6a427c2fb7e89400725ec4066317e21a740/uploads/2026-04-08T12-44-48-934Z-c5c3bnzng.png",
+    "keywords": [
+      "beyond",
+      "chagoury",
+      "corporate",
+      "health",
+      "health:",
+      "nutrition",
+      "plate",
+      "playbook",
+      "tina",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Menopause 101: What Every Woman Needs to Know",
+    "speaker": "Gayu Lewis",
+    "speaker_title": "Menopause Coach, Integrative Nutrition Health Coach, Naturopathic Practitioner",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Menopause",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-menopause-101-what-every-woman-needs-to-know-with-gayu-lewis",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@1f6511f5097ab9ee5d8cea3561d64929f06be7c3/uploads/2026-04-08T12-48-16-102Z-0xaq144wx.jpg",
+    "keywords": [
+      "101:",
+      "every",
+      "gayu",
+      "health",
+      "know",
+      "lewis",
+      "menopause",
+      "needs",
+      "playbook",
+      "wellness",
+      "woman",
+      "workshops"
+    ]
+  },
+  {
+    "title": "The Media Mindset: How Media Shapes Confidence, Identity and Influence",
+    "speaker": "Dr. Kholod Huneiti",
+    "speaker_title": "Media Psychology Specialist, Assistant Professor and Researcher",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Media, Mental Health",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-the-media-mindset-how-media-shapes-confidence-identity-and-influence-with-dr-kholod-huneiti",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@0d844bfb7fc8368408493b3bbd5a46a5f1e2f3da/uploads/2026-04-08T12-50-19-541Z-pu4yji8es.png",
+    "keywords": [
+      "confidence",
+      "dr.",
+      "health",
+      "huneiti",
+      "identity",
+      "influence",
+      "kholod",
+      "media",
+      "mental",
+      "mindset:",
+      "playbook",
+      "shapes",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Healthy Eating Hacks When Traveling",
+    "speaker": "Fatima Hallal",
+    "speaker_title": "Certified Dietitian, Corporate Nutrition Expert, Founder of The Dietitian ND",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Nutrition, Travel",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-healthy-eating-hacks-when-traveling-with-fatima-hallal",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@97b5f03fbdc3a7a74fc782e714d0a572aacb63fc/uploads/2026-04-08T12-54-38-644Z-zqqfydwmk.png",
+    "keywords": [
+      "eating",
+      "fatima",
+      "hacks",
+      "hallal",
+      "health",
+      "healthy",
+      "nutrition",
+      "playbook",
+      "travel",
+      "traveling",
+      "wellness",
+      "when",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Meal Planning for Busy Women",
+    "speaker": "Sara Tarek",
+    "speaker_title": "Canadian Certified Nutritional Practitioner",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Nutrition, Meal Planning",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-meal-planning-for-busy-women-with-sara-tarek",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@7400369944da912b90c7a9f6c11ac1fe1fa508cb/uploads/2026-04-08T12-56-28-840Z-bbbjfeiax.png",
+    "keywords": [
+      "busy",
+      "health",
+      "meal",
+      "nutrition",
+      "planning",
+      "playbook",
+      "sara",
+      "tarek",
+      "wellness",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Introduction to AI",
+    "speaker": "Tom Szekeres",
+    "speaker_title": "Founder of re-grow, Fellow of the RSA, member of the Pledge 1%",
+    "type": "PLAYBOOK Workshops",
+    "category": "Technology and Innovation",
+    "tags": "Technology, AI, Innovation",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-introduction-to-ai-with-tom-szekeres",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@beeee74e4afd8bc9850a3980f87f47279430c014/uploads/2026-04-08T12-58-09-975Z-ttwqgx1vf.png",
+    "keywords": [
+      "innovation",
+      "introduction",
+      "playbook",
+      "szekeres",
+      "technology",
+      "tom",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Demystifying DAOs: The Future of Work",
+    "speaker": "Sharene Lee",
+    "speaker_title": "Serial Entrepreneur, Crypto Co-Founder, Podcast Host",
+    "type": "PLAYBOOK Workshops",
+    "category": "Technology and Innovation",
+    "tags": "Technology, Web3, DAO",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-demystifying-daos-the-future-of-work-with-sharene-lee",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@069317614009f0f4a171777ba2008b3bb04be2c9/uploads/2026-04-08T13-21-39-576Z-bw5fc6nsz.png",
+    "keywords": [
+      "dao",
+      "daos:",
+      "demystifying",
+      "future",
+      "innovation",
+      "lee",
+      "playbook",
+      "sharene",
+      "technology",
+      "web3",
+      "work",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Crafting Corporate Usage Policies around AI",
+    "speaker": "Hind Habbach",
+    "speaker_title": "Commercial Legal Counsel Expert and Board Member specializing in deep-tech",
+    "type": "PLAYBOOK Workshops",
+    "category": "Technology and Innovation",
+    "tags": "Technology, AI, Legal",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-crafting-corporate-usage-policies-around-ai-with-hind-habbach",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@e37920a6ae9384a8c70cbadbe39120dd052c95e9/uploads/2026-04-08T13-23-51-516Z-umjiwn5vm.png",
+    "keywords": [
+      "around",
+      "corporate",
+      "crafting",
+      "habbach",
+      "hind",
+      "innovation",
+      "legal",
+      "playbook",
+      "policies",
+      "technology",
+      "usage",
+      "workshops"
+    ]
+  },
+  {
+    "title": "AI for Small Businesses",
+    "speaker": "Beenish Saeed",
+    "speaker_title": "Founding Partner & Chief of Staff",
+    "type": "PLAYBOOK Workshops",
+    "category": "Technology and Innovation",
+    "tags": "Technology, AI, SMB",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-ai-for-small-businesses-with-beenish-saeed",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@7b7c9f9e9d688af3e7d9e2312ef401c5c41bef51/uploads/2026-04-08T13-25-47-194Z-eio4tud4v.png",
+    "keywords": [
+      "beenish",
+      "businesses",
+      "innovation",
+      "playbook",
+      "saeed",
+      "small",
+      "smb",
+      "technology",
+      "workshops"
+    ]
+  },
+  {
+    "title": "ChatGPT Unlocked: Redefining Corporate Communication and Efficiency",
+    "speaker": "Beenish Saeed",
+    "speaker_title": "Founding Partner & Chief of Staff",
+    "type": "PLAYBOOK Workshops",
+    "category": "Technology and Innovation",
+    "tags": "Technology, AI, ChatGPT",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-chatgpt-unlocked-redefining-corporate-communication-and-efficiency-with-beenish-saeed",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@608820583b0c9467dc86d55ac5a617105b942972/uploads/2026-04-08T13-28-08-639Z-jnx8zp9py.png",
+    "keywords": [
+      "beenish",
+      "chatgpt",
+      "communication",
+      "corporate",
+      "efficiency",
+      "innovation",
+      "playbook",
+      "redefining",
+      "saeed",
+      "technology",
+      "unlocked:",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Mastering Legal Contracts for Startup Success",
+    "speaker": "Bushra Asif & Marjorie Sudrow",
+    "speaker_title": "Legal Council, The Legal Bureau / Director for European Union, British Legal Centre",
+    "type": "PLAYBOOK Workshops",
+    "category": "Startup and Entrepreneurship",
+    "tags": "Startup, Legal, Contracts",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-mastering-legal-contracts-for-startup-success-by-bushra-asif-and-marjorie-sudrow",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@f197cea9bcecc830fc020c0b19e63b664d549f2d/uploads/2026-04-08T13-31-46-030Z-45kom92wb.png",
+    "keywords": [
+      "asif",
+      "bushra",
+      "contracts",
+      "entrepreneurship",
+      "legal",
+      "marjorie",
+      "mastering",
+      "playbook",
+      "startup",
+      "success",
+      "sudrow",
+      "workshops"
+    ]
+  },
+  {
+    "title": "The Startup Sprint to Launch Your Big Idea",
+    "speaker": "Dina El Mofty",
+    "speaker_title": "Founder & Board Member, Injaz Egypt",
+    "type": "PLAYBOOK Workshops",
+    "category": "Startup and Entrepreneurship",
+    "tags": "Startup, Launch, Entrepreneurship",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-the-startup-sprint-to-launch-your-big-idea-by-dina-el-mofty",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@0c37dc571e52f6e288ec46a3298d6909710ec284/uploads/2026-04-08T13-36-19-553Z-f9yuvwk8c.png",
+    "keywords": [
+      "big",
+      "dina",
+      "entrepreneurship",
+      "idea",
+      "launch",
+      "mofty",
+      "playbook",
+      "sprint",
+      "startup",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Mastering The Art of Recruitment To Build Your Dream Team",
+    "speaker": "Nadia Jazairli",
+    "speaker_title": "Managing Director at Shibaak",
+    "type": "PLAYBOOK Workshops",
+    "category": "Startup and Entrepreneurship",
+    "tags": "Startup, Recruitment, HR",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-mastering-the-art-of-recruitment-to-build-your-dream-team-by-nadia-jazairli",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@51e36b1e9fcee56bcc2eb3f4bafcd5f24dfa868a/uploads/2026-04-08T13-38-05-752Z-wtz0ccvvt.png",
+    "keywords": [
+      "art",
+      "build",
+      "dream",
+      "entrepreneurship",
+      "jazairli",
+      "mastering",
+      "nadia",
+      "playbook",
+      "recruitment",
+      "startup",
+      "team",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Driving Social Impact: A CSR Strategies Workshop",
+    "speaker": "Shahmeen Islam",
+    "speaker_title": "Philanthropist, Architect, Podcast Host, President of PWA",
+    "type": "PLAYBOOK Workshops",
+    "category": "Startup and Entrepreneurship",
+    "tags": "Startup, CSR, Social Impact",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-driving-social-impact-a-csr-strategies-workshop",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@0f15328128eea9dbb3ef264e829f7b941e859c59/uploads/2026-04-08T13-39-58-555Z-cg9025lff.png",
+    "keywords": [
+      "csr",
+      "driving",
+      "entrepreneurship",
+      "impact",
+      "impact:",
+      "islam",
+      "playbook",
+      "shahmeen",
+      "social",
+      "startup",
+      "strategies",
+      "workshop",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Psychological Safety for Entrepreneurs",
+    "speaker": "Faiza Saeed",
+    "speaker_title": "Certified Trainer, Franklin Covey MENA, Self Development Coach",
+    "type": "PLAYBOOK Workshops",
+    "category": "Startup and Entrepreneurship",
+    "tags": "Startup, Psychological Safety",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-welcome-address-from-wafa-alobaidat",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@cc2a2b60894fe12f54d8d7aaa7295aafe1972387/uploads/2026-04-08T13-41-54-966Z-i5ivqm6oz.png",
+    "keywords": [
+      "entrepreneurs",
+      "entrepreneurship",
+      "faiza",
+      "playbook",
+      "psychological",
+      "saeed",
+      "safety",
+      "startup",
+      "workshops"
+    ]
+  },
+  {
+    "title": "From Vision to Impact",
+    "speaker": "Nina Abi Fadel",
+    "speaker_title": "Founder of the MoneySmart Financial Literacy Program",
+    "type": "PLAYBOOK Workshops",
+    "category": "Startup and Entrepreneurship",
+    "tags": "Startup, Vision, Impact",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-from-vision-to-impact-with-nina-abi-fadel",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@0946b726e2f3d35c2f3928ee9de443a1bb22ab05/uploads/2026-04-08T13-45-57-006Z-j2ufwlz5z.jpg",
+    "keywords": [
+      "abi",
+      "entrepreneurship",
+      "fadel",
+      "impact",
+      "nina",
+      "playbook",
+      "startup",
+      "vision",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Building a Retail Brand That Thrives on Community",
+    "speaker": "Hazar Al Zadjali",
+    "speaker_title": "Registered Psychotherapist, Mental Wellness for Entrepreneurs",
+    "type": "PLAYBOOK Workshops",
+    "category": "Startup and Entrepreneurship",
+    "tags": "Startup, Retail, Brand",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-welcome-remarks-from-dalal-behbehani",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@2ce4f5fc69d42e70eceb0e8fa8710a187cced145/uploads/2026-04-09T07-10-53-124Z-c1j9n4iqb.png",
+    "keywords": [
+      "brand",
+      "building",
+      "community",
+      "entrepreneurship",
+      "hazar",
+      "playbook",
+      "retail",
+      "startup",
+      "thrives",
+      "workshops",
+      "zadjali"
+    ]
+  },
+  {
+    "title": "Corporate Excellence: Precision Feedback for Elevating Employee Performance and Growth",
+    "speaker": "Noor Al-Ajeel",
+    "speaker_title": "Communication Executive, Image Consultant, Life Coach",
+    "type": "PLAYBOOK Workshops",
+    "category": "Leadership and Management",
+    "tags": "Leadership, Management, Performance",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-corporate-excellence-precision-feedback-for-elevating-employee-performance-and-growth-with-noor-al-ajeel",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@3b6a4b0515ebf0fb800e1a16970d27b2dd996581/uploads/2026-04-09T07-12-49-499Z-2y3aa2zic.png",
+    "keywords": [
+      "ajeel",
+      "corporate",
+      "elevating",
+      "employee",
+      "excellence:",
+      "feedback",
+      "growth",
+      "leadership",
+      "management",
+      "noor",
+      "performance",
+      "playbook",
+      "precision",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Communicating with Impact During Times of Change",
+    "speaker": "Mai El Kinawi",
+    "speaker_title": "Communications Strategist, Managing Partner, True North Consulting",
+    "type": "PLAYBOOK Workshops",
+    "category": "Leadership and Management",
+    "tags": "Leadership, Communication, Change",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-communicating-with-impact-during-times-of-change-with-mai-el-kinawi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@02d97d49a051eb92e2a8db20e52d510d502f1381/uploads/2026-04-09T07-15-04-931Z-1yh0ryhz4.png",
+    "keywords": [
+      "change",
+      "communicating",
+      "communication",
+      "during",
+      "impact",
+      "kinawi",
+      "leadership",
+      "mai",
+      "management",
+      "playbook",
+      "times",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Inclusive Leadership in 2025",
+    "speaker": "Lara Khouri",
+    "speaker_title": "Founder of There is no Spoon, Change Leader, Business Process Optimizer",
+    "type": "PLAYBOOK Workshops",
+    "category": "Leadership and Management",
+    "tags": "Leadership, Inclusive Leadership",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-inclusive-leadership-in-2025-with-lara-khouri",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@66cde4f0eeff330835a5417cdf85b4f5f68e1d89/uploads/2026-04-09T07-16-49-168Z-w8nuriida.png",
+    "keywords": [
+      "2025",
+      "inclusive",
+      "khouri",
+      "lara",
+      "leadership",
+      "management",
+      "playbook",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Strategic Event Planning and Execution For Impactful Events",
+    "speaker": "Nadine Farrag",
+    "speaker_title": "Founder & CEO, Farahy & The Wizard",
+    "type": "PLAYBOOK Workshops",
+    "category": "Entertainment and Arts",
+    "tags": "Arts, Events, Strategy",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-strategic-event-planning-and-execution-for-impactful-events-with-nadine-farrag%F0%9F%92%A1%F0%9F%92%AB",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@90707bfab0c9feb2ad6d3e6cce0aa5282f00d556/uploads/2026-04-09T07-18-41-857Z-5quj28r7g.png",
+    "keywords": [
+      "arts",
+      "entertainment",
+      "event",
+      "events",
+      "execution",
+      "farrag",
+      "impactful",
+      "nadine",
+      "planning",
+      "playbook",
+      "strategic",
+      "strategy",
+      "workshops"
+    ]
+  },
+  {
+    "title": "From Vision to Screen: Navigating Legal and Commercial Aspects of Film Making",
+    "speaker": "Dr. Moira Sullivan & Marjorie Sudrow",
+    "speaker_title": "Renowned Scholar, Lecturer, Journalist & Influential Voice in Global Cinema / University Lecturer & International Commercial Lawyer",
+    "type": "PLAYBOOK Workshops",
+    "category": "Entertainment and Arts",
+    "tags": "Arts, Film, Legal",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-from-vision-to-screen-navigating-legal-and-commercial-aspects-of-film-making-with-dr-moira-sullivan-and-marjorie-sudrow%F0%9F%8F%AC%F0%9F%8E%9E%EF%B8%8F",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@e52a555583453cd990bcd0b50db4211f9f675bac/uploads/2026-04-09T07-20-15-048Z-psxkjb6zg.png",
+    "keywords": [
+      "arts",
+      "aspects",
+      "commercial",
+      "dr.",
+      "entertainment",
+      "film",
+      "legal",
+      "making",
+      "marjorie",
+      "moira",
+      "navigating",
+      "playbook",
+      "screen:",
+      "sudrow",
+      "sullivan",
+      "vision",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Curating your Career",
+    "speaker": "Wafa AlObaidat",
+    "speaker_title": "Founder and CEO of Playbook",
+    "type": "PLAYBOOK Workshops",
+    "category": "Mini Masterclass Recap",
+    "tags": "Career, Development",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-curating-your-career-with-wafa-alobaidat%F0%9F%92%BC%F0%9F%92%A1",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8275c8b88cde981532daa19e5e2fc0bf29db470f/uploads/2026-04-09T07-31-52-788Z-0wonvbb4h.png",
+    "keywords": [
+      "alobaidat",
+      "career",
+      "curating",
+      "development",
+      "masterclass",
+      "mini",
+      "playbook",
+      "recap",
+      "wafa",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Discovering Health Through Mindful Living",
+    "speaker": "Iman Cheffi",
+    "speaker_title": "General Health Practitioner",
+    "type": "PLAYBOOK Workshops",
+    "category": "Hybrid Workshop",
+    "tags": "Health, Mindfulness",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-discovering-health-through-mindful-living-with-iman-cheffi%F0%9F%A7%A0%F0%9F%8C%90",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@a01b8b8be0278ec50c425a9b47e3ff1343050c41/uploads/2026-04-09T07-33-46-620Z-jboo1pula.png",
+    "keywords": [
+      "cheffi",
+      "discovering",
+      "health",
+      "hybrid",
+      "iman",
+      "living",
+      "mindful",
+      "mindfulness",
+      "playbook",
+      "through",
+      "workshop",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Turning your Instagram into a High-Converting Funnel",
+    "speaker": "Alia ElKhatib",
+    "speaker_title": "Marketing Strategist, Business Consultant",
+    "type": "PLAYBOOK Workshops",
+    "category": "Learn in 5",
+    "tags": "Marketing, Instagram, Social Media",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-turning-your-instagram-into-a-high-converting-funnel-with-alia-elkhatib",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@276f129aaaba44bc1bce237d59b5189f20d3de63/uploads/2026-04-09T07-38-47-979Z-cvdw5uvc0.png",
+    "keywords": [
+      "alia",
+      "converting",
+      "elkhatib",
+      "funnel",
+      "high",
+      "instagram",
+      "learn",
+      "marketing",
+      "media",
+      "playbook",
+      "social",
+      "turning",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Overcoming Imposter Syndrome: Rebuilding Confidence and Recognizing Your Self-Worth",
+    "speaker": "Jana Osta",
+    "speaker_title": "TEDx Speaker, Somatic Hypnotherapist, Expert in Mindset & Energetics",
+    "type": "Partner Workshops",
+    "category": "Baghdad Business School",
+    "tags": "Mindset, Confidence, Imposter Syndrome",
+    "link": "https://network.get-playbook.com/posts/partner-workshops-overcoming-imposter-syndrome-rebuilding-confidence-and-recognizing-your-self-worth-with-jana-osta",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@69043667832a211e1021cb11d59485ee73eee956/uploads/2026-04-08T08-46-28-980Z-6at5mqg30.png",
+    "keywords": [
+      "baghdad",
+      "business",
+      "confidence",
+      "imposter",
+      "jana",
+      "mindset",
+      "osta",
+      "overcoming",
+      "partner",
+      "rebuilding",
+      "recognizing",
+      "school",
+      "self",
+      "syndrome",
+      "syndrome:",
+      "workshops",
+      "worth"
+    ]
+  },
+  {
+    "title": "Mastering the Art of Boundaries and Emotional Intelligence",
+    "speaker": "Asmaa AlKuwari",
+    "speaker_title": "Multi-Award International Winning Coach, Forbes and TEDx Speaker, Executive Leadership Coach (PCC), Author",
+    "type": "Partner Workshops",
+    "category": "Baghdad Business School",
+    "tags": "Leadership, Emotional Intelligence, Boundaries",
+    "link": "https://network.get-playbook.com/posts/partner-workshops-mastering-the-art-of-boundaries-and-emotional-intelligence-with-asmaa-alkuwari",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@6bc82a4498d99238388f58970d523a9d93e67ba0/uploads/2026-04-08T09-15-50-360Z-4an7eqexm.png",
+    "keywords": [
+      "alkuwari",
+      "art",
+      "asmaa",
+      "baghdad",
+      "boundaries",
+      "business",
+      "emotional",
+      "intelligence",
+      "leadership",
+      "mastering",
+      "partner",
+      "school",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Strategic Opportunity Hunting",
+    "speaker": "Wafa AlObaidat",
+    "speaker_title": "CEO and Founder of Playbook",
+    "type": "Partner Workshops",
+    "category": "Baghdad Business School",
+    "tags": "Strategy, Entrepreneurship",
+    "link": "https://network.get-playbook.com/posts/partner-workshops-strategic-opportunity-hunting-with-wafa-alobaidat",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@b4341c48119eac8cc2500bbe541422f82c920ef0/uploads/2026-04-08T09-16-35-427Z-kf9akmubr.png",
+    "keywords": [
+      "alobaidat",
+      "baghdad",
+      "business",
+      "entrepreneurship",
+      "hunting",
+      "opportunity",
+      "partner",
+      "school",
+      "strategic",
+      "strategy",
+      "wafa",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Navigating Private Market Investments",
+    "speaker": "Ismail Badereldine",
+    "speaker_title": "CEO of FINBURSA",
+    "type": "Partner Workshops",
+    "category": "FINBURSA",
+    "tags": "Finance, Private Markets, Investing",
+    "link": "https://network.get-playbook.com/posts/partner-workshops-navigating-private-market-investments-with-ismail-badereldine",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@0de7c4a6530d3c6b735e67d4d74667648dcd833f/uploads/2026-04-08T09-20-01-637Z-2231evjdl.png",
+    "keywords": [
+      "badereldine",
+      "finance",
+      "finbursa",
+      "investing",
+      "investments",
+      "ismail",
+      "market",
+      "markets",
+      "navigating",
+      "partner",
+      "private",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Get Started with Investing",
+    "speaker": "Denise Lim & Phil M",
+    "speaker_title": "Co-Founders of Junify",
+    "type": "Partner Workshops",
+    "category": "Junify",
+    "tags": "Finance, Investing, Beginner",
+    "link": "https://network.get-playbook.com/posts/partner-workshops-get-started-with-investing-with-denise-lim-phil-m",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@e54f71f885490ac61159eeae827a03ed0ce4c17f/uploads/2026-04-08T09-20-26-124Z-tedbt38zh.png",
+    "keywords": [
+      "beginner",
+      "denise",
+      "finance",
+      "get",
+      "investing",
+      "junify",
+      "lim",
+      "partner",
+      "phil",
+      "started",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Graphic Design and Creative Expression (Full Masterclass)",
+    "speaker": "Rana Salam",
+    "speaker_title": "Graphic Designer and Creative Director",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Graphic Design and Creative Expression",
+    "tags": "Masterclass, Design, Creativity",
+    "link": "https://network.get-playbook.com/posts/graphic-design-and-creative-expression-the-wow-and-wonderful-world-of-rana-salam",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@f790015ca55f4ebdafad5b7e36a68601503337a1/uploads/2026-04-08T09-21-28-595Z-734flwc2q.png",
+    "keywords": [
+      "(full",
+      "creative",
+      "creativity",
+      "design",
+      "expression",
+      "graphic",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "playbook",
+      "rana",
+      "salam"
+    ]
+  },
+  {
+    "title": "Social Media Influence & Authenticity (Full Masterclass)",
+    "speaker": "Yalda Golsharifi",
+    "speaker_title": "Content Creator and Influencer",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Social Media Influence & Authenticity",
+    "tags": "Masterclass, Social Media, Authenticity",
+    "link": "https://network.get-playbook.com/posts/social-media-influence-authenticity-meet-yalda-golsharifi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@26fc9cc8ec04c5cf255e200e2061829a1712cce8/uploads/2026-04-08T09-21-56-885Z-84hxv19lu.jpg",
+    "keywords": [
+      "(full",
+      "authenticity",
+      "golsharifi",
+      "influence",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "media",
+      "playbook",
+      "social",
+      "yalda"
+    ]
+  },
+  {
+    "title": "Scaling a Business (Full Masterclass)",
+    "speaker": "Roaya Saleh",
+    "speaker_title": "Founder and CEO of Playbook",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Scaling a Business",
+    "tags": "Masterclass, Business, Scaling",
+    "link": "https://network.get-playbook.com/posts/scaling-a-business-meet-roaya-saleh-تعرفي-على-رؤيا-صالح",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@28604d25d08baf54f3bd200d42a27ed2fbd8c8f3/uploads/2026-04-08T09-22-20-231Z-jdk3jj08m.png",
+    "keywords": [
+      "(full",
+      "business",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "playbook",
+      "roaya",
+      "saleh",
+      "scaling"
+    ]
+  },
+  {
+    "title": "Starting a Business (Full Masterclass)",
+    "speaker": "Wafa AlObaidat",
+    "speaker_title": "Digital Marketing Expert",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Starting a Business",
+    "tags": "Masterclass, Startup, Entrepreneurship",
+    "link": "https://network.get-playbook.com/posts/starting-a-business-meet-wafa-alobaidat-تعرفي-على-وفاء-العبيدات",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@9ed9e8a4a7af30965329ad0f90832e0805700a67/uploads/2026-04-08T09-22-58-156Z-7k578j7s7.png",
+    "keywords": [
+      "(full",
+      "alobaidat",
+      "business",
+      "entrepreneurship",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "playbook",
+      "starting",
+      "startup",
+      "wafa"
+    ]
+  },
+  {
+    "title": "Fundamentals of Digital Marketing (Full Masterclass)",
+    "speaker": "Hanan Al-Haifi",
+    "speaker_title": "nan",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Fundamentals of Digital Marketing",
+    "tags": "Masterclass, Digital Marketing, Marketing",
+    "link": "https://network.get-playbook.com/posts/fundamentals-of-digital-marketing-meet-hanan-al-haifi-تعرفي-على-حنان-الحيفي",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@22d1c64965136c3d6633483d5bcb3d360c01cc59/uploads/2026-04-08T09-23-21-691Z-spzcfbrnq.jpg",
+    "keywords": [
+      "(full",
+      "digital",
+      "fundamentals",
+      "haifi",
+      "hanan",
+      "marketing",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "playbook"
+    ]
+  },
+  {
+    "title": "Feminine Health and Wellness (Full Masterclass)",
+    "speaker": "Emaan Abbass",
+    "speaker_title": "Founder of Ketish, Feminine Wellness Expert",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Feminine Health and Wellness",
+    "tags": "Masterclass, Health, Feminine Wellness",
+    "link": "https://network.get-playbook.com/posts/feminine-health-and-wellness-meet-emaan-abbass-تعرفي-على-إيمان-عباس",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@a4ff41900234d30db4c25c1fa2c9294a32579fc5/uploads/2026-04-08T09-23-55-555Z-dmns5km8q.png",
+    "keywords": [
+      "(full",
+      "abbass",
+      "emaan",
+      "feminine",
+      "health",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "playbook",
+      "wellness"
+    ]
+  },
+  {
+    "title": "Board Membership & Advisory (Full Masterclass)",
+    "speaker": "Elham Hassan",
+    "speaker_title": "Board Member and Advisor",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Board Membership & Advisory",
+    "tags": "Masterclass, Board, Leadership",
+    "link": "https://network.get-playbook.com/posts/board-membership-advisory-board-membership-as-a-full-time-job-26162137",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@c9b55d5bd01ed362c5268ee3ea03280d8bfa6d71/uploads/2026-04-08T09-24-21-463Z-1jp0gth52.jpg",
+    "keywords": [
+      "(full",
+      "advisory",
+      "board",
+      "elham",
+      "hassan",
+      "leadership",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "membership",
+      "playbook"
+    ]
+  },
+  {
+    "title": "Mental Health (Full Masterclass)",
+    "speaker": "HH Sayyida Basma Al-Said",
+    "speaker_title": "Mental Health Advocate and Royal",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Mental Health",
+    "tags": "Masterclass, Mental Health, Wellness",
+    "link": "https://network.get-playbook.com/posts/mental-health-meet-hh-sayyida-basma-al-said-تعرفي-على-صاحبة-السمو-السيدة-بسمة-آل-سعيد",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@2daa2d56307fafa736b225d5f8035382cd64103c/uploads/2026-04-08T09-24-42-957Z-rzlytncth.png",
+    "keywords": [
+      "(full",
+      "basma",
+      "health",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "mental",
+      "playbook",
+      "said",
+      "sayyida",
+      "wellness"
+    ]
+  },
+  {
+    "title": "Feminism and Women Crisis Advocacy (Full Masterclass)",
+    "speaker": "Mary-Justine Todd",
+    "speaker_title": "Feminist Advocate and Crisis Expert",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Feminism and Women Crisis Advocacy",
+    "tags": "Masterclass, Feminism, Advocacy",
+    "link": "https://network.get-playbook.com/posts/feminism-and-women-crisis-advocacy-meet-mary-justine-todd",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@691e910b305c339babdf6307dc31a5ef622fb9e6/uploads/2026-04-08T09-25-13-768Z-k05d74p17.png",
+    "keywords": [
+      "(full",
+      "advocacy",
+      "crisis",
+      "feminism",
+      "justine",
+      "mary",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "playbook",
+      "todd",
+      "women"
+    ]
+  },
+  {
+    "title": "Climbing The Corporate Ladder (Full Masterclass)",
+    "speaker": "Amal Al Kooheji",
+    "speaker_title": "Playbook Coach and Managing Partner of TTH",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Climbing The Corporate Ladder",
+    "tags": "Masterclass, Career, Corporate",
+    "link": "https://network.get-playbook.com/posts/climbing-the-corporate-ladder-meet-amal-al-kooheji",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@003c6415fe734c32fae9a270f262bf5df1f9146d/uploads/2026-04-08T09-25-30-633Z-cw07ctlxj.png",
+    "keywords": [
+      "(full",
+      "amal",
+      "career",
+      "climbing",
+      "corporate",
+      "kooheji",
+      "ladder",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "playbook"
+    ]
+  },
+  {
+    "title": "The Investor Mindset (Full Masterclass)",
+    "speaker": "Amal Dokhan",
+    "speaker_title": "Investor and VC Partner",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "The Investor Mindset",
+    "tags": "Masterclass, Investing, VC",
+    "link": "https://network.get-playbook.com/posts/the-investor-mindset-meet-amal-dokhan-24076588",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@af65bcbeeec15e5fa1fe79248ff39034bd8557a4/uploads/2026-04-08T09-25-38-030Z-juzta2e6k.png",
+    "keywords": [
+      "(full",
+      "amal",
+      "dokhan",
+      "investing",
+      "investor",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "mindset",
+      "playbook"
+    ]
+  },
+  {
+    "title": "Stepping into Feminine Power and Scaling (Full Masterclass)",
+    "speaker": "Deena Al-Ansari",
+    "speaker_title": "Entrepreneur and Feminine Power Coach",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Stepping into Feminine Power and Scaling",
+    "tags": "Masterclass, Leadership, Feminine Power",
+    "link": "https://network.get-playbook.com/posts/stepping-into-feminine-power-and-scaling-meet-deena-ansari-تعرفي-على-دينا-الأنصاري",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@53e47bc3d430b44eab0101372cdbbe371d987142/uploads/2026-04-08T09-25-47-549Z-bclw1yvue.png",
+    "keywords": [
+      "(full",
+      "ansari",
+      "deena",
+      "feminine",
+      "leadership",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "playbook",
+      "power",
+      "scaling",
+      "stepping"
+    ]
+  },
+  {
+    "title": "Leading A Family Business (Full Masterclass)",
+    "speaker": "Suzy Kanoo",
+    "speaker_title": "Family Business Leader",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Leading A Family Business",
+    "tags": "Masterclass, Family Business, Leadership",
+    "link": "https://network.get-playbook.com/posts/leading-a-family-business-meet-suzy-kanoo-تعرفي-على-سوزي-كانو",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8cd528a38e0a17ff77f227cf9ed897c9c7cb752b/uploads/2026-04-08T09-25-54-833Z-7j2vhbdnh.png",
+    "keywords": [
+      "(full",
+      "business",
+      "family",
+      "kanoo",
+      "leadership",
+      "leading",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "playbook",
+      "suzy"
+    ]
+  },
+  {
+    "title": "Colour Consulting and Expression (Full Masterclass)",
+    "speaker": "Fatima Alshirawi",
+    "speaker_title": "Colour Consultant and Expression Expert",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Colour Consulting and Expression",
+    "tags": "Masterclass, Colour, Branding",
+    "link": "https://network.get-playbook.com/posts/colour-consulting-and-expression-meet-fatima-al-shirawi-تعرف-على-فاطمة-الشيراوي",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@ac66a4d98728de003d3481e2f0b8448a3014e506/uploads/2026-04-08T09-26-01-903Z-62f6fi9n3.png",
+    "keywords": [
+      "(full",
+      "alshirawi",
+      "branding",
+      "colour",
+      "consulting",
+      "expression",
+      "fatima",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "playbook"
+    ]
+  },
+  {
+    "title": "Early-Stage Fundraising (Full Masterclass)",
+    "speaker": "Ameena Bucheeri",
+    "speaker_title": "Early-Stage Fundraising Expert",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Early-Stage Fundraising",
+    "tags": "Masterclass, Fundraising, Startup",
+    "link": "https://network.get-playbook.com/posts/early-stage-fundraising-meet-ameena-bucheeri-تعرف-على-أمينة-بوچيري",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@4f92f738dbd97f6e6a7b294418bbfa83ab7d65d8/uploads/2026-04-08T09-26-09-560Z-qwd7bzt8i.png",
+    "keywords": [
+      "(full",
+      "ameena",
+      "bucheeri",
+      "early",
+      "fundraising",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "playbook",
+      "stage",
+      "startup"
+    ]
+  },
+  {
+    "title": "Thriving in Government (Full Masterclass)",
+    "speaker": "Dr. Fatima Al-Balooshi",
+    "speaker_title": "Government Leader and Expert",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Thriving in Government",
+    "tags": "Masterclass, Government, Leadership",
+    "link": "https://network.get-playbook.com/posts/thriving-in-government-meet-drfatima-al-balooshi-تعرف-على-الدكتورة-فاطمة-البلوشي",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@a28ff138b30b961b96b6b4ccddb9cb8e1ee093b7/uploads/2026-04-08T09-26-17-682Z-ifc9j9uj8.jpg",
+    "keywords": [
+      "(full",
+      "balooshi",
+      "dr.",
+      "fatima",
+      "government",
+      "leadership",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "playbook",
+      "thriving"
+    ]
+  },
+  {
+    "title": "Authenticity in Sales (Full Masterclass)",
+    "speaker": "Nada Alawi",
+    "speaker_title": "Sales Expert and Business Leader",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Authenticity in Sales",
+    "tags": "Masterclass, Sales, Authenticity",
+    "link": "https://network.get-playbook.com/posts/authenticity-in-sales-meet-nada-alawi-تعرفِ-على-ندى-علوي",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@e83be24433dd350646cc2ffb41a1c0308e71e143/uploads/2026-04-08T09-26-24-435Z-oq64lgz6e.jpg",
+    "keywords": [
+      "(full",
+      "alawi",
+      "authenticity",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "nada",
+      "playbook",
+      "sales"
+    ]
+  },
+  {
+    "title": "The A-Player Mindset (Full Masterclass)",
+    "speaker": "Enas Asiri",
+    "speaker_title": "Business Leader and A-Player Mindset Coach",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "The A-Player Mindset",
+    "tags": "Masterclass, Mindset, Leadership",
+    "link": "https://network.get-playbook.com/posts/the-a-player-mindset-meet-enas-asiri",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@1d097d198419b1c9b92fdbbff3d08a62b58c8880/uploads/2026-04-08T09-26-31-192Z-yrxpfko72.jpg",
+    "keywords": [
+      "(full",
+      "asiri",
+      "enas",
+      "leadership",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "mindset",
+      "playbook",
+      "player"
+    ]
+  },
+  {
+    "title": "Strategic Career Growth (Full Masterclass)",
+    "speaker": "Afaf Zainalabedin",
+    "speaker_title": "Career Growth Expert",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Strategic Career Growth",
+    "tags": "Masterclass, Career, Strategy",
+    "link": "https://network.get-playbook.com/posts/strategic-career-growth-meet-afaf-zainalabedin",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@7f8b6454e1a75d3e4e91c7701975de7b2bb79d4c/uploads/2026-04-08T09-26-38-951Z-2wddiljvo.jpg",
+    "keywords": [
+      "(full",
+      "afaf",
+      "career",
+      "growth",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "playbook",
+      "strategic",
+      "strategy",
+      "zainalabedin"
+    ]
+  },
+  {
+    "title": "Building Financial Independence (Full Masterclass)",
+    "speaker": "Nandini Joshi",
+    "speaker_title": "Financial Independence Expert",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Building Financial Independence",
+    "tags": "Masterclass, Finance, Independence",
+    "link": "https://network.get-playbook.com/posts/building-financial-independence-meet-nandini-joshi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@cb2f0fa472c376b87c6cc0d49c0aed9bd41f9d6d/uploads/2026-04-08T09-26-44-931Z-jyhwl386p.jpg",
+    "keywords": [
+      "(full",
+      "building",
+      "finance",
+      "financial",
+      "independence",
+      "joshi",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "nandini",
+      "playbook"
+    ]
+  },
+  {
+    "title": "Managing Stakeholder Relations (Full Masterclass)",
+    "speaker": "Deemah AlYahya",
+    "speaker_title": "Stakeholder Relations Expert",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Managing Stakeholder Relations",
+    "tags": "Masterclass, Stakeholder, Leadership",
+    "link": "https://network.get-playbook.com/posts/managing-stakeholder-relations-shaping-a-tech-enthusiast-from-childhood",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@15833627518888c99d623d8c4eabc7d0c1d3243f/uploads/2026-04-08T09-26-52-233Z-9va8e4dfg.jpg",
+    "keywords": [
+      "(full",
+      "alyahya",
+      "deemah",
+      "leadership",
+      "managing",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "playbook",
+      "relations",
+      "stakeholder"
+    ]
+  },
+  {
+    "title": "Palestinian Culture and Heritage (Full Masterclass)",
+    "speaker": "Mayssoun Azzam",
+    "speaker_title": "Cultural Expert and Educator",
+    "type": "PLAYBOOK Masterclasses",
+    "category": "Palestinian Culture and Heritage",
+    "tags": "Masterclass, Culture, Heritage",
+    "link": "https://network.get-playbook.com/posts/palestinian-culture-and-heritage-lesson-0-لقاء-مع-المدرب-تعرف-على-ميسون-عزام-meet-the-instructor-introducing-mayssoun-azzam",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@6da734a074449d23e8aac05ad8517ae44f3da04a/uploads/2026-04-08T09-27-01-240Z-r31buflrs.png",
+    "keywords": [
+      "(full",
+      "azzam",
+      "culture",
+      "heritage",
+      "masterclass",
+      "masterclass)",
+      "masterclasses",
+      "mayssoun",
+      "palestinian",
+      "playbook"
+    ]
+  },
+  {
+    "title": "Mastering Strategic Networking (4-week Bootcamp)",
+    "speaker": "Wafa AlObaidat",
+    "speaker_title": "Founder and CEO of Playbook",
+    "type": "PLAYBOOK Bootcamps",
+    "category": "Strategic Networking",
+    "tags": "Bootcamp, Networking, Career",
+    "link": "https://network.get-playbook.com/posts/89177440",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@9dfceeaea0cb53890542df0d6ddf19a522e1af48/uploads/2026-04-08T09-31-39-401Z-cbi37b17l.png",
+    "keywords": [
+      "alobaidat",
+      "bootcamp",
+      "bootcamp)",
+      "bootcamps",
+      "career",
+      "mastering",
+      "networking",
+      "playbook",
+      "strategic",
+      "wafa",
+      "week"
+    ]
+  },
+  {
+    "title": "Understanding the Global Gender Gap",
+    "speaker": "Mai & Adam",
+    "speaker_title": "Podcast Hosts",
+    "type": "PLAYBOOK Podcasts",
+    "category": "AI Podcast with Mai and Adam",
+    "tags": "Podcast, AI, Gender, Finance",
+    "link": "https://network.get-playbook.com/posts/podcasts-episode-1-understanding-the-global-gender-gap",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8020a99497ee4c46091b74c7dca9e4252c61b41c/uploads/2026-04-08T09-32-50-485Z-u3uzk70gc.png",
+    "keywords": [
+      "adam",
+      "finance",
+      "gap",
+      "gender",
+      "global",
+      "mai",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "understanding"
+    ]
+  },
+  {
+    "title": "Women on Boards in the GCC",
+    "speaker": "Mai & Adam",
+    "speaker_title": "Podcast Hosts",
+    "type": "PLAYBOOK Podcasts",
+    "category": "AI Podcast with Mai and Adam",
+    "tags": "Podcast, AI, Gender, Finance",
+    "link": "https://network.get-playbook.com/posts/podcasts-episode-2-women-on-boards-in-the-gcc",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@f09e90efd055967fc09c20e9702abf551785c609/uploads/2026-04-08T09-32-57-968Z-p2tjj5get.png",
+    "keywords": [
+      "adam",
+      "boards",
+      "finance",
+      "gcc",
+      "gender",
+      "mai",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "women"
+    ]
+  },
+  {
+    "title": "Financial Health Check",
+    "speaker": "Mai & Adam",
+    "speaker_title": "Podcast Hosts",
+    "type": "PLAYBOOK Podcasts",
+    "category": "AI Podcast with Mai and Adam",
+    "tags": "Podcast, AI, Gender, Finance",
+    "link": "https://network.get-playbook.com/posts/podcasts-episode-3-financial-health-check",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@987bb2579faeabed998566e86f00439cc913a54b/uploads/2026-04-08T09-33-04-635Z-ij5xcvk12.png",
+    "keywords": [
+      "adam",
+      "check",
+      "finance",
+      "financial",
+      "gender",
+      "health",
+      "mai",
+      "playbook",
+      "podcast",
+      "podcasts"
+    ]
+  },
+  {
+    "title": "Women & Investing in MENA",
+    "speaker": "Mai & Adam",
+    "speaker_title": "Podcast Hosts",
+    "type": "PLAYBOOK Podcasts",
+    "category": "AI Podcast with Mai and Adam",
+    "tags": "Podcast, AI, Gender, Finance",
+    "link": "https://network.get-playbook.com/posts/podcasts-episode-4-women-investing-in-mena",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@b8a70e38f22430a81f618daec3da8ec199c43c5a/uploads/2026-04-08T09-33-12-526Z-dtpi0zjlp.png",
+    "keywords": [
+      "adam",
+      "finance",
+      "gender",
+      "investing",
+      "mai",
+      "mena",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "women"
+    ]
+  },
+  {
+    "title": "Dissecting Professional Gender Equality in 100 countries",
+    "speaker": "Mai & Adam",
+    "speaker_title": "Podcast Hosts",
+    "type": "PLAYBOOK Podcasts",
+    "category": "AI Podcast with Mai and Adam",
+    "tags": "Podcast, AI, Gender, Finance",
+    "link": "https://network.get-playbook.com/posts/podcasts-episode-5-dissecting-professional-gender-equality-in-100-countries",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@01d8e4c99d53599bfb38408b19742d0911582b46/uploads/2026-04-08T09-33-19-344Z-wlui796wr.png",
+    "keywords": [
+      "100",
+      "adam",
+      "countries",
+      "dissecting",
+      "equality",
+      "finance",
+      "gender",
+      "mai",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "professional"
+    ]
+  },
+  {
+    "title": "How to Diversify your Investment Portfolio",
+    "speaker": "Mai & Adam",
+    "speaker_title": "Podcast Hosts",
+    "type": "PLAYBOOK Podcasts",
+    "category": "AI Podcast with Mai and Adam",
+    "tags": "Podcast, AI, Gender, Finance",
+    "link": "https://network.get-playbook.com/posts/podcasts-episode-6-how-to-diversify-your-investment-porfolio",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@3ce8d28940cd97831ef3ea3533dadf865bd584fd/uploads/2026-04-08T09-33-25-655Z-70ekl6244.png",
+    "keywords": [
+      "adam",
+      "diversify",
+      "finance",
+      "gender",
+      "investment",
+      "mai",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "portfolio"
+    ]
+  },
+  {
+    "title": "Introducing: The Women Power Podcast",
+    "speaker": "Wafa AlObaidat",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 1",
+    "tags": "Podcast, Women Power, Season 1",
+    "link": "https://network.get-playbook.com/posts/podcasts-introducing-the-women-power-podcast",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@9461bec283c1cabcc1ef50c52c85e1d49d6e2d2f/uploads/2026-04-08T10-07-16-267Z-90bkgslme.png",
+    "keywords": [
+      "alobaidat",
+      "introducing:",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "wafa",
+      "women"
+    ]
+  },
+  {
+    "title": "Networking Like a Boss: How To Build Organic Relationships",
+    "speaker": "Nada Alawi",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 1",
+    "tags": "Podcast, Women Power, Season 1",
+    "link": "https://network.get-playbook.com/posts/podcasts-networking-like-a-boss-how-to-build-organic-relationships",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@1b6aae45922553ccba7245f7232e21fbb54c14cf/uploads/2026-04-08T10-07-26-625Z-66c7zkwp4.png",
+    "keywords": [
+      "alawi",
+      "boss:",
+      "build",
+      "like",
+      "nada",
+      "networking",
+      "organic",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "relationships",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Creating Your Tribe",
+    "speaker": "Wafa AlObaidat",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 1",
+    "tags": "Podcast, Women Power, Season 1",
+    "link": "https://network.get-playbook.com/posts/podcasts-creating-your-tribe",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@f90a6eed3eb06ac89f2f1c276b526a7cb6adcceb/uploads/2026-04-08T10-08-48-102Z-yoy9x0isy.png",
+    "keywords": [
+      "alobaidat",
+      "creating",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "tribe",
+      "wafa",
+      "women"
+    ]
+  },
+  {
+    "title": "Standing Tall with Deena Ansari",
+    "speaker": "Deema Ansari",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 1",
+    "tags": "Podcast, Women Power, Season 1",
+    "link": "https://network.get-playbook.com/posts/podcasts-standing-tall-with-deena-ansari",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@5e3fc4efba2447b7ec2a76114300fdced4f68ee2/uploads/2026-04-08T10-08-55-399Z-qlhy48vg2.png",
+    "keywords": [
+      "ansari",
+      "deema",
+      "deena",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "standing",
+      "tall",
+      "women"
+    ]
+  },
+  {
+    "title": "Living Without Fear",
+    "speaker": "Faiza Saeed",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 1",
+    "tags": "Podcast, Women Power, Season 1",
+    "link": "https://network.get-playbook.com/posts/podcasts-living-without-fear",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@4e5b0243e9717bcc48c099ea93b6b693e1a68839/uploads/2026-04-08T10-09-05-289Z-ax9aj0i9z.png",
+    "keywords": [
+      "faiza",
+      "fear",
+      "living",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "saeed",
+      "season",
+      "without",
+      "women"
+    ]
+  },
+  {
+    "title": "Cultivating Abundance with Haya Al Khalifa",
+    "speaker": "Haya Al Khalifa",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 1",
+    "tags": "Podcast, Women Power, Season 1",
+    "link": "https://network.get-playbook.com/posts/podcasts-cultivating-abundance-with-haya-al-khalifa",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8d8cfd17c3fb6955ec36ecc4414106441d92448e/uploads/2026-04-08T10-09-13-463Z-ittw0b911.png",
+    "keywords": [
+      "abundance",
+      "cultivating",
+      "haya",
+      "khalifa",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "How I raised investment for my business",
+    "speaker": "Hebah Fisher",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 1",
+    "tags": "Podcast, Women Power, Season 1",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-i-raised-investment-for-my-business-with-hebah-fisher",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@4d9d6c19f0180d8d67b91a5c5ead71b07689c668/uploads/2026-04-08T10-09-20-417Z-ja75osfwr.png",
+    "keywords": [
+      "business",
+      "fisher",
+      "hebah",
+      "investment",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "raised",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Beat The Odds with Sumaya Hashim",
+    "speaker": "Sumaya Hashim",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 1",
+    "tags": "Podcast, Women Power, Season 1",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-beat-the-odds-with-sumaya-hashim",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@c373c6ad15be8f47b9562507974d07c1b6611d30/uploads/2026-04-08T10-09-29-433Z-kc0jzfdk8.png",
+    "keywords": [
+      "beat",
+      "hashim",
+      "odds",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "sumaya",
+      "women"
+    ]
+  },
+  {
+    "title": "Exploring Mentorship And How It Can Work For You",
+    "speaker": "Wafa AlObaidat",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 1",
+    "tags": "Podcast, Women Power, Season 1",
+    "link": "https://network.get-playbook.com/posts/podcasts-exploring-mentorship-and-how-it-can-work-for-you",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@fc2b0e571b260d25ee21da99f44c48b84d22d760/uploads/2026-04-08T10-09-37-386Z-kjvli3dyc.png",
+    "keywords": [
+      "alobaidat",
+      "can",
+      "exploring",
+      "mentorship",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "wafa",
+      "women",
+      "work",
+      "you"
+    ]
+  },
+  {
+    "title": "The Wow And Wonderful World of Rana Salam",
+    "speaker": "Rana Salam",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 1",
+    "tags": "Podcast, Women Power, Season 1",
+    "link": "https://network.get-playbook.com/posts/podcasts-the-wow-and-wonderful-world-of-rana-salam",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@cfcab2038b8512ad70e1201cdef23a279883cace/uploads/2026-04-08T10-09-46-943Z-hikn83clk.png",
+    "keywords": [
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "rana",
+      "salam",
+      "season",
+      "women",
+      "wonderful",
+      "world",
+      "wow"
+    ]
+  },
+  {
+    "title": "Finding Fulfillment with Nadia Muijrers",
+    "speaker": "Nadia Muijrers",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 1",
+    "tags": "Podcast, Women Power, Season 1",
+    "link": "https://network.get-playbook.com/posts/podcasts-finding-fulfillment-with-nadia-muijrers",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@e2dff2d2bb8271a9d62cf0b14dbfbd69ffbf87c6/uploads/2026-04-08T10-09-56-232Z-p82o7a8eb.png",
+    "keywords": [
+      "finding",
+      "fulfillment",
+      "muijrers",
+      "nadia",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Living Freely As A Middle Eastern Woman",
+    "speaker": "Alya Mooro",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 1",
+    "tags": "Podcast, Women Power, Season 1",
+    "link": "https://network.get-playbook.com/posts/podcasts-living-freely-as-a-middle-eastern-woman-with-alya-mooro",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@710795e666116a83a8a06239ce03292b5cd04081/uploads/2026-04-08T10-10-25-677Z-2yuajr6wg.png",
+    "keywords": [
+      "alya",
+      "eastern",
+      "freely",
+      "living",
+      "middle",
+      "mooro",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "woman",
+      "women"
+    ]
+  },
+  {
+    "title": "I Meet World Leaders For A Living - This Is My Story",
+    "speaker": "Hadley Gamble",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 1",
+    "tags": "Podcast, Women Power, Season 1",
+    "link": "https://network.get-playbook.com/posts/podcasts-i-meet-world-leaders-for-a-living-this-is-my-story",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@0ad376b93f73f862d6a09dac504f50b79a625de1/uploads/2026-04-08T10-10-34-141Z-4hceov21n.png",
+    "keywords": [
+      "gamble",
+      "hadley",
+      "leaders",
+      "living",
+      "meet",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "story",
+      "women",
+      "world"
+    ]
+  },
+  {
+    "title": "From Glitzy Fashion Editor To Wellness Entrepreneur",
+    "speaker": "Noor Tehini",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 1",
+    "tags": "Podcast, Women Power, Season 1",
+    "link": "https://network.get-playbook.com/posts/podcasts-from-glitzy-fashion-editor-to-wellness-entrepreneur-everything-in-between-with-noor-tehini",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@06a657ee1b964a533fe124ec034bfa2774e4a8ff/uploads/2026-04-08T10-10-46-230Z-zt34ure5p.png",
+    "keywords": [
+      "editor",
+      "entrepreneur",
+      "fashion",
+      "glitzy",
+      "noor",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "tehini",
+      "wellness",
+      "women"
+    ]
+  },
+  {
+    "title": "Jill Of All Trades: Master Of All - The Story Of Nouf Hakeem",
+    "speaker": "Nouf Hakeem",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 1",
+    "tags": "Podcast, Women Power, Season 1",
+    "link": "https://network.get-playbook.com/posts/podcasts-jill-of-all-trades-master-of-all-the-story-of-nouf-hakeem",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@805f62a7d601057293deef29deb430a831da49a5/uploads/2026-04-08T10-11-01-115Z-1p7kodo6x.png",
+    "keywords": [
+      "all",
+      "hakeem",
+      "jill",
+      "master",
+      "nouf",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "story",
+      "trades:",
+      "women"
+    ]
+  },
+  {
+    "title": "Taking Productivity To Another Level",
+    "speaker": "Wafa AlObaidat",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 1",
+    "tags": "Podcast, Women Power, Season 1",
+    "link": "https://network.get-playbook.com/posts/podcasts-taking-productivity-to-another-level",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@ca6aebd141724f93cb5e2404cf719cf44ee32c44/uploads/2026-04-08T10-11-11-196Z-f9j5eiky0.png",
+    "keywords": [
+      "alobaidat",
+      "another",
+      "level",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "productivity",
+      "season",
+      "taking",
+      "wafa",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Make The Leap From Corporate To Creative",
+    "speaker": "Abeer AlMatooq",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 2",
+    "tags": "Podcast, Women Power, Season 2",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-make-the-leap-from-corporate-to-creative-with-abeer-almatooq",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@2ab7f34d1d0986536e73673909796b60aa564d4b/uploads/2026-04-08T10-14-16-351Z-hignm92ui.png",
+    "keywords": [
+      "abeer",
+      "almatooq",
+      "corporate",
+      "creative",
+      "leap",
+      "make",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "From Blog To Business With Food Influencer Farah Abu Maizar",
+    "speaker": "Farah Abu Maizar",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 2",
+    "tags": "Podcast, Women Power, Season 2",
+    "link": "https://network.get-playbook.com/posts/podcasts-from-blog-to-business-with-food-influencer-farah-abu-maizar",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8509cba5ecf9eb84006096065909c06218b851d6/uploads/2026-04-08T10-14-33-028Z-ml1nffw7b.png",
+    "keywords": [
+      "abu",
+      "blog",
+      "business",
+      "farah",
+      "food",
+      "influencer",
+      "maizar",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "How Trauma Changed My Life",
+    "speaker": "H.H Sheikha Intisar Al Sabah",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 2",
+    "tags": "Podcast, Women Power, Season 2",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-trauma-changed-my-life-with-hh-sheikha-intisar-al-sabah",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@a1c650bc951a58c65a51c0c1cb07ad76f4341b3f/uploads/2026-04-08T10-14-42-692Z-dx6hjg1es.png",
+    "keywords": [
+      "changed",
+      "h.h",
+      "intisar",
+      "life",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "sabah",
+      "season",
+      "sheikha",
+      "trauma",
+      "women"
+    ]
+  },
+  {
+    "title": "Overcoming Imposter Syndrome",
+    "speaker": "Fatema Ebrahim",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 2",
+    "tags": "Podcast, Women Power, Season 2",
+    "link": "https://network.get-playbook.com/posts/podcasts-overcoming-imposter-syndrome-with-fatema-ebrahim",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@cd13d7ae7c929d7cfd7ad4d6809dde03c1db1b7d/uploads/2026-04-08T10-14-53-866Z-s6fe0ci4c.png",
+    "keywords": [
+      "ebrahim",
+      "fatema",
+      "imposter",
+      "overcoming",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "syndrome",
+      "women"
+    ]
+  },
+  {
+    "title": "Raha After Everest",
+    "speaker": "Raha Moharrak",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 2",
+    "tags": "Podcast, Women Power, Season 2",
+    "link": "https://network.get-playbook.com/posts/podcasts-raha-after-everest",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@c8b1243e1420a51007563db05ab0e74d0d9fe868/uploads/2026-04-08T10-15-50-945Z-30si25hlq.png",
+    "keywords": [
+      "after",
+      "everest",
+      "moharrak",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "raha",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Trusting life with Zainab Salbi",
+    "speaker": "Zainab Salbi",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 2",
+    "tags": "Podcast, Women Power, Season 2",
+    "link": "https://network.get-playbook.com/posts/podcasts-trusting-life-with-zainab-salbi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@35f7e8bf81c2da0e3711a6a09ad01724893bc19d/uploads/2026-04-08T10-16-03-013Z-i71xgnvg1.png",
+    "keywords": [
+      "life",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "salbi",
+      "season",
+      "trusting",
+      "women",
+      "zainab"
+    ]
+  },
+  {
+    "title": "Mishaal Ashemimry On Manifesting Her Dream To Space",
+    "speaker": "Mishaal Ashemimry",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 2",
+    "tags": "Podcast, Women Power, Season 2",
+    "link": "https://network.get-playbook.com/posts/podcasts-mishaal-ashemimry-on-manifesting-her-dream-to-space",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@f1c64faa39fe1de8d45522ec546da0dd78b817c8/uploads/2026-04-08T10-16-11-734Z-efqrxe43y.png",
+    "keywords": [
+      "ashemimry",
+      "dream",
+      "her",
+      "manifesting",
+      "mishaal",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "space",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Be A Pioneering Voice In Your Field",
+    "speaker": "Marriam Mossalli",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 2",
+    "tags": "Podcast, Women Power, Season 2",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-be-a-pioneering-voice-in-your-field-with-marriam-mossalli",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@d57450ec8a422cdcf8bcf0a4a8d2e518dd1ef6f1/uploads/2026-04-08T10-16-23-556Z-6ohm9c3ap.png",
+    "keywords": [
+      "field",
+      "marriam",
+      "mossalli",
+      "pioneering",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "voice",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Forge A Non Traditional Career Path",
+    "speaker": "Banah Anabtawi",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 2",
+    "tags": "Podcast, Women Power, Season 2",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-forge-a-non-traditional-career-path-with-banah-anabtawi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@2e3f842b0a7d10992981f1ed7717fc9f855e69b7/uploads/2026-04-08T10-16-32-160Z-jx7jh7rv9.png",
+    "keywords": [
+      "anabtawi",
+      "banah",
+      "career",
+      "forge",
+      "non",
+      "path",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "traditional",
+      "women"
+    ]
+  },
+  {
+    "title": "Building Your Career One Job At A Time",
+    "speaker": "Dina Shabib",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 2",
+    "tags": "Podcast, Women Power, Season 2",
+    "link": "https://network.get-playbook.com/posts/podcasts-building-your-career-one-job-at-a-time-with-dina-shabib",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@126daef5602ed76578fbb6d1f0a8f639e18ebfbe/uploads/2026-04-08T10-16-41-531Z-3fs56kaxk.png",
+    "keywords": [
+      "building",
+      "career",
+      "dina",
+      "job",
+      "one",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "shabib",
+      "time",
+      "women"
+    ]
+  },
+  {
+    "title": "Making Films With A Radical Purpose",
+    "speaker": "Farah Nabulsi",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 2",
+    "tags": "Podcast, Women Power, Season 2",
+    "link": "https://network.get-playbook.com/posts/podcasts-making-films-with-a-radical-purpose-with-farah-nabulsi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@94d74010ea7ddf9ebb082e230336135dc633b333/uploads/2026-04-08T10-16-49-301Z-28olu1rte.png",
+    "keywords": [
+      "farah",
+      "films",
+      "making",
+      "nabulsi",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "purpose",
+      "radical",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "What Nobody Tells You About Shifting Careers",
+    "speaker": "Layla AlSharif",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 2",
+    "tags": "Podcast, Women Power, Season 2",
+    "link": "https://network.get-playbook.com/posts/podcasts-what-nobody-tells-you-about-shifting-careers-with-layla-alsharif",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@3b0abdd1620bf85569e14526f9c59d4b50084db1/uploads/2026-04-08T10-17-00-892Z-6tp1dc779.png",
+    "keywords": [
+      "about",
+      "alsharif",
+      "careers",
+      "layla",
+      "nobody",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "shifting",
+      "tells",
+      "women",
+      "you"
+    ]
+  },
+  {
+    "title": "Girlfriends: A Blessing Or Curse",
+    "speaker": "Faiza Saeed",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 2",
+    "tags": "Podcast, Women Power, Season 2",
+    "link": "https://network.get-playbook.com/posts/podcasts-girlfriends-a-blessing-or-curse",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@9a2472e290416630331e6a2cc8f7d39f5c247a9d/uploads/2026-04-08T10-17-10-589Z-e17u4ykyx.png",
+    "keywords": [
+      "blessing",
+      "curse",
+      "faiza",
+      "girlfriends:",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "saeed",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Scale Your Purpose Into A Thriving Business",
+    "speaker": "Nada Hakeem",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 2",
+    "tags": "Podcast, Women Power, Season 2",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-scale-your-purpose-into-a-thriving-business-with-nada-hakeem",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@011b338b1fbb7145b2aba7ebc9a0bcf289410a1d/uploads/2026-04-08T10-17-20-489Z-uekohxdft.png",
+    "keywords": [
+      "business",
+      "hakeem",
+      "nada",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "purpose",
+      "scale",
+      "season",
+      "thriving",
+      "women"
+    ]
+  },
+  {
+    "title": "What It Takes To Be An Influencer",
+    "speaker": "Fouz Al Fahad",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 3",
+    "tags": "Podcast, Women Power, Season 3",
+    "link": "https://network.get-playbook.com/posts/podcasts-what-it-takes-to-be-an-influencer-with-fouz-al-fahad",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@27e23fd7059592c588d5dbb8abc4f8825edd6abc/uploads/2026-04-08T10-21-22-576Z-jrof78nes.png",
+    "keywords": [
+      "fahad",
+      "fouz",
+      "influencer",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "takes",
+      "women"
+    ]
+  },
+  {
+    "title": "How to Juggle Multiple Roles",
+    "speaker": "Sophia Jennings",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 3",
+    "tags": "Podcast, Women Power, Season 3",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-juggle-multiple-roles-with-sophia-jennings",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@b8cdffab5760fe5d10caac59fe643a27b368f6b4/uploads/2026-04-08T10-21-00-340Z-1fkr8yieq.png",
+    "keywords": [
+      "jennings",
+      "juggle",
+      "multiple",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "roles",
+      "season",
+      "sophia",
+      "women"
+    ]
+  },
+  {
+    "title": "Pursuing Creativity and Self-Acceptance",
+    "speaker": "Jehan Alkhateeb",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 3",
+    "tags": "Podcast, Women Power, Season 3",
+    "link": "https://network.get-playbook.com/posts/podcasts-pursuing-creativity-and-self-acceptance-with-jehan-alkhateeb",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@35e40813cb2cce2e8cfa852578142a79d42a6902/uploads/2026-04-08T10-21-43-567Z-5cpeczcrc.png",
+    "keywords": [
+      "acceptance",
+      "alkhateeb",
+      "creativity",
+      "jehan",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "pursuing",
+      "season",
+      "self",
+      "women"
+    ]
+  },
+  {
+    "title": "Our Very Own Julia Child Anissa Helou",
+    "speaker": "Anissa Helou",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 3",
+    "tags": "Podcast, Women Power, Season 3",
+    "link": "https://network.get-playbook.com/posts/podcasts-our-very-own-julia-child-anissa-helou",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@56c93d30a793f6baa732612dee2c32dc61929247/uploads/2026-04-08T10-21-54-353Z-fiyurp00w.png",
+    "keywords": [
+      "anissa",
+      "child",
+      "helou",
+      "julia",
+      "own",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "very",
+      "women"
+    ]
+  },
+  {
+    "title": "How to Know When You're Ready to Leap",
+    "speaker": "Shaikha Al Khaldi",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 3",
+    "tags": "Podcast, Women Power, Season 3",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-know-when-youre-ready-to-leap-with-shaikha-al-khaldi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@d74f2e98bbee5ca276e6c4473df03a6dadbc8525/uploads/2026-04-08T10-22-03-926Z-a4ad9i0io.png",
+    "keywords": [
+      "khaldi",
+      "know",
+      "leap",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "ready",
+      "season",
+      "shaikha",
+      "when",
+      "women",
+      "you're"
+    ]
+  },
+  {
+    "title": "Start, Shift, Scale, And Let Go",
+    "speaker": "Ghizlan Guenez",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 3",
+    "tags": "Podcast, Women Power, Season 3",
+    "link": "https://network.get-playbook.com/posts/podcasts-start-shift-scale-and-let-go-with-ghizlan-guenez",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@71ccbab424e94c91bf5b8ba800d8142f83e16815/uploads/2026-04-08T10-22-13-449Z-vaarjey3m.png",
+    "keywords": [
+      "ghizlan",
+      "guenez",
+      "let",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "scale",
+      "season",
+      "shift",
+      "start",
+      "women"
+    ]
+  },
+  {
+    "title": "Making Creative Companies Work",
+    "speaker": "Fouz Al Sabah",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 3",
+    "tags": "Podcast, Women Power, Season 3",
+    "link": "https://network.get-playbook.com/posts/podcasts-making-creative-companies-work-with-fouz-al-sabah",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@e4ecdce31c7111406a81694288a56fa781f4018a/uploads/2026-04-08T10-22-25-441Z-pxpvo4693.png",
+    "keywords": [
+      "companies",
+      "creative",
+      "fouz",
+      "making",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "sabah",
+      "season",
+      "women",
+      "work"
+    ]
+  },
+  {
+    "title": "What Miscarriage Taught Me",
+    "speaker": "Wafa AlObaidat",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 3",
+    "tags": "Podcast, Women Power, Season 3",
+    "link": "https://network.get-playbook.com/posts/podcasts-what-happens-when-you-give-your-all-to-your-work-with-sonya-janahi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@310cae37364e68bd198ac354ad6b5f150dcf9e44/uploads/2026-04-08T10-22-35-020Z-8kgd78jnz.png",
+    "keywords": [
+      "alobaidat",
+      "miscarriage",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "taught",
+      "wafa",
+      "women"
+    ]
+  },
+  {
+    "title": "Applying Gentle Power To Succeed",
+    "speaker": "Zahra Lari",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 3",
+    "tags": "Podcast, Women Power, Season 3",
+    "link": "https://network.get-playbook.com/posts/podcasts-applying-gentle-power-to-succeed-with-zahra-lari",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@d37cbb9d1394f3fd22015101336d03c57a3d1da1/uploads/2026-04-08T10-22-43-759Z-ia5d1k0tl.png",
+    "keywords": [
+      "applying",
+      "gentle",
+      "lari",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "succeed",
+      "women",
+      "zahra"
+    ]
+  },
+  {
+    "title": "Chasing Your Limits",
+    "speaker": "Dr. Alia Komsany",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 3",
+    "tags": "Podcast, Women Power, Season 3",
+    "link": "https://network.get-playbook.com/posts/podcasts-chasing-your-limits-with-dr-alia-komsany",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@6fa88e017f62b459ca696c749bd5b5df2a7c6796/uploads/2026-04-08T10-22-53-390Z-udtzkh5z7.png",
+    "keywords": [
+      "alia",
+      "chasing",
+      "dr.",
+      "komsany",
+      "limits",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "How Your Aha Moment Is A Process",
+    "speaker": "Sheema Al Nafisee",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 3",
+    "tags": "Podcast, Women Power, Season 3",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-your-aha-moment-is-a-process-with-sheema-al-nafisee",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@7962b554cebd88a104d149da20ec766799f6b600/uploads/2026-04-08T10-23-02-961Z-rj23qwpz0.png",
+    "keywords": [
+      "aha",
+      "moment",
+      "nafisee",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "process",
+      "season",
+      "sheema",
+      "women"
+    ]
+  },
+  {
+    "title": "Developing A Winner's Mentality",
+    "speaker": "Faranak Partoazar",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 3",
+    "tags": "Podcast, Women Power, Season 3",
+    "link": "https://network.get-playbook.com/posts/podcasts-developing-a-winners-mentality-with-faranak-partoazar",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@47674e8335be337ede2b922cc0ea2eaf37306573/uploads/2026-04-08T10-23-15-092Z-h3o3jmxpj.png",
+    "keywords": [
+      "developing",
+      "faranak",
+      "mentality",
+      "partoazar",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "winner's",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Work On Your Own Pace And Run Your Own Race",
+    "speaker": "Layla Al Naif",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 3",
+    "tags": "Podcast, Women Power, Season 3",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-work-on-your-own-pace-and-run-your-own-race-with-layla-al-naif",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@0c3889b9fcc697d7b3c2bc3911c15688a105b0d4/uploads/2026-04-08T10-23-25-131Z-ut4o4eb8d.png",
+    "keywords": [
+      "layla",
+      "naif",
+      "own",
+      "pace",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "race",
+      "run",
+      "season",
+      "women",
+      "work"
+    ]
+  },
+  {
+    "title": "Walking Away From A Dream Job To Answer Your True Calling",
+    "speaker": "Hanan Al Shehri",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 3",
+    "tags": "Podcast, Women Power, Season 3",
+    "link": "https://network.get-playbook.com/posts/podcasts-walking-away-from-a-dream-job-to-answer-your-true-calling-with-hanan-al-shehri",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@ccc3930fd336aaa4757b349900f766ccdd63158c/uploads/2026-04-08T10-23-56-486Z-09fr4bmts.png",
+    "keywords": [
+      "answer",
+      "away",
+      "calling",
+      "dream",
+      "hanan",
+      "job",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "shehri",
+      "true",
+      "walking",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Launch Your Career Again (And Again)",
+    "speaker": "Reema Juffali",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 3",
+    "tags": "Podcast, Women Power, Season 3",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-launch-your-career-again-and-again-with-racing-driver-reema-juffali",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@2ce2f7884524b50aea8efd0e91dc33bdf8d5c4a9/uploads/2026-04-08T10-24-09-162Z-7a9bc9sbu.png",
+    "keywords": [
+      "(and",
+      "again",
+      "again)",
+      "career",
+      "juffali",
+      "launch",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "reema",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "The Reality Of Funding Your Own Business",
+    "speaker": "Saana Azzam",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 4",
+    "tags": "Podcast, Women Power, Season 4",
+    "link": "https://network.get-playbook.com/posts/podcasts-the-reality-of-funding-your-own-business-with-saana-azzam",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@19032ef79f07c68035d637340db2981a30718f5f/uploads/2026-04-08T12-19-00-674Z-u1rk3r3n6.png",
+    "keywords": [
+      "azzam",
+      "business",
+      "funding",
+      "own",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "reality",
+      "saana",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Pursuing Multiple Career Dreams",
+    "speaker": "Alaa Balkhy",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 4",
+    "tags": "Podcast, Women Power, Season 4",
+    "link": "https://network.get-playbook.com/posts/podcasts-pursuing-multiple-career-dreams-with-alaa-balkhy",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@61a30959870026ac047d15307e95b03d2cd2ef86/uploads/2026-04-08T12-19-19-314Z-gw1hliik0.png",
+    "keywords": [
+      "alaa",
+      "balkhy",
+      "career",
+      "dreams",
+      "multiple",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "pursuing",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Balancing Feminine And Masculine Energy As Highly Ambitious Women",
+    "speaker": "Rana Alamuddin",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 4",
+    "tags": "Podcast, Women Power, Season 4",
+    "link": "https://network.get-playbook.com/posts/podcasts-balancing-feminine-and-masculine-energy-as-highly-ambitious-women-with-rana-alamuddin",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@7e56a83956a7a4020f1a15118125bcfbf9354b2d/uploads/2026-04-08T12-19-42-720Z-18hhc1s0c.png",
+    "keywords": [
+      "alamuddin",
+      "ambitious",
+      "balancing",
+      "energy",
+      "feminine",
+      "highly",
+      "masculine",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "rana",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "How to Overcome Your Self Doubt And Believe In Yourself",
+    "speaker": "Rawan Zahran",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 4",
+    "tags": "Podcast, Women Power, Season 4",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-overcome-your-self-doubt-and-believe-in-yourself-with-rawan-zahran",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@a5d3832109799e6a1130bb2d1c21282664a2e2fe/uploads/2026-04-08T12-20-02-428Z-q98r2808i.png",
+    "keywords": [
+      "believe",
+      "doubt",
+      "overcome",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "rawan",
+      "season",
+      "self",
+      "women",
+      "yourself",
+      "zahran"
+    ]
+  },
+  {
+    "title": "The Freedom Of Self Discipline",
+    "speaker": "Faye Sultan",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 4",
+    "tags": "Podcast, Women Power, Season 4",
+    "link": "https://network.get-playbook.com/posts/podcasts-the-freedom-of-self-discipline-with-faye-sultan",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@010208ee2cca3a0ece71c048e280d6041f52f58e/uploads/2026-04-08T12-20-19-198Z-77vsdnsuf.png",
+    "keywords": [
+      "discipline",
+      "faye",
+      "freedom",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "self",
+      "sultan",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Put Yourself Out There",
+    "speaker": "Mashael Al Saie",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 4",
+    "tags": "Podcast, Women Power, Season 4",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-put-yourself-out-there-with-mashael-al-saie",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@3726895ebd8470b929f11f7975e77f59ca15b382/uploads/2026-04-08T12-20-32-576Z-5hl7nnlad.png",
+    "keywords": [
+      "mashael",
+      "out",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "put",
+      "saie",
+      "season",
+      "there",
+      "women",
+      "yourself"
+    ]
+  },
+  {
+    "title": "How To Fall In Love With Reading Again",
+    "speaker": "Nedal Adham",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 4",
+    "tags": "Podcast, Women Power, Season 4",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-fall-in-love-with-reading-again-with-nedal-adham",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@13e008e57a405400c8ce19f967ae40c4b2a804c0/uploads/2026-04-08T12-21-50-078Z-alafwrc2q.png",
+    "keywords": [
+      "adham",
+      "again",
+      "fall",
+      "love",
+      "nedal",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "reading",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Prepare For A Passion Driven Career",
+    "speaker": "Tracy Harmoush",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 4",
+    "tags": "Podcast, Women Power, Season 4",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-prepare-for-a-passion-driven-career-with-tracy-harmoush",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@3609a70b6cacf9ca998079bd0f6464ffb59c4416/uploads/2026-04-08T12-22-02-537Z-g6qw2uuhw.png",
+    "keywords": [
+      "career",
+      "driven",
+      "harmoush",
+      "passion",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "prepare",
+      "season",
+      "tracy",
+      "women"
+    ]
+  },
+  {
+    "title": "Progressing Away From Perfection",
+    "speaker": "Dana Malhas",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 4",
+    "tags": "Podcast, Women Power, Season 4",
+    "link": "https://network.get-playbook.com/posts/podcasts-progressing-away-from-perfection-with-dana-malhas",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@9d5a32b42fbb5a35987eca766bbb3e94b447a3ab/uploads/2026-04-08T12-22-15-949Z-10nee9hs5.png",
+    "keywords": [
+      "away",
+      "dana",
+      "malhas",
+      "perfection",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "progressing",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Navigate Challenges Boldly",
+    "speaker": "Amy Mowafi",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 4",
+    "tags": "Podcast, Women Power, Season 4",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-navigate-challenges-boldly-with-amy-mowafi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@2727a0b3f406858c299a4ab16b151d38a937cb88/uploads/2026-04-08T12-22-27-602Z-ngkr41kor.png",
+    "keywords": [
+      "amy",
+      "boldly",
+      "challenges",
+      "mowafi",
+      "navigate",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Defining Your Purpose And Career By Believing In Yourself",
+    "speaker": "Wafa AlObaidat",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 4",
+    "tags": "Podcast, Women Power, Season 4",
+    "link": "https://network.get-playbook.com/posts/podcasts-defining-your-purpose-and-career-by-believing-in-yourself",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@b5a36795c9cc11f9351171b55db8b9059bf79b31/uploads/2026-04-08T12-22-40-264Z-cjt8h8brk.png",
+    "keywords": [
+      "alobaidat",
+      "believing",
+      "career",
+      "defining",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "purpose",
+      "season",
+      "wafa",
+      "women",
+      "yourself"
+    ]
+  },
+  {
+    "title": "Finding Ourselves Through Color Psychology",
+    "speaker": "Fatima Al Shirawi",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 4",
+    "tags": "Podcast, Women Power, Season 4",
+    "link": "https://network.get-playbook.com/posts/podcasts-finding-ourselves-through-color-psychology-with-fatima-al-shirawi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@aa4b1ef67e9faa1b4afaadc8d9eb3a1f340eb3c7/uploads/2026-04-08T12-22-55-937Z-idvmfa5nv.png",
+    "keywords": [
+      "color",
+      "fatima",
+      "finding",
+      "ourselves",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "psychology",
+      "season",
+      "shirawi",
+      "through",
+      "women"
+    ]
+  },
+  {
+    "title": "Show Up Before You're Ready",
+    "speaker": "Sarah Taibah",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 4",
+    "tags": "Podcast, Women Power, Season 4",
+    "link": "https://network.get-playbook.com/posts/podcasts-show-up-before-youre-ready-with-sarah-taibah",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@0806e00099be7f05fab560d51c5c31e677ab2f95/uploads/2026-04-08T12-23-06-773Z-al2w6uyby.png",
+    "keywords": [
+      "before",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "ready",
+      "sarah",
+      "season",
+      "show",
+      "taibah",
+      "women",
+      "you're"
+    ]
+  },
+  {
+    "title": "How To Build A Brand That Stands Out In A Crowded Market",
+    "speaker": "Sarah Al Dabbagh",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 4",
+    "tags": "Podcast, Women Power, Season 4",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-build-a-brand-that-stands-out-in-a-crowded-market-with-sarah-al-dabbagh",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@4b0d9e1d2ead639a8d95b64f9f47c7b683081b22/uploads/2026-04-08T12-23-18-978Z-vbz0q8rvx.png",
+    "keywords": [
+      "brand",
+      "build",
+      "crowded",
+      "dabbagh",
+      "market",
+      "out",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "sarah",
+      "season",
+      "stands",
+      "women"
+    ]
+  },
+  {
+    "title": "How I Went From Stay At Home Mom To Working Mom",
+    "speaker": "Faiza Saeed",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 5",
+    "tags": "Podcast, Women Power, Season 5",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-i-went-from-stay-at-home-mom-to-working-mom",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8a5d55b7827a1c52e087d17f5067472e4f2a76fb/uploads/2026-04-08T12-30-16-077Z-b0cnt24u3.png",
+    "keywords": [
+      "faiza",
+      "home",
+      "mom",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "saeed",
+      "season",
+      "stay",
+      "went",
+      "women",
+      "working"
+    ]
+  },
+  {
+    "title": "From Overcoming Bullying To Mobilising Female Founders",
+    "speaker": "Emon Shakoor",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 5",
+    "tags": "Podcast, Women Power, Season 5",
+    "link": "https://network.get-playbook.com/posts/podcasts-from-overcoming-bullying-to-mobilising-female-founders-with-emon-shakoor",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8e22a263e7b7351c61ccc9bf988c3d8969aff152/uploads/2026-04-08T12-30-25-336Z-g4w3wsmra.png",
+    "keywords": [
+      "bullying",
+      "emon",
+      "female",
+      "founders",
+      "mobilising",
+      "overcoming",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "shakoor",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Build A Better Relationship With Your Body",
+    "speaker": "Helene Ioannides",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 5",
+    "tags": "Podcast, Women Power, Season 5",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-build-a-better-relationship-with-your-body-with-helene-ioannides",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@1e53bd7aaf724ca727cd8352df45255968e2cd3f/uploads/2026-04-08T12-30-36-708Z-p4054igbp.png",
+    "keywords": [
+      "better",
+      "body",
+      "build",
+      "helene",
+      "ioannides",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "relationship",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Mastering Your Sleep To Succeed",
+    "speaker": "Wafa AlObaidat",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 5",
+    "tags": "Podcast, Women Power, Season 5",
+    "link": "https://network.get-playbook.com/posts/podcasts-mastering-your-sleep-to-succeed",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@d13626772aa3007b6953953f98fba686529752ec/uploads/2026-04-08T12-31-09-310Z-72lmcgw3o.png",
+    "keywords": [
+      "alobaidat",
+      "mastering",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "sleep",
+      "succeed",
+      "wafa",
+      "women"
+    ]
+  },
+  {
+    "title": "How We're Scaling A Media Based Business During Covid",
+    "speaker": "Leila Hamadeh",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 5",
+    "tags": "Podcast, Women Power, Season 5",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-were-scaling-a-media-based-business-during-covid-with-leila-hamadeh",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@c5970bfbec694aded5e1e4115cb96d5da7ed3243/uploads/2026-04-08T12-31-16-987Z-xtvj3b1wh.png",
+    "keywords": [
+      "based",
+      "business",
+      "covid",
+      "during",
+      "hamadeh",
+      "leila",
+      "media",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "scaling",
+      "season",
+      "we're",
+      "women"
+    ]
+  },
+  {
+    "title": "How Organizing Your Space Can Organize Your Life",
+    "speaker": "Laura Cattano",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 5",
+    "tags": "Podcast, Women Power, Season 5",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-organizing-your-space-can-organize-your-life-with-laura-cattano",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@77b3676cdbb0172073e06bcfa5a8990b9e4e3bbf/uploads/2026-04-08T12-31-38-178Z-d8v2gwbxw.png",
+    "keywords": [
+      "can",
+      "cattano",
+      "laura",
+      "life",
+      "organize",
+      "organizing",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "space",
+      "women"
+    ]
+  },
+  {
+    "title": "Navigating Personal And Professional Curveballs With Life Coach",
+    "speaker": "Noelle El Saadany",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 5",
+    "tags": "Podcast, Women Power, Season 5",
+    "link": "https://network.get-playbook.com/posts/podcasts-navigating-personal-and-professional-curveballs-with-life-coach-noelle-el-saadany",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@61304902724b8157249e80cacf78e125dcbf07fd/uploads/2026-04-08T12-31-51-459Z-4896x779e.png",
+    "keywords": [
+      "coach",
+      "curveballs",
+      "life",
+      "navigating",
+      "noelle",
+      "personal",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "professional",
+      "saadany",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Start A Homegrown Beauty Brand",
+    "speaker": "Farah Turani",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 5",
+    "tags": "Podcast, Women Power, Season 5",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-start-a-homegrown-beauty-brand-with-farah-turani",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@e187dc153e2225f58c2fb4ee3133cfbd3877614c/uploads/2026-04-08T12-32-05-674Z-hjnemxdk8.png",
+    "keywords": [
+      "beauty",
+      "brand",
+      "farah",
+      "homegrown",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "start",
+      "turani",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Be A Catalyst For Change Through Learning And Unlearning",
+    "speaker": "Yasmin Helal",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 5",
+    "tags": "Podcast, Women Power, Season 5",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-be-a-catalyst-for-change-through-learning-and-unlearning-with-yasmin-helal",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@298f294e841e6698efd52a9d4577ed789364e974/uploads/2026-04-08T12-32-15-796Z-y1n1fy2fr.png",
+    "keywords": [
+      "catalyst",
+      "change",
+      "helal",
+      "learning",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "through",
+      "unlearning",
+      "women",
+      "yasmin"
+    ]
+  },
+  {
+    "title": "How Embracing Gig Culture Has Served Me",
+    "speaker": "Hala Alyan",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 5",
+    "tags": "Podcast, Women Power, Season 5",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-embracing-gig-culture-has-served-me-with-author-hala-alyan",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@4e9b85259c816bc14d945094cc10bf4b12e90761/uploads/2026-04-08T12-32-26-604Z-0q014ajz0.png",
+    "keywords": [
+      "alyan",
+      "culture",
+      "embracing",
+      "gig",
+      "hala",
+      "has",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "served",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Manage Wellness Whilst Growing Mindvalley",
+    "speaker": "Marisha Lakhiani",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 5",
+    "tags": "Podcast, Women Power, Season 5",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-manage-wellness-whilst-growing-mindvalley-with-marisha-lakhiani",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@385c4fd88c4d1e034dea79a0292d6f5854708133/uploads/2026-04-08T12-32-38-909Z-gs17nl6m0.png",
+    "keywords": [
+      "growing",
+      "lakhiani",
+      "manage",
+      "marisha",
+      "mindvalley",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "wellness",
+      "whilst",
+      "women"
+    ]
+  },
+  {
+    "title": "How I Became A Social Entrepreneur And Global Impact Innovator",
+    "speaker": "Leena Olaimy",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 5",
+    "tags": "Podcast, Women Power, Season 5",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-i-became-a-social-entrepreneur-and-global-impact-innovator-with-leena-olaimy",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@9515c557113d97483251e1a3603b3638d44816be/uploads/2026-04-08T12-32-53-556Z-hi1b5af4q.png",
+    "keywords": [
+      "became",
+      "entrepreneur",
+      "global",
+      "impact",
+      "innovator",
+      "leena",
+      "olaimy",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "social",
+      "women"
+    ]
+  },
+  {
+    "title": "How I Raised Over $100M For My Business Ventures",
+    "speaker": "Joy Ajlouny",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 5",
+    "tags": "Podcast, Women Power, Season 5",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-i-raised-over-100m-for-my-business-ventures-with-joy-ajlouny",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@2d04b6aee24bccec6689a85caea1b5f23dcfa3a1/uploads/2026-04-08T12-33-06-854Z-w76jzgiej.png",
+    "keywords": [
+      "$100m",
+      "ajlouny",
+      "business",
+      "joy",
+      "over",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "raised",
+      "season",
+      "ventures",
+      "women"
+    ]
+  },
+  {
+    "title": "From Portobello Market To A Fashion Empire",
+    "speaker": "Lucy Aylen",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 5",
+    "tags": "Podcast, Women Power, Season 5",
+    "link": "https://network.get-playbook.com/posts/podcasts-from-portobello-market-to-a-fashion-empire-with-lucy-aylen",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@b7551c9ecb4b8b7ef75e26c1a7749beb3e6d70a6/uploads/2026-04-08T12-33-17-161Z-b8v9dj3ut.png",
+    "keywords": [
+      "aylen",
+      "empire",
+      "fashion",
+      "lucy",
+      "market",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "portobello",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "The Art Of The Start With Event Guru Zainab Alsalih",
+    "speaker": "Zainab Alsalih",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 5",
+    "tags": "Podcast, Women Power, Season 5",
+    "link": "https://network.get-playbook.com/posts/podcasts-the-art-of-the-start-with-event-guru-zainab-alsalih",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@094d35d48ef4ed4ec620bf477aac8359dd52484d/uploads/2026-04-08T12-33-29-826Z-sqfzzfe3v.png",
+    "keywords": [
+      "alsalih",
+      "art",
+      "event",
+      "guru",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "start",
+      "women",
+      "zainab"
+    ]
+  },
+  {
+    "title": "How To Customize Your Career For Creative Fulfillment",
+    "speaker": "Anum Bashir",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 5",
+    "tags": "Podcast, Women Power, Season 5",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-customize-your-career-for-creative-fulfillment-with-anum-bashir",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@95d2a47a90ba05a72d693ccdb1c1d54851212bc2/uploads/2026-04-08T12-33-49-028Z-0ip3ow67z.png",
+    "keywords": [
+      "anum",
+      "bashir",
+      "career",
+      "creative",
+      "customize",
+      "fulfillment",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Arts, Culture And People Through The Lens Of Photographer Ghada Khunji",
+    "speaker": "Ghada Khunji",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 6",
+    "tags": "Podcast, Women Power, Season 6",
+    "link": "https://network.get-playbook.com/posts/podcasts-arts-culture-and-people-through-the-lens-of-photographer-ghada-khunji",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@ba4bb7b562c4d280a66a21e5c5a8878f372d971a/uploads/2026-04-08T12-36-28-663Z-nxrp0xjsp.png",
+    "keywords": [
+      "arts",
+      "culture",
+      "ghada",
+      "khunji",
+      "lens",
+      "people",
+      "photographer",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "through",
+      "women"
+    ]
+  },
+  {
+    "title": "From Seeking Asylum To Finding Purpose In Meaningful Careers",
+    "speaker": "Triska Hamid",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 6",
+    "tags": "Podcast, Women Power, Season 6",
+    "link": "https://network.get-playbook.com/posts/podcasts-from-seeking-asylum-to-finding-purpose-in-meaningful-careers-with-triska-hamid",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@ea98ec2ac3a2a1af6c5ae16139ed18cbeb89c839/uploads/2026-04-08T12-36-40-050Z-3c98ikzz4.png",
+    "keywords": [
+      "asylum",
+      "careers",
+      "finding",
+      "hamid",
+      "meaningful",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "purpose",
+      "season",
+      "seeking",
+      "triska",
+      "women"
+    ]
+  },
+  {
+    "title": "Building An Authentic Community With Mompreneur Aesha Sulaiti",
+    "speaker": "Aesha Sulaiti",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 6",
+    "tags": "Podcast, Women Power, Season 6",
+    "link": "https://network.get-playbook.com/posts/podcasts-building-an-authentic-community-with-mompreneur-aesha-sulaiti",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@844dcea2137e4f05b002713d11fa2ec442c1684d/uploads/2026-04-08T12-37-01-534Z-v1ee05fit.png",
+    "keywords": [
+      "aesha",
+      "authentic",
+      "building",
+      "community",
+      "mompreneur",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "sulaiti",
+      "women"
+    ]
+  },
+  {
+    "title": "Harnessing The Power Of Self Worth",
+    "speaker": "Basma Al Said",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 6",
+    "tags": "Podcast, Women Power, Season 6",
+    "link": "https://network.get-playbook.com/posts/podcasts-harnessing-the-power-of-self-worth-with-basma-al-said",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@041abe91d339f6aa2ad6bb03228aacfd5dd0c7bf/uploads/2026-04-08T12-38-12-650Z-5c9fpl4ki.png",
+    "keywords": [
+      "basma",
+      "harnessing",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "said",
+      "season",
+      "self",
+      "women",
+      "worth"
+    ]
+  },
+  {
+    "title": "How To Nurture Your Craft",
+    "speaker": "Nourah AlFaisal",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 6",
+    "tags": "Podcast, Women Power, Season 6",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-nurture-your-craft-with-nourah-alfaisal",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@75f24d077571d0a3d321614431318fd700d262ab/uploads/2026-04-08T12-38-48-675Z-rose3mmn4.png",
+    "keywords": [
+      "alfaisal",
+      "craft",
+      "nourah",
+      "nurture",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Unlocking The World Of VC Funding",
+    "speaker": "Stephanie Nour Prince",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 6",
+    "tags": "Podcast, Women Power, Season 6",
+    "link": "https://network.get-playbook.com/posts/podcasts-unlocking-the-world-of-vc-funding-with-stephanie-nour-prince",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@5c8df664c9eea2d1cad95a2b0b1b089c02de28ad/uploads/2026-04-08T12-39-00-956Z-5zf3jvwzg.png",
+    "keywords": [
+      "funding",
+      "nour",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "prince",
+      "season",
+      "stephanie",
+      "unlocking",
+      "women",
+      "world"
+    ]
+  },
+  {
+    "title": "How To Become A Creative Solopreneur",
+    "speaker": "Dr. Noora H. Alghatam",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 6",
+    "tags": "Podcast, Women Power, Season 6",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-become-a-creative-solopreneur-with-dr-noora-h-alghatam",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@bf1cd05e79385c9bb7e029411a805d65ab6d6a99/uploads/2026-04-08T12-39-17-257Z-yl9fy4zu7.png",
+    "keywords": [
+      "alghatam",
+      "become",
+      "creative",
+      "dr.",
+      "noora",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "solopreneur",
+      "women"
+    ]
+  },
+  {
+    "title": "How I Organised My Career As An Independent Artist",
+    "speaker": "Tamtam",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 6",
+    "tags": "Podcast, Women Power, Season 6",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-i-organised-my-career-as-an-independent-artist-with-tamtam",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@9e0046044baededd027bf2a7f2df79f5fdf669d3/uploads/2026-04-08T12-39-31-366Z-sh8tfhpp5.png",
+    "keywords": [
+      "artist",
+      "career",
+      "independent",
+      "organised",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "tamtam",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Serve Your Creative Purpose From An Organizational Level",
+    "speaker": "Al Zain Al Sabah",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 6",
+    "tags": "Podcast, Women Power, Season 6",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-serve-your-creative-purpose-from-an-organizational-level-with-al-zain-al-sabah",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@02844bdddfc8c89073e708d9a050b60a996b9031/uploads/2026-04-08T12-40-27-768Z-g0p6e57cf.png",
+    "keywords": [
+      "creative",
+      "level",
+      "organizational",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "purpose",
+      "sabah",
+      "season",
+      "serve",
+      "women",
+      "zain"
+    ]
+  },
+  {
+    "title": "How To Transfer Knowledge From One Career To Another",
+    "speaker": "Latifa Al Khalifa",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 6",
+    "tags": "Podcast, Women Power, Season 6",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-transfer-knowledge-from-one-career-to-another-with-steminist-latifa-al-khalifa",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@ead7a8253dacebcadb4657ae0c55d7285376c8f7/uploads/2026-04-08T12-39-51-931Z-ljgx1l6kc.png",
+    "keywords": [
+      "another",
+      "career",
+      "khalifa",
+      "knowledge",
+      "latifa",
+      "one",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "transfer",
+      "women"
+    ]
+  },
+  {
+    "title": "How I Became A Go Getter",
+    "speaker": "Sofia Guellaty",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 6",
+    "tags": "Podcast, Women Power, Season 6",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-i-became-a-go-getter-with-sofia-guellaty",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@36318ab2e48242acf8ddff36665ea439f71b63a0/uploads/2026-04-08T12-40-45-889Z-5dc04yy43.png",
+    "keywords": [
+      "became",
+      "getter",
+      "guellaty",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "sofia",
+      "women"
+    ]
+  },
+  {
+    "title": "How We Can Empower Ourselves Through Our Rights",
+    "speaker": "Aysha Mutaywea",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 6",
+    "tags": "Podcast, Women Power, Season 6",
+    "link": "https://network.get-playbook.com/posts/podcasts-level-up-your-life-and-mental-health-with-amal-baatia",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@4d1ac4c1e03914d182639238cc00c70b5eaba858/uploads/2026-04-08T12-40-58-602Z-w1o8ct5x3.png",
+    "keywords": [
+      "aysha",
+      "can",
+      "empower",
+      "mutaywea",
+      "ourselves",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "rights",
+      "season",
+      "through",
+      "women"
+    ]
+  },
+  {
+    "title": "Amal Al Malki On How And Why We Should All Be Visible Leaders",
+    "speaker": "Amal Al Malki",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-amal-al-malki-on-how-and-why-we-should-all-be-visible-leaders",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@671e8faaf2e9c050cee6271b107c061ee5b56bba/uploads/2026-04-08T12-45-34-368Z-j0ofk0724.png",
+    "keywords": [
+      "all",
+      "amal",
+      "leaders",
+      "malki",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "should",
+      "visible",
+      "why",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Be The Architect Of Your Career",
+    "speaker": "Lulwa Alhabshi",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-be-the-architect-of-your-career-with-lulwa-alhabshi-founder-of-morf-athletics",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@e462a4edf95bae265576d7874e687ab981584edd/uploads/2026-04-08T12-45-47-448Z-qkxl2uwbp.png",
+    "keywords": [
+      "alhabshi",
+      "architect",
+      "career",
+      "lulwa",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Be A Purposeful Women In Tech",
+    "speaker": "Thea Myhrvold",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-be-a-purposeful-women-in-tech-with-thea-myhrvold",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@56f80c1ae9b25a6d35afec589b43086f1e7a5ec4/uploads/2026-04-08T12-45-59-860Z-hqirecxcc.png",
+    "keywords": [
+      "myhrvold",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "purposeful",
+      "season",
+      "tech",
+      "thea",
+      "women"
+    ]
+  },
+  {
+    "title": "Manifesting Your Dream Job",
+    "speaker": "Saleha Surti",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-manifesting-your-dream-job-with-saleha-surti",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@f3c3dafbbccd482f3d94b24ab911bda795f1f38a/uploads/2026-04-08T12-46-12-990Z-2fwelj3lo.png",
+    "keywords": [
+      "dream",
+      "job",
+      "manifesting",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "saleha",
+      "season",
+      "surti",
+      "women"
+    ]
+  },
+  {
+    "title": "Suzan Kanoo On Building A Thriving Family Business And An Empowering Community For Women",
+    "speaker": "Suzan Kanoo",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-suzan-kanoo-on-building-a-thriving-family-business-and-an-empowering-community-for-women",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@946da8f3566d248f7434ecd904890acb456332ab/uploads/2026-04-08T12-46-22-250Z-hwdh2dc64.png",
+    "keywords": [
+      "building",
+      "business",
+      "community",
+      "empowering",
+      "family",
+      "kanoo",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "suzan",
+      "thriving",
+      "women"
+    ]
+  },
+  {
+    "title": "Chief Explorer Officer Rakhi Mutta On Managing Talent With Authenticity",
+    "speaker": "Rakhi Mutta",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-chief-explorer-officer-rakhi-mutta-on-managing-talent-with-authenticity",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@64d678dfcb265e85b1ff5dfe1efe5f23a870bdc1/uploads/2026-04-08T12-46-34-516Z-1hvmmsgi6.png",
+    "keywords": [
+      "authenticity",
+      "chief",
+      "explorer",
+      "managing",
+      "mutta",
+      "officer",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "rakhi",
+      "season",
+      "talent",
+      "women"
+    ]
+  },
+  {
+    "title": "Pain And Courage In Entrepreneurship",
+    "speaker": "Natalie Chan",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-pain-and-courage-in-entrepreneurship-with-natalie-chan",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@c65ac560f00a065c7c34f4b2e5e0e641c76720b6/uploads/2026-04-08T12-46-45-603Z-ji7gu3msu.png",
+    "keywords": [
+      "chan",
+      "courage",
+      "entrepreneurship",
+      "natalie",
+      "pain",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Be The Boss Of Your Own Life",
+    "speaker": "Leena Khalil",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-be-the-boss-of-your-own-life-with-leena-khalil",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@57a40c2f8f76b137b846cfe508cb6d4462f18a29/uploads/2026-04-08T12-47-01-499Z-acs965dg6.png",
+    "keywords": [
+      "boss",
+      "khalil",
+      "leena",
+      "life",
+      "own",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Transform Your Health With Zein Salti",
+    "speaker": "Zein Salti",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-transform-your-health-with-zein-salti",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@b305c21d4a1aa5eee364d4f161fc42d14a231f22/uploads/2026-04-08T12-47-13-799Z-l8ganz8yt.png",
+    "keywords": [
+      "health",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "salti",
+      "season",
+      "transform",
+      "women",
+      "zein"
+    ]
+  },
+  {
+    "title": "Embracing Financial Literacy",
+    "speaker": "Alanoud Alsaif",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-embracing-financial-literacy-with-alanoud-alsaif",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@43715bc1beeb6313f80462da5c2820d9ee4f3e49/uploads/2026-04-08T12-47-23-268Z-7jxann1yy.png",
+    "keywords": [
+      "alanoud",
+      "alsaif",
+      "embracing",
+      "financial",
+      "literacy",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Presenting Yourself With Opportunities",
+    "speaker": "Rana Nawas",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-presenting-yourself-with-opportunities-with-rana-nawas",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@c0c53334661f2fd4eec011ca47b1fa35de449d40/uploads/2026-04-08T12-47-33-331Z-1m482vbw5.png",
+    "keywords": [
+      "nawas",
+      "opportunities",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "presenting",
+      "rana",
+      "season",
+      "women",
+      "yourself"
+    ]
+  },
+  {
+    "title": "Strategizing Your Work Life Balance",
+    "speaker": "Amal Jaffar",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-strategizing-your-work-life-balance-with-amal-jaffar",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@1d6f59d4496fd655116b0fc4c0e20be9299d537d/uploads/2026-04-08T12-47-46-135Z-gi4zjmlqh.png",
+    "keywords": [
+      "amal",
+      "balance",
+      "jaffar",
+      "life",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "strategizing",
+      "women",
+      "work"
+    ]
+  },
+  {
+    "title": "Eat Heal And Love With Muneera Obaidli",
+    "speaker": "Muneera Obaidli",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-eat-heal-and-love-with-muneera-obaidli",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8f30c601a85ce26a052aa0e6e2e37aafb58e3706/uploads/2026-04-08T12-47-59-081Z-nfkmmi9pq.png",
+    "keywords": [
+      "eat",
+      "heal",
+      "love",
+      "muneera",
+      "obaidli",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Fight Like A Girl",
+    "speaker": "Ghadeer Kunna",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-fight-like-a-girl-with-ghadeer-kunna",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@eb3405bd749465e2e94647bd54838454e6cd2706/uploads/2026-04-08T12-48-22-065Z-o17rv0kas.png",
+    "keywords": [
+      "fight",
+      "ghadeer",
+      "girl",
+      "kunna",
+      "like",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Navigating Mental Strength During Personal Crisis",
+    "speaker": "Lamia Ebrahim",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-navigating-mental-strength-during-personal-crisis-with-lamia-ebrahim",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@20e20f7d56c3e9e87ab882428e54ac09414e023c/uploads/2026-04-08T12-48-36-778Z-ponyq2akz.png",
+    "keywords": [
+      "crisis",
+      "during",
+      "ebrahim",
+      "lamia",
+      "mental",
+      "navigating",
+      "personal",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "strength",
+      "women"
+    ]
+  },
+  {
+    "title": "Creating Positive Discipline",
+    "speaker": "Najia Alfadl",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-creating-positive-discipline-with-najia-alfadl",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@dbe76d0a09044485be248f63def2a95319b79c63/uploads/2026-04-08T12-49-04-362Z-ar14s8z3w.png",
+    "keywords": [
+      "alfadl",
+      "creating",
+      "discipline",
+      "najia",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "positive",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Make A Comeback From Rock Bottom",
+    "speaker": "Ghazal Baghdadi",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-make-a-comeback-from-rock-bottom-with-ghazal-baghdadi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@02d781de15752a1f8be28c659e34edd79feb05cb/uploads/2026-04-08T12-50-14-230Z-p3k8e99pz.png",
+    "keywords": [
+      "baghdadi",
+      "bottom",
+      "comeback",
+      "ghazal",
+      "make",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "rock",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Emmy Award Winner Yasmin Elayat On Priming Her Career To Succeed In Art-Tech",
+    "speaker": "Yasmin Elayat",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-emmy-award-winner-yasmin-elayat-on-priming-her-career-to-succeed-in-art-tech",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@1190d83dec790e9d4d8ac77aeb3530ec47a86e47/uploads/2026-04-08T12-50-27-089Z-wdy44fb4g.png",
+    "keywords": [
+      "art",
+      "award",
+      "career",
+      "elayat",
+      "emmy",
+      "her",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "priming",
+      "season",
+      "succeed",
+      "tech",
+      "winner",
+      "women",
+      "yasmin"
+    ]
+  },
+  {
+    "title": "GoDaddy Arabia's GM Selina Bieber On How To Digitalize Your Startups",
+    "speaker": "Selina Bieber",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 7",
+    "tags": "Podcast, Women Power, Season 7",
+    "link": "https://network.get-playbook.com/posts/podcasts-godaddy-arabias-gm-selina-bieber-on-how-to-digitalize-your-startups",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@99b3b7005c41916df1ef446e179f604bb601c6fb/uploads/2026-04-08T12-50-39-377Z-urps0atpw.png",
+    "keywords": [
+      "arabia's",
+      "bieber",
+      "digitalize",
+      "godaddy",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "selina",
+      "startups",
+      "women"
+    ]
+  },
+  {
+    "title": "Safeguarding Your Mental Health",
+    "speaker": "Weam Zabar",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 8",
+    "tags": "Podcast, Women Power, Season 8",
+    "link": "https://network.get-playbook.com/posts/podcasts-safeguarding-your-mental-health-with-weam-zabar",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@60e9e353f3eadabf404a04c7c4ef0105549c51ff/uploads/2026-04-08T12-53-34-828Z-gz3ocigrx.png",
+    "keywords": [
+      "health",
+      "mental",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "safeguarding",
+      "season",
+      "weam",
+      "women",
+      "zabar"
+    ]
+  },
+  {
+    "title": "Level Up Your Life And Mental Health",
+    "speaker": "Amal Baatia",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 8",
+    "tags": "Podcast, Women Power, Season 8",
+    "link": "https://network.get-playbook.com/posts/podcasts-turning-your-fomo-into-fulfillment-with-tala-samman",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@1d225a32d4c9dc2f81def673782c55531a110290/uploads/2026-04-08T12-53-46-413Z-9nami8y02.png",
+    "keywords": [
+      "amal",
+      "baatia",
+      "health",
+      "level",
+      "life",
+      "mental",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Turning Your FOMO Into Fulfillment",
+    "speaker": "Tala Samman",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 8",
+    "tags": "Podcast, Women Power, Season 8",
+    "link": "https://network.get-playbook.com/posts/podcasts-sophie-smith-on-sourcing-investment-to-scale-your-business",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@13b6259bb868afd2b4b0023ab0f746ee5929d262/uploads/2026-04-08T12-53-56-063Z-slqo78khl.png",
+    "keywords": [
+      "fomo",
+      "fulfillment",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "samman",
+      "season",
+      "tala",
+      "turning",
+      "women"
+    ]
+  },
+  {
+    "title": "Sophie Smith On Sourcing Investment To Scale Your Business",
+    "speaker": "Sophie Smith",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 8",
+    "tags": "Podcast, Women Power, Season 8",
+    "link": "https://network.get-playbook.com/posts/podcasts-building-a-business-around-passion-with-gleac-founder-sallyann-della-casa",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@82084b0eced7712403ae4f3a8e1a3ace535974a1/uploads/2026-04-08T12-54-06-791Z-va0irbrf3.png",
+    "keywords": [
+      "business",
+      "investment",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "scale",
+      "season",
+      "smith",
+      "sophie",
+      "sourcing",
+      "women"
+    ]
+  },
+  {
+    "title": "Building A Business Around Passion",
+    "speaker": "Sallyann Della Casa",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 8",
+    "tags": "Podcast, Women Power, Season 8",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-haifa-addas-built-a-business-around-beauty-and-confidence",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@85f93f92ed89147430f5c97cac81ed2a357dbbf7/uploads/2026-04-08T12-54-16-599Z-it7ezuhp8.png",
+    "keywords": [
+      "around",
+      "building",
+      "business",
+      "casa",
+      "della",
+      "passion",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "sallyann",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Growing Your Network And Navigating Tough Conversations In The Workplace",
+    "speaker": "Kamar Jaffer",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 8",
+    "tags": "Podcast, Women Power, Season 8",
+    "link": "https://network.get-playbook.com/posts/podcasts-growing-your-network-and-navigating-tough-conversations-in-the-workplace-with-kamar-jaffer",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@d01de00843a78f646e7aa33a963bb26f362c14ea/uploads/2026-04-08T12-54-29-749Z-mu50qeu2c.png",
+    "keywords": [
+      "conversations",
+      "growing",
+      "jaffer",
+      "kamar",
+      "navigating",
+      "network",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "tough",
+      "women",
+      "workplace"
+    ]
+  },
+  {
+    "title": "Building Financial Freedom",
+    "speaker": "Dina Shoman",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 8",
+    "tags": "Podcast, Women Power, Season 8",
+    "link": "https://network.get-playbook.com/posts/podcasts-building-financial-freedom-with-dina-shoman",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@0c7c60be9e04e0cfd4c13961802257fd4317225e/uploads/2026-04-08T12-54-39-405Z-m2scwxjwc.png",
+    "keywords": [
+      "building",
+      "dina",
+      "financial",
+      "freedom",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "shoman",
+      "women"
+    ]
+  },
+  {
+    "title": "What Happens When You Give Your All To Your Work",
+    "speaker": "Sonya Janahi",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 8",
+    "tags": "Podcast, Women Power, Season 8",
+    "link": "https://network.get-playbook.com/posts/podcasts-transforming-your-career-by-mastering-public-speaking-with-jana-amin",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@94d2cc7ae28787614fe9d2fd6010afa02ece1a50/uploads/2026-04-08T12-54-50-258Z-57pfh09l0.png",
+    "keywords": [
+      "all",
+      "give",
+      "happens",
+      "janahi",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "sonya",
+      "when",
+      "women",
+      "work",
+      "you"
+    ]
+  },
+  {
+    "title": "Demystifying Entrepreneurship And The Fog Around Funding",
+    "speaker": "Dina ElShenoufy",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 8",
+    "tags": "Podcast, Women Power, Season 8",
+    "link": "https://network.get-playbook.com/posts/podcasts-demystifying-entrepreneurship-and-the-fog-around-funding-with-dina-elshenoufy",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@1ea997baa1106467266156ee802ec76c89b6e662/uploads/2026-04-08T12-55-00-154Z-zz98lv57c.png",
+    "keywords": [
+      "around",
+      "demystifying",
+      "dina",
+      "elshenoufy",
+      "entrepreneurship",
+      "fog",
+      "funding",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Transforming Your Career By Mastering Public Speaking",
+    "speaker": "Jana Amin",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 8",
+    "tags": "Podcast, Women Power, Season 8",
+    "link": "https://network.get-playbook.com/posts/podcasts-planning-your-career-pivot-with-strategy-and-intention-with-loulwa-bakr",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8a9e80315165ae698b74894f4cf8491f283eb881/uploads/2026-04-08T12-55-12-140Z-v66fiobb9.png",
+    "keywords": [
+      "amin",
+      "career",
+      "jana",
+      "mastering",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "public",
+      "season",
+      "speaking",
+      "transforming",
+      "women"
+    ]
+  },
+  {
+    "title": "Mastering Motivation To Be Unstoppable",
+    "speaker": "Reham Dasouqi",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 8",
+    "tags": "Podcast, Women Power, Season 8",
+    "link": "https://network.get-playbook.com/posts/podcasts-mastering-motivation-to-be-unstoppable-with-reham-dasouqi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@fbea588af9ecef27be04373653875bb3d5ab2951/uploads/2026-04-08T12-55-28-548Z-5m00ehr84.png",
+    "keywords": [
+      "dasouqi",
+      "mastering",
+      "motivation",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "reham",
+      "season",
+      "unstoppable",
+      "women"
+    ]
+  },
+  {
+    "title": "Destigmatizing Feminine Wellness",
+    "speaker": "Emaan Abbass",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 8",
+    "tags": "Podcast, Women Power, Season 8",
+    "link": "https://network.get-playbook.com/posts/podcasts-destigmatizing-feminine-wellness-with-ketish-founder-emaan-abbass",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@d5fc8b8e0e9da9d493bf522cf647af96dc5e2e00/uploads/2026-04-08T12-55-40-042Z-kfzc9e4nm.png",
+    "keywords": [
+      "abbass",
+      "destigmatizing",
+      "emaan",
+      "feminine",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "wellness",
+      "women"
+    ]
+  },
+  {
+    "title": "The Life Changing Magic of Continuous Learning",
+    "speaker": "Hala Sulaiman",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 8",
+    "tags": "Podcast, Women Power, Season 8",
+    "link": "https://network.get-playbook.com/posts/podcasts-the-life-changing-magic-of-continuous-learning-with-hala-sulaiman",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@bb6f1b23722ac157abc1816841424224990f60f9/uploads/2026-04-08T12-55-53-883Z-fhw1aayyz.png",
+    "keywords": [
+      "changing",
+      "continuous",
+      "hala",
+      "learning",
+      "life",
+      "magic",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "sulaiman",
+      "women"
+    ]
+  },
+  {
+    "title": "Mastering Connections",
+    "speaker": "Amal Dokhan",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 8",
+    "tags": "Podcast, Women Power, Season 8",
+    "link": "https://network.get-playbook.com/posts/podcasts-mastering-connections-with-amal-dokhan",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@b925235dafd59fc9acf79365696001635fec0ab0/uploads/2026-04-08T12-56-04-227Z-2vu9554hb.png",
+    "keywords": [
+      "amal",
+      "connections",
+      "dokhan",
+      "mastering",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Maximize Earnings Through NFTs",
+    "speaker": "Salwa Radwi",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 9",
+    "tags": "Podcast, Women Power, Season 9",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-maximize-earnings-through-nfts-with-salwa-radwi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@49fc0d046f0bd9c65437965c0f3d9981f9236c09/uploads/2026-04-08T12-59-06-232Z-vaj2soaqh.png",
+    "keywords": [
+      "earnings",
+      "maximize",
+      "nfts",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "radwi",
+      "salwa",
+      "season",
+      "through",
+      "women"
+    ]
+  },
+  {
+    "title": "Law In The Time Of Disruption",
+    "speaker": "Kokila Alagh",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 9",
+    "tags": "Podcast, Women Power, Season 9",
+    "link": "https://network.get-playbook.com/posts/podcasts-law-in-the-time-of-disruption-with-karm-legal-founder-kokila-alagh",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@f5b4125d69d864a8bd138633553a8dddecd55cd5/uploads/2026-04-08T12-58-21-837Z-z1jt4sgnf.png",
+    "keywords": [
+      "alagh",
+      "disruption",
+      "kokila",
+      "law",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "time",
+      "women"
+    ]
+  },
+  {
+    "title": "Championing Fearlessness In Art And NFTs",
+    "speaker": "Shurooq Amin",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 9",
+    "tags": "Podcast, Women Power, Season 9",
+    "link": "https://network.get-playbook.com/posts/podcasts-championing-fearlessness-in-art-and-nfts-with-shurooq-amin",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@db518bd380c636545ccf3f18ac1302c0f823f5d1/uploads/2026-04-08T12-58-37-664Z-gb03y7sb6.png",
+    "keywords": [
+      "amin",
+      "art",
+      "championing",
+      "fearlessness",
+      "nfts",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "shurooq",
+      "women"
+    ]
+  },
+  {
+    "title": "Finding The Right Co-founder For You",
+    "speaker": "Shreya Rammohan & Ismahan Al Saad",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 9",
+    "tags": "Podcast, Women Power, Season 9",
+    "link": "https://network.get-playbook.com/posts/podcasts-finding-the-right-co-founder-for-you-with-shreya-rammohan-and-ismahan-al-saad",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@1d51ce276144fb2b81d5d989cb89b0e9f6e93d37/uploads/2026-04-08T12-59-17-794Z-t25f9csbh.png",
+    "keywords": [
+      "finding",
+      "founder",
+      "ismahan",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "rammohan",
+      "right",
+      "saad",
+      "season",
+      "shreya",
+      "women",
+      "you"
+    ]
+  },
+  {
+    "title": "Embracing Self Worth And Minimalism",
+    "speaker": "Reem Kanj",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 9",
+    "tags": "Podcast, Women Power, Season 9",
+    "link": "https://network.get-playbook.com/posts/podcasts-embracing-self-worth-and-minimalism-with-reem-kanj",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@208d0f9adbaff6622ea91c74965acb1d03b9c11d/uploads/2026-04-08T12-59-25-914Z-8t3cijnkk.png",
+    "keywords": [
+      "embracing",
+      "kanj",
+      "minimalism",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "reem",
+      "season",
+      "self",
+      "women",
+      "worth"
+    ]
+  },
+  {
+    "title": "Unlocking The Potential Of Talent Management",
+    "speaker": "Budreya Faisal",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 9",
+    "tags": "Podcast, Women Power, Season 9",
+    "link": "https://network.get-playbook.com/posts/podcasts-unlocking-the-potential-of-talent-management-with-budreya-faisal",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@e86fa01960405d0c7ea0adbd6b74a9a6588ad832/uploads/2026-04-08T12-59-46-883Z-rt73b2n2y.png",
+    "keywords": [
+      "budreya",
+      "faisal",
+      "management",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "potential",
+      "power",
+      "season",
+      "talent",
+      "unlocking",
+      "women"
+    ]
+  },
+  {
+    "title": "Trusting Your Creative Voice",
+    "speaker": "Mayyan Jaffar",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 9",
+    "tags": "Podcast, Women Power, Season 9",
+    "link": "https://network.get-playbook.com/posts/podcasts-trusting-your-creative-voice-with-mayyan-jaffar",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@c893e94b92379b31725e549488e23b4fdf937ee8/uploads/2026-04-08T13-00-17-153Z-qt3p5t8t5.png",
+    "keywords": [
+      "creative",
+      "jaffar",
+      "mayyan",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "trusting",
+      "voice",
+      "women"
+    ]
+  },
+  {
+    "title": "Cultivating Mental Strength And Resilience In Parenthood",
+    "speaker": "Fajer Al Hashel",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 9",
+    "tags": "Podcast, Women Power, Season 9",
+    "link": "https://network.get-playbook.com/posts/podcasts-cultivating-mental-strength-and-resilience-in-parenthood-with-fajer-al-hashel",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@1ad624f0530b4b8ce83dec9ee3c7cdd8003d67dd/uploads/2026-04-08T13-00-30-060Z-7b1ir1z0d.png",
+    "keywords": [
+      "cultivating",
+      "fajer",
+      "hashel",
+      "mental",
+      "parenthood",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "resilience",
+      "season",
+      "strength",
+      "women"
+    ]
+  },
+  {
+    "title": "Executing Your Ideas",
+    "speaker": "Audrey Nakad",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 9",
+    "tags": "Podcast, Women Power, Season 9",
+    "link": "https://network.get-playbook.com/posts/podcasts-executing-your-ideas-with-audrey-nakad",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@fdad08d913ac94029ced9e931ea962729c0071a7/uploads/2026-04-08T13-00-43-689Z-1njuqr6gm.png",
+    "keywords": [
+      "audrey",
+      "executing",
+      "ideas",
+      "nakad",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Planning Your Career Pivot With Strategy And Intention",
+    "speaker": "Loulwa Bakr",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 9",
+    "tags": "Podcast, Women Power, Season 9",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-to-plan-your-career-with-strategy-intention-with-mompreneur-maha-gorton",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@2596567d99300cb5b92aa83e9d48ce47ad4f74e7/uploads/2026-04-08T13-00-57-000Z-05sdt0bdg.png",
+    "keywords": [
+      "bakr",
+      "career",
+      "intention",
+      "loulwa",
+      "pivot",
+      "planning",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "strategy",
+      "women"
+    ]
+  },
+  {
+    "title": "Navigating Challenges In Fintech",
+    "speaker": "Dalal Alrayes",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 9",
+    "tags": "Podcast, Women Power, Season 9",
+    "link": "https://network.get-playbook.com/posts/podcasts-navigating-challenges-in-fintech-with-spare-founder-dalal-alrayes",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@a5eb05f6ce72a47f594ff476938271549e291311/uploads/2026-04-08T13-01-11-490Z-yirl6pu63.png",
+    "keywords": [
+      "alrayes",
+      "challenges",
+      "dalal",
+      "fintech",
+      "navigating",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "From A Side Hustle To Raising A Seven-Figure Investment",
+    "speaker": "Sara Chemmaa",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 9",
+    "tags": "Podcast, Women Power, Season 9",
+    "link": "https://network.get-playbook.com/posts/podcasts-from-a-side-hustle-to-raising-a-seven-figure-investment-with-mompreneur-and-citron-founder-sara-chemmaa",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@07e3e4fca7b107150c9e1a143bf896ce0a282df9/uploads/2026-04-08T13-01-21-780Z-brmjjrciw.png",
+    "keywords": [
+      "chemmaa",
+      "figure",
+      "hustle",
+      "investment",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "raising",
+      "sara",
+      "season",
+      "seven",
+      "side",
+      "women"
+    ]
+  },
+  {
+    "title": "How Haifa Addas Built A Business Around Beauty And Confidence",
+    "speaker": "Haifa Addas",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 9",
+    "tags": "Podcast, Women Power, Season 9",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-basma-tawakol-built-a-startup-around-sustainable-fashion",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@7a60515ae11a1e0d415deda595ecee74146e727a/uploads/2026-04-08T13-01-35-417Z-eoyht4lbm.png",
+    "keywords": [
+      "addas",
+      "around",
+      "beauty",
+      "built",
+      "business",
+      "confidence",
+      "haifa",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Fyne Founder Aya Ahmad On How She Got Her Big Break In The Diamond Industry",
+    "speaker": "Aya Ahmad",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 9",
+    "tags": "Podcast, Women Power, Season 9",
+    "link": "https://network.get-playbook.com/posts/podcasts-fyne-founder-aya-ahmad-on-how-she-got-her-big-break-in-the-diamond-industry",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@72347350be0c48c3e3285a3ff9ceb8ea1703294f/uploads/2026-04-08T13-01-52-866Z-xuapu3mcn.png",
+    "keywords": [
+      "ahmad",
+      "aya",
+      "big",
+      "break",
+      "diamond",
+      "founder",
+      "fyne",
+      "got",
+      "her",
+      "industry",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "she",
+      "women"
+    ]
+  },
+  {
+    "title": "Taking Creative Risks",
+    "speaker": "Mona Khashoggi",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 10",
+    "tags": "Podcast, Women Power, Season 10",
+    "link": "https://network.get-playbook.com/posts/podcasts-taking-creative-risks-with-mona-khashoggi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@25c20f99d2a31055bc0568f0b82d58a1404a1c73/uploads/2026-04-08T13-04-18-129Z-imjlk22ha.png",
+    "keywords": [
+      "creative",
+      "khashoggi",
+      "mona",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "risks",
+      "season",
+      "taking",
+      "women"
+    ]
+  },
+  {
+    "title": "Exploring The Art Of Storytelling",
+    "speaker": "Karen Osman",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 10",
+    "tags": "Podcast, Women Power, Season 10",
+    "link": "https://network.get-playbook.com/posts/podcasts-exploring-the-art-of-storytelling-with-karen-osman",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@de770f9b276b1fdd2168a02546bed19262328495/uploads/2026-04-08T13-04-29-385Z-ojb9jj7xx.png",
+    "keywords": [
+      "art",
+      "exploring",
+      "karen",
+      "osman",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "storytelling",
+      "women"
+    ]
+  },
+  {
+    "title": "How To Plan Your Career With Strategy & Intention",
+    "speaker": "Maha Gorton",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 10",
+    "tags": "Podcast, Women Power, Season 10",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-i-switched-my-career-gears-during-covid-with-nourah-feteih",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@d0a2000a13110fb2fec77c9448d69efc8e7b262e/uploads/2026-04-08T13-04-38-285Z-h769q6owp.png",
+    "keywords": [
+      "career",
+      "gorton",
+      "intention",
+      "maha",
+      "plan",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "strategy",
+      "women"
+    ]
+  },
+  {
+    "title": "Channeling Your Creativity By Donning Multiple Hats",
+    "speaker": "Fatima Al Banawi",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 10",
+    "tags": "Podcast, Women Power, Season 10",
+    "link": "https://network.get-playbook.com/posts/podcasts-channeling-your-creativity-by-donning-multiple-hats-with-fatima-al-banawi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@0e21759d90827658b878466643a6100fe7a18be2/uploads/2026-04-08T13-04-50-540Z-rvk9xjxni.png",
+    "keywords": [
+      "banawi",
+      "channeling",
+      "creativity",
+      "donning",
+      "fatima",
+      "hats",
+      "multiple",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Carving A Niche Platform In The Competitive Beauty & Wellness Industry",
+    "speaker": "Miriam Abadi",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 10",
+    "tags": "Podcast, Women Power, Season 10",
+    "link": "https://network.get-playbook.com/posts/podcasts-carving-a-niche-platform-in-the-competitive-beauty-wellness-industry-with-miriam-abadi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@ec5341ebfd89d5d4be789a225bf482f8caf1a472/uploads/2026-04-08T13-05-03-216Z-54vtf1hay.png",
+    "keywords": [
+      "abadi",
+      "beauty",
+      "carving",
+      "competitive",
+      "industry",
+      "miriam",
+      "niche",
+      "platform",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "wellness",
+      "women"
+    ]
+  },
+  {
+    "title": "Building a Social Impact Startup",
+    "speaker": "Anisa Ismail",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 10",
+    "tags": "Podcast, Women Power, Season 10",
+    "link": "https://network.get-playbook.com/posts/podcasts-building-a-social-impact-startup-with-anisa-ismail",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@d8d3232f7066a80ed7bb590577035c715cdeff76/uploads/2026-04-08T13-05-21-975Z-a5vt7a26q.png",
+    "keywords": [
+      "anisa",
+      "building",
+      "impact",
+      "ismail",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "social",
+      "startup",
+      "women"
+    ]
+  },
+  {
+    "title": "Unpacking the Nuances of Interior Designing",
+    "speaker": "Sawsan Chammas Haber",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 10",
+    "tags": "Podcast, Women Power, Season 10",
+    "link": "https://network.get-playbook.com/posts/podcasts-unpacking-the-nuances-of-interior-designing-with-sawsan-chammas-haber",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@69bf2edd6e2617c16da8f9ec5379b1ddc787484b/uploads/2026-04-08T13-05-37-021Z-wm1x084b8.png",
+    "keywords": [
+      "chammas",
+      "designing",
+      "haber",
+      "interior",
+      "nuances",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "sawsan",
+      "season",
+      "unpacking",
+      "women"
+    ]
+  },
+  {
+    "title": "Managing the Region's Leading Food Delivery Platform",
+    "speaker": "Tatiana Rahal",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 10",
+    "tags": "Podcast, Women Power, Season 10",
+    "link": "https://network.get-playbook.com/posts/podcasts-managing-the-regions-leading-food-delivery-platform-with-talabat-uae-md-tatiana-rahal",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@2c9289df7f27ec9ebc5bef9caa94af92516d31b3/uploads/2026-04-08T13-08-36-865Z-2vv2bco7d.png",
+    "keywords": [
+      "delivery",
+      "food",
+      "leading",
+      "managing",
+      "platform",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "rahal",
+      "region's",
+      "season",
+      "tatiana",
+      "women"
+    ]
+  },
+  {
+    "title": "Redefining What it Means to Lead a Purpose Driven Startup",
+    "speaker": "Yolanda Lee",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 10",
+    "tags": "Podcast, Women Power, Season 10",
+    "link": "https://network.get-playbook.com/posts/podcasts-redefining-what-it-means-to-lead-a-purpose-driven-startup-with-uncommon-founder-yolanda-lee",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@41c5c119e3dab7ef895017e0218b77737ec281fd/uploads/2026-04-08T13-09-00-854Z-ot85cvfbn.png",
+    "keywords": [
+      "driven",
+      "lead",
+      "lee",
+      "means",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "purpose",
+      "redefining",
+      "season",
+      "startup",
+      "women",
+      "yolanda"
+    ]
+  },
+  {
+    "title": "Finding your Voice and Owning it",
+    "speaker": "Danielle Green",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 10",
+    "tags": "Podcast, Women Power, Season 10",
+    "link": "https://network.get-playbook.com/posts/podcasts-finding-your-voice-and-owning-it-with-danielle-green",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@87750bc93cba2a46de7584536c730c2a5f7dd5ae/uploads/2026-04-08T13-09-18-242Z-1uab05lms.png",
+    "keywords": [
+      "danielle",
+      "finding",
+      "green",
+      "owning",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "voice",
+      "women"
+    ]
+  },
+  {
+    "title": "Practicing Empathetic Leadership",
+    "speaker": "Maliha Hashmi",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 10",
+    "tags": "Podcast, Women Power, Season 10",
+    "link": "https://network.get-playbook.com/posts/podcasts-practicing-empathetic-leadership-with-maliha-hashmi",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@a118badab3ae1edf49031f3c5b076e53dd16165a/uploads/2026-04-08T13-15-02-128Z-oc0xyfd78.png",
+    "keywords": [
+      "empathetic",
+      "hashmi",
+      "leadership",
+      "maliha",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "practicing",
+      "season",
+      "women"
+    ]
+  },
+  {
+    "title": "Creating a Surplus Marketplace and Tackling Food Waste",
+    "speaker": "Munira Almuammar",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 10",
+    "tags": "Podcast, Women Power, Season 10",
+    "link": "https://network.get-playbook.com/posts/podcasts-creating-a-surplus-marketplace-and-tackling-food-waste-with-barakah-cmo-munira-almuammar",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@724017b9bf02eec5ffcc4f66ad6d2447a0b1931b/uploads/2026-04-08T13-09-27-592Z-29ayj8sj3.png",
+    "keywords": [
+      "almuammar",
+      "creating",
+      "food",
+      "marketplace",
+      "munira",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "surplus",
+      "tackling",
+      "waste",
+      "women"
+    ]
+  },
+  {
+    "title": "How Basma Tawakol Built a Startup Around Sustainable Fashion",
+    "speaker": "Basma Tawakol",
+    "speaker_title": "Hosted by Wafa AlObaidat",
+    "type": "PLAYBOOK Podcasts",
+    "category": "Women Power Podcast - Season 10",
+    "tags": "Podcast, Women Power, Season 10",
+    "link": "https://network.get-playbook.com/posts/podcasts-how-we-can-empower-ourselves-through-our-rights-with-aysha-mutaywea",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@1f2b6adb072d068bd7a20b93c2d3f945e290c829/uploads/2026-04-08T13-09-53-053Z-u56s3z5yb.png",
+    "keywords": [
+      "around",
+      "basma",
+      "built",
+      "fashion",
+      "playbook",
+      "podcast",
+      "podcasts",
+      "power",
+      "season",
+      "startup",
+      "sustainable",
+      "tawakol",
+      "women"
+    ]
+  },
+  {
+    "title": "How to Recognize and Overcome Bias – Especially When You're the Target",
+    "speaker": "Cristina Muntean",
+    "speaker_title": "Founder & CEO, VORNICA® | Executive Coach & Leadership Strategist",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Bias, Leadership",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-how-to-recognize-and-overcome-bias-especially-when-youre-the-target-with-cristina-muntean",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@911ff52147775bb0a1f481a1ea003168e22541d9/uploads/2026-04-09T07-43-19-206Z-i9ke3fq9t.jpg",
+    "keywords": [
+      "bias",
+      "cristina",
+      "development",
+      "especially",
+      "leadership",
+      "muntean",
+      "overcome",
+      "personal",
+      "playbook",
+      "recognize",
+      "target",
+      "when",
+      "workshops",
+      "you're"
+    ]
+  },
+  {
+    "title": "The Inner Edge of Growth: Feminine Intelligence, Visibility and Founder Confidence",
+    "speaker": "Sophie Belle",
+    "speaker_title": "Founder of The Feminine Edge and Serial Entrepreneur",
+    "type": "PLAYBOOK Workshops",
+    "category": "Personal Development",
+    "tags": "Personal Development, Feminine Intelligence, Leadership",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-playbook-webinars-the-inner-edge-of-growth-feminine-intelligence-visibility-and-founder-confidence",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@f837faa6d6b4a4e502550f85175eecc7bc8f6b48/uploads/2026-04-09T07-46-39-729Z-4r5xsx7hx.jpg",
+    "keywords": [
+      "belle",
+      "confidence",
+      "development",
+      "edge",
+      "feminine",
+      "founder",
+      "growth:",
+      "inner",
+      "intelligence",
+      "leadership",
+      "personal",
+      "playbook",
+      "sophie",
+      "visibility",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Your Next Step in Playbook: Unlock the Power of the Membership Pledge",
+    "speaker": "Wafa AlObaidat",
+    "speaker_title": "Founder and CEO of Playbook",
+    "type": "PLAYBOOK Workshops",
+    "category": "Financial Literacy",
+    "tags": "Financial Literacy, Membership, Playbook",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-your-next-step-in-playbook-unlock-the-power-of-the-membership-pledge",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@f01705b70fd83e38496efe7ac8ad6c319ec9ef1a/uploads/2026-04-09T07-49-23-469Z-y7w2ksqxp.png",
+    "keywords": [
+      "alobaidat",
+      "financial",
+      "literacy",
+      "membership",
+      "next",
+      "playbook",
+      "playbook:",
+      "pledge",
+      "power",
+      "step",
+      "unlock",
+      "wafa",
+      "workshops"
+    ]
+  },
+  {
+    "title": "How to use LinkedIn as your sales funnel",
+    "speaker": "Alia ElKhatib",
+    "speaker_title": "Business & Marketing Consultant",
+    "type": "PLAYBOOK Workshops",
+    "category": "Career Development",
+    "tags": "Career Development, LinkedIn, Sales",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-how-to-use-linkedin-as-your-sales-funnel-with-alia-el-khatib",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@4c278b43735f39afcff17db837510ec4b61475e8/uploads/2026-04-09T07-53-09-724Z-gh0jpd714.png",
+    "keywords": [
+      "alia",
+      "career",
+      "development",
+      "elkhatib",
+      "funnel",
+      "linkedin",
+      "playbook",
+      "sales",
+      "use",
+      "workshops"
+    ]
+  },
+  {
+    "title": "The Happy Model: Unlock Explosive Growth For Free Using Other People's Audiences",
+    "speaker": "Nagi Salloum",
+    "speaker_title": "Silicon Valley Entrepreneur | Product Growth Expert | Founder of oono.ai",
+    "type": "PLAYBOOK Workshops",
+    "category": "Sales and Marketing",
+    "tags": "Marketing, Growth, Audience Building",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-the-happy-model-unlock-explosive-growth-for-free-using-other-peoples-audiences-with-nagi-salloum",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@79fc1230445e5f57589a088eb9cee0a50cf70de1/uploads/2026-04-09T07-54-51-653Z-53yaropmz.png",
+    "keywords": [
+      "audience",
+      "audiences",
+      "building",
+      "explosive",
+      "free",
+      "growth",
+      "happy",
+      "marketing",
+      "model:",
+      "nagi",
+      "other",
+      "people's",
+      "playbook",
+      "sales",
+      "salloum",
+      "unlock",
+      "using",
+      "workshops"
+    ]
+  },
+  {
+    "title": "The Nervous System Advantage: Unlocking Energy, Focus & Confidence in Business",
+    "speaker": "Susie Bower",
+    "speaker_title": "Holistic Wellness Expert",
+    "type": "PLAYBOOK Workshops",
+    "category": "Health and Wellness",
+    "tags": "Health, Wellness, Nervous System, Business",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-the-nervous-system-advantage-unlocking-energy-focus-confidene-in-business-with-susie-bower",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@ba1da18c43468fbd7b57fc089c59cec1cd7c1d85/uploads/2026-04-09T07-56-30-454Z-cbnqq8e8h.png",
+    "keywords": [
+      "advantage:",
+      "bower",
+      "business",
+      "confidence",
+      "energy",
+      "focus",
+      "health",
+      "nervous",
+      "playbook",
+      "susie",
+      "system",
+      "unlocking",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Build Your AI Dream Team: Custom GPTs That Do the Work of 5 Employees Without the Payroll",
+    "speaker": "Nidhima Kohli",
+    "speaker_title": "Founder, The AI Accelerator | AI Strategist | Former VC",
+    "type": "PLAYBOOK Workshops",
+    "category": "Technology and Innovation",
+    "tags": "Technology, AI, GPT, Business Automation",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-build-your-ai-dream-team-custom-gpts-that-do-the-work-of-5-employees-without-the-payroll-with-nidhima-kohli",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8e14271d08f01bbf528c1336ef693a6475d428f7/uploads/2026-04-09T07-59-02-774Z-7nl6fl50v.jpg",
+    "keywords": [
+      "automation",
+      "build",
+      "business",
+      "custom",
+      "dream",
+      "employees",
+      "gpt",
+      "gpts",
+      "innovation",
+      "kohli",
+      "nidhima",
+      "payroll",
+      "playbook",
+      "team:",
+      "technology",
+      "without",
+      "work",
+      "workshops"
+    ]
+  },
+  {
+    "title": "The AI Agent That Answers Every Call: How to Never Lose a Customer",
+    "speaker": "Asmaa AlKuwari",
+    "speaker_title": "Leadership Executive Coach (PCC)",
+    "type": "PLAYBOOK Workshops",
+    "category": "Technology and Innovation",
+    "tags": "Technology, AI, Customer Service",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-the-ai-agent-that-answers-every-call-how-to-never-lose-a-customer",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@8d6571bc48c3d13ebfde79c86a8b348a4ddf70a6/uploads/2026-04-09T08-02-09-736Z-iu7xwlbj8.png",
+    "keywords": [
+      "agent",
+      "alkuwari",
+      "answers",
+      "asmaa",
+      "call:",
+      "customer",
+      "every",
+      "innovation",
+      "lose",
+      "never",
+      "playbook",
+      "service",
+      "technology",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Leading yourself in Times of Stress & Uncertainty",
+    "speaker": "Asmaa AlKuwari",
+    "speaker_title": "Leadership Executive Coach (PCC), Founder of Asmaa Consultancy",
+    "type": "PLAYBOOK Workshops",
+    "category": "Wellness and Leadership Series",
+    "tags": "Wellness, Leadership, Stress, Resilience",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-leading-yourself-in-times-of-stress-uncertainty-with-asmaa-alkuwari",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@38a66ec9d6259dcfdf17314e9619b49435b0e471/uploads/2026-04-09T08-03-25-174Z-3ypafgeem.jpg",
+    "keywords": [
+      "alkuwari",
+      "asmaa",
+      "leadership",
+      "leading",
+      "playbook",
+      "resilience",
+      "series",
+      "stress",
+      "times",
+      "uncertainty",
+      "wellness",
+      "workshops",
+      "yourself"
+    ]
+  },
+  {
+    "title": "Strong Mothers, Safe Children: Helping Our Kids Stay Calm, Confident, and Faithful in Uncertain Times",
+    "speaker": "Rasha AlShubaian",
+    "speaker_title": "Founder of Liveful, Life and Leadership Coach & Parenting Educator",
+    "type": "PLAYBOOK Workshops",
+    "category": "Wellness and Leadership Series",
+    "tags": "Wellness, Motherhood, Parenting, Leadership",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-strong-mothers-safe-children-helping-our-kids-stay-calm-confident-and-faithful-in-uncertain-times-with-rasha-alshubaian",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@9fcfe96e2c7c8c464769ce2bd0fead09d7f93e16/uploads/2026-04-09T08-05-02-095Z-fi1a4ln58.png",
+    "keywords": [
+      "alshubaian",
+      "calm",
+      "children:",
+      "confident",
+      "faithful",
+      "helping",
+      "kids",
+      "leadership",
+      "motherhood",
+      "mothers",
+      "parenting",
+      "playbook",
+      "rasha",
+      "safe",
+      "series",
+      "stay",
+      "strong",
+      "times",
+      "uncertain",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "From Reaction to Action: A Practical Shift for Uncertain Times",
+    "speaker": "Dr. Louise Lambert",
+    "speaker_title": "Founder of HappinessMatters.org",
+    "type": "PLAYBOOK Workshops",
+    "category": "Wellness and Leadership Series",
+    "tags": "Wellness, Leadership, Resilience, Mindset",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-from-reaction-to-action-a-practical-shift-for-uncertain-times-with-dr-louise-lambert",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@710429334ead25c8b3c5471e964def894d9fe0e0/uploads/2026-04-09T08-06-41-110Z-mm82fp1kz.png",
+    "keywords": [
+      "action:",
+      "dr.",
+      "lambert",
+      "leadership",
+      "louise",
+      "mindset",
+      "playbook",
+      "practical",
+      "reaction",
+      "resilience",
+      "series",
+      "shift",
+      "times",
+      "uncertain",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Women as Pillars of Family Stability in Times of Conflict: Building Resilient Families in Times of Crisis",
+    "speaker": "Dr. Kholod Huneiti",
+    "speaker_title": "Media Psychology Specialist, Assistant Professor and Researcher",
+    "type": "PLAYBOOK Workshops",
+    "category": "Wellness and Leadership Series",
+    "tags": "Wellness, Family, Resilience, Crisis",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-women-as-pillars-of-family-stability-in-times-of-conflict-building-resilient-families-in-times-of-crisis-with-dr-kholod-huneiti",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@43173ccb637e1299a4b3fee551edc7218f7e9f1f/uploads/2026-04-09T08-08-16-620Z-gmizmhxto.png",
+    "keywords": [
+      "building",
+      "conflict:",
+      "crisis",
+      "dr.",
+      "families",
+      "family",
+      "huneiti",
+      "kholod",
+      "leadership",
+      "pillars",
+      "playbook",
+      "resilience",
+      "resilient",
+      "series",
+      "stability",
+      "times",
+      "wellness",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Inner Stability as a Leadership Strategy",
+    "speaker": "Haya Al-Khalifa",
+    "speaker_title": "Life Coach, Speaker & Founder of Nabd Collective",
+    "type": "PLAYBOOK Workshops",
+    "category": "Wellness and Leadership Series",
+    "tags": "Wellness, Leadership, Stability, Mindset",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-inner-stability-as-a-leadership-strategy-with-haya-al-khalifa",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@d0bc277688202159ca004e93fe426ac51b9519e0/uploads/2026-04-09T08-10-01-144Z-84k6z2r7e.png",
+    "keywords": [
+      "haya",
+      "inner",
+      "khalifa",
+      "leadership",
+      "mindset",
+      "playbook",
+      "series",
+      "stability",
+      "strategy",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "The Founder Reset: Align Your Life, Scale Your Business",
+    "speaker": "Avneet Kohli",
+    "speaker_title": "Founder, Encubay Middle East",
+    "type": "PLAYBOOK Workshops",
+    "category": "Wellness and Leadership Series",
+    "tags": "Wellness, Leadership, Founder, Business",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-the-founder-reset-align-your-life-scale-your-business-with-avneet-kohil",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@80d4b1bc19f78070e0884292247759db7eb26250/uploads/2026-04-09T08-11-52-933Z-kv4phld0o.png",
+    "keywords": [
+      "align",
+      "avneet",
+      "business",
+      "founder",
+      "kohli",
+      "leadership",
+      "life",
+      "playbook",
+      "reset:",
+      "scale",
+      "series",
+      "wellness",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Women & Success: Redefining Power, Day 1",
+    "speaker": "Multiple Speakers",
+    "speaker_title": "nan",
+    "type": "Partner Workshops",
+    "category": "Women & Success Summit",
+    "tags": "Leadership, Women, Success, Power",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-playbook-webinars-women-success-redefining-power-day-1",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@193ad154acc2275b6a378b7aba2259d303301fcd/uploads/2026-04-09T08-14-15-730Z-abtl37l0z.png",
+    "keywords": [
+      "day",
+      "leadership",
+      "multiple",
+      "partner",
+      "power",
+      "redefining",
+      "speakers",
+      "success",
+      "success:",
+      "summit",
+      "women",
+      "workshops"
+    ]
+  },
+  {
+    "title": "Women & Success: Redefining Power, Day 2",
+    "speaker": "Multiple Speakers",
+    "speaker_title": "nan",
+    "type": "Partner Workshops",
+    "category": "Women & Success Summit",
+    "tags": "Leadership, Women, Success, Power",
+    "link": "https://network.get-playbook.com/posts/playbook-workshops-playbook-webinars-women-success-redefining-power-day-2",
+    "thumbnail": "https://cdn.jsdelivr.net/gh/free-whiteboard-online/Free-Erasorio-Alternative-for-Collaborative-Design@193ad154acc2275b6a378b7aba2259d303301fcd/uploads/2026-04-09T08-14-15-730Z-abtl37l0z.png",
+    "keywords": [
+      "day",
+      "leadership",
+      "multiple",
+      "partner",
+      "power",
+      "redefining",
+      "speakers",
+      "success",
+      "success:",
+      "summit",
+      "women",
+      "workshops"
+    ]
+  }
+];
 
-/**
- * Find the best matching content items for a given topic/query.
- * Returns up to `limit` items, ranked by tag + title keyword match.
- *
- * @param {string} query  - keywords from the conversation
- * @param {number} limit  - max results (default 3)
- * @param {string[]} types - filter by content type (optional)
- */
-function findContent(query, limit = 3, types = null) {
+// Score a single item against a query string
+function scoreItem(item, query) {
     const q = query.toLowerCase();
-    const words = q.split(/\s+/).filter(w => w.length > 2);
+    const words = q.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(w => w.length > 2);
+    if (!words.length) return 0;
 
-    let candidates = [];
-    for (const [type, items] of Object.entries(CONTENT_LIBRARY)) {
-        if (types && !types.includes(type)) continue;
-        for (const item of items) {
-            let score = 0;
-            const searchable = [item.title, item.speaker, item.category, ...item.tags]
-                .join(" ").toLowerCase();
-            for (const word of words) {
-                if (searchable.includes(word)) score += 2;
-            }
-            // Bonus for exact title/speaker match
-            if (item.title.toLowerCase().includes(q)) score += 5;
-            if (item.speaker.toLowerCase().includes(q)) score += 3;
-            if (score > 0) candidates.push({ ...item, type, score });
-        }
+    let score = 0;
+    const titleLower = item.title.toLowerCase();
+    const speakerLower = item.speaker.toLowerCase();
+    const tagsLower = item.tags.toLowerCase();
+    const categoryLower = item.category.toLowerCase();
+
+    for (const word of words) {
+        // Title match — highest weight
+        if (titleLower.includes(word)) score += 3;
+        // Speaker name match
+        if (speakerLower.includes(word)) score += 2;
+        // Keyword set match
+        if (item.keywords.includes(word)) score += 2;
+        // Category/tags match
+        if (categoryLower.includes(word) || tagsLower.includes(word)) score += 1;
     }
 
-    candidates.sort((a, b) => b.score - a.score);
-    return candidates.slice(0, limit);
+    return score;
 }
 
-/**
- * Format a content item as a markdown link for use in Layla responses.
- * e.g. "[Climbing The Corporate Ladder](https://...) with Amal Al Kooheji"
- */
+// Find top N relevant content items for a given query
+// Returns items with thumbnail URLs for embedding
+function findContent(query, limit = 3) {
+    if (!query || query.trim().length < 3) return [];
+
+    const scored = CONTENT_LIBRARY
+        .map(item => ({ item, score: scoreItem(item, query) }))
+        .filter(x => x.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, limit)
+        .map(x => x.item);
+
+    return scored;
+}
+
+// Format a content item as a markdown block with embedded thumbnail
+// Claude sends this directly in her reply when recommending content
 function formatContentLink(item) {
-    return `[${item.title}](${item.url}) with ${item.speaker}`;
+    const label = item.type.replace('PLAYBOOK ', '').replace(' Workshops', ' Workshop');
+    return `[![${item.title}](${item.thumbnail})](${item.link})\n**[${item.title}](${item.link})**\n*${label} · ${item.speaker}*`;
 }
 
-module.exports = { CONTENT_LIBRARY, findContent, formatContentLink };
+module.exports = { findContent, formatContentLink, CONTENT_LIBRARY };

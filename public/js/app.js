@@ -24,8 +24,8 @@ class ChatInstance {
 
     addToHistory(role, content) {
         this.conversationHistory.push({ role, content });
-        if (this.conversationHistory.length > 20)
-            this.conversationHistory = this.conversationHistory.slice(-20);
+        if (this.conversationHistory.length > 30)
+            this.conversationHistory = this.conversationHistory.slice(-30);
     }
 
     // ── Persist to localStorage ──
@@ -165,12 +165,9 @@ class ChatInstance {
 
                         if (evt.token !== undefined) {
                             fullText += evt.token;
-                            // Render markdown incrementally
-                            if (typeof marked !== 'undefined') {
-                                bubble.innerHTML = marked.parse(fullText);
-                            } else {
-                                bubble.innerHTML = escapeHtml(fullText);
-                            }
+                            // During streaming, render as plain text to avoid
+                            // broken image markdown on partial chunks
+                            bubble.innerHTML = escapeHtml(fullText);
                             this.el('messages').scrollTop = this.el('messages').scrollHeight;
                         }
 
@@ -180,6 +177,11 @@ class ChatInstance {
                         }
 
                         if (evt.done) {
+                            // Stream complete — now parse full markdown including images
+                            if (typeof marked !== 'undefined') {
+                                bubble.innerHTML = marked.parse(fullText);
+                            }
+                            this.el('messages').scrollTop = this.el('messages').scrollHeight;
                             // Commit to history
                             this.addToHistory('assistant', fullText);
                             // Store updated lead data so next turn sends it back
@@ -250,10 +252,10 @@ class ChatInstance {
             if (quickBtnsWrapper) {
                 const btns = quickBtnsWrapper.querySelectorAll('.quick-btn');
                 if (btns.length >= 4) {
-                    btns[0].innerHTML = '✨ انضمام';
-                    btns[1].innerHTML = '💰 استثمار';
-                    btns[2].innerHTML = '📚 تعلم';
-                    btns[3].innerHTML = '🌟 تواصل';
+                    btns[0].innerHTML = '✨ العضوية';
+                    btns[1].innerHTML = '💰 الاستثمار';
+                    btns[2].innerHTML = '📚 الدروس';
+                    btns[3].innerHTML = '🌟 الإرشاد';
                 }
             }
             
@@ -263,7 +265,7 @@ class ChatInstance {
             if (firstMessage && firstMessage.querySelector('.msg-bubble')?.innerText.includes("Hi, I'm Layla")) {
                 messagesEl.innerHTML = '';
                 this.renderMessage(
-                    "أهلاً، أنا ليلى — مرشدتك في PLAYBOOK. ما الذي تبحثين عنه في الشبكة؟",
+                    "أهلاً، أنا ليلى — أساعدك في إيجاد ما تحتاجينه في PLAYBOOK، سواء كان درساً متقدماً، تعارفاً مع شخص في مجالك، أو الدخول في عالم الاستثمار الملائكي. بماذا تفكرين؟",
                     'ai', false
                 );
             }
@@ -293,7 +295,7 @@ class ChatInstance {
             if (firstMessage && firstMessage.querySelector('.msg-bubble')?.innerText.includes("أهلاً، أنا ليلى")) {
                 messagesEl.innerHTML = '';
                 this.renderMessage(
-                    "Hi, I'm Layla — your guide to PLAYBOOK. What are you looking to get out of the network?",
+                    "Hi, I'm Layla — I help women find what they need inside PLAYBOOK, whether that's the right masterclass, an intro to someone in their industry, or getting into angel investing. What's on your mind?",
                     'ai', false
                 );
             }
@@ -310,8 +312,8 @@ class ChatInstance {
         
         // Use language-appropriate greeting
         const greeting = this.language === 'ar'
-            ? "أهلاً، أنا ليلى — مرشدتك في PLAYBOOK. ما الذي تبحثين عنه في الشبكة؟"
-            : "Hi, I'm Layla — your guide to PLAYBOOK. What are you looking to get out of the network?";
+            ? "أهلاً، أنا ليلى — أساعدك في إيجاد ما تحتاجينه في PLAYBOOK، سواء كان درساً متقدماً، تعارفاً مع شخص في مجالك، أو الدخول في عالم الاستثمار الملائكي. بماذا تفكرين؟"
+            : "Hi, I'm Layla — I help women find what they need inside PLAYBOOK, whether that's the right masterclass, an intro to someone in their industry, or getting into angel investing. What's on your mind?";
         
         this.renderMessage(greeting, 'ai', false);
         this.el('input').focus();
@@ -407,10 +409,10 @@ class ChatInstance {
                     <div class="quick-btns-hint">Not sure where to start? Try one of these:</div>
                     <div class="quick-btns" id="${cid}-quickBtns"
                          role="group" aria-label="Quick message suggestions">
-                        <button class="quick-btn" data-text="I want to join PLAYBOOK as a member">✨ Join</button>
-                        <button class="quick-btn" data-text="Tell me about investing through Women Spark">💰 Invest</button>
-                        <button class="quick-btn" data-text="What masterclasses do you offer?">📚 Learn</button>
-                        <button class="quick-btn" data-text="I'm looking for mentorship">🌟 Connect</button>
+                        <button class="quick-btn" data-text="I'm thinking about joining — what do I actually get?">✨ Membership</button>
+                        <button class="quick-btn" data-text="I'm curious about angel investing">💰 Invest</button>
+                        <button class="quick-btn" data-text="I want to learn new skills — what masterclasses do you have?">📚 Learn</button>
+                        <button class="quick-btn" data-text="I'm looking for a mentor or to expand my network">🌟 Connect</button>
                     </div>
                     <div class="client-input-row">
                         <input type="text" id="${cid}-input"
@@ -550,7 +552,7 @@ const ChatManager = {
 
         if (!restored) {
             instance.renderMessage(
-                "Hi, I'm Layla — your guide to PLAYBOOK. What are you looking to get out of the network?",
+                "Hi, I'm Layla — I help women find what they need inside PLAYBOOK, whether that's the right masterclass, an intro to someone in their industry, or getting into angel investing. What's on your mind?",
                 'ai', false
             );
         }
