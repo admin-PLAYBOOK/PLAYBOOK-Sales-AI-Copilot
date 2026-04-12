@@ -1265,6 +1265,6 @@ body.admin-page {
 .running-summary {
     font-size: 13px;
     line-height: 1.6;
-    color: var(--text-secondary, #94a3b8);
+    color: var(--admin-text-secondary);
     white-space: pre-wrap;
 }
