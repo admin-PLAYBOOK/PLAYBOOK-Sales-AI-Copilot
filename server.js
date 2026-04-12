@@ -334,6 +334,7 @@ app.post('/api/admin/login', express.json(), async (req, res) => {
 
     res.cookie('admin_session', sessionId, {
         httpOnly: true, sameSite: 'strict',
+        secure: process.env.NODE_ENV === 'production',
         maxAge: 8 * 60 * 60 * 1000, path: '/',
     });
     res.json({ success: true });
@@ -738,6 +739,12 @@ app.post('/api/chat', async (req, res) => {
         leadData.dialect         = sessionMemory[convId]?.dialect        || leadData.dialect        || null;
 
         // ── Step 3: HubSpot — only sync when email is first captured (fire-and-forget) ──
+        const fullHistory = [
+            ...history,
+            { role: 'user', content: message },
+            { role: 'assistant', content: botReply },
+        ];
+
         const emailIsNew = leadData.email && !previousLead.email;
         let hubspotResult = clientLeadData?.hubspot || { success: false, message: 'No email yet — continuing conversation' };
 
@@ -755,11 +762,6 @@ app.post('/api/chat', async (req, res) => {
         }
 
         // ── Step 4: Save to DB (fire-and-forget style to not delay stream close) ──
-        const fullHistory = [
-            ...history,
-            { role: 'user', content: message },
-            { role: 'assistant', content: botReply },
-        ];
 
         const savePayload = {
             id: convId, timestamp: new Date().toISOString(),

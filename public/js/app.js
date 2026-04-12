@@ -79,7 +79,7 @@ class ChatInstance {
             messagesEl.innerHTML = '';
 
             this.el('quickBtns').style.display = 'none';
-            const hint = this.el('quickBtns').previousElementSibling;
+            const hint = this.el('quickBtns')?.previousElementSibling;
             if (hint?.classList.contains('quick-btns-hint')) hint.style.display = 'none';
             this.quickBtnsHidden = true;
 
@@ -109,7 +109,7 @@ class ChatInstance {
 
         if (!this.quickBtnsHidden) {
             this.el('quickBtns').style.display = 'none';
-            const hint = this.el('quickBtns').previousElementSibling;
+            const hint = this.el('quickBtns')?.previousElementSibling;
             if (hint?.classList.contains('quick-btns-hint')) hint.style.display = 'none';
             this.quickBtnsHidden = true;
         }
@@ -315,7 +315,7 @@ class ChatInstance {
         const messagesEl = this.el('messages');
         messagesEl.innerHTML = '';
         this.el('quickBtns').style.display = 'flex';
-        const hint = this.el('quickBtns').previousElementSibling;
+        const hint = this.el('quickBtns')?.previousElementSibling;
         if (hint?.classList.contains('quick-btns-hint')) hint.style.display = 'block';
         
         // Use language-appropriate greeting
