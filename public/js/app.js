@@ -340,7 +340,7 @@ class ChatInstance {
 
         if (sender === 'ai') {
             div.innerHTML = `
-                <div class="msg-avatar"><img src="/images/layla_pfp.png" alt="Layla" class="avatar-img"></div>
+                <div class="msg-avatar"><img src="/images/layla_pfp1.png" alt="Layla" class="avatar-img"></div>
                 <div class="msg-body">
                     <div class="msg-bubble">${typeof marked !== 'undefined' ? marked.parse(text) : escapeHtml(text)}</div>
                     <div class="msg-time">${time}</div>
@@ -369,7 +369,7 @@ class ChatInstance {
 
         const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         div.innerHTML = `
-            <div class="msg-avatar"><img src="/images/layla_pfp.png" alt="Layla" class="avatar-img"></div>
+            <div class="msg-avatar"><img src="/images/layla_pfp1.png" alt="Layla" class="avatar-img"></div>
             <div class="msg-body">
                 <div class="msg-bubble">
                     <span class="typing-indicator"><span></span><span></span><span></span></span>
@@ -393,7 +393,7 @@ class ChatInstance {
         panel.innerHTML = `
             <div class="client-wrap">
                 <div class="client-header">
-                    <div class="client-avatar" aria-hidden="true"><img src="/images/layla_pfp.png" alt="Layla" class="avatar-img"></div>
+                    <div class="client-avatar" aria-hidden="true"><img src="/images/layla_pfp1.png" alt="Layla" class="avatar-img"></div>
                     <div class="client-header-text">
                         <div class="client-name">Layla</div>
                         <div class="client-status">
