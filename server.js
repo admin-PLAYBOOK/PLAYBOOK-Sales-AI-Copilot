@@ -21,7 +21,18 @@ const app = express();
 // Basic HTTP security headers
 try {
     const helmet = require('helmet');
-    app.use(helmet({ contentSecurityPolicy: false })); // CSP disabled to allow CDN scripts
+    app.use(helmet({
+        contentSecurityPolicy: false, // CSP disabled to allow CDN scripts
+        frameguard: false,            // Disable X-Frame-Options so helmet doesn't block iframes
+    }));
+    // Allow embedding from Webflow — update these domains to match yours
+    app.use((req, res, next) => {
+        res.setHeader(
+            'Content-Security-Policy',
+            "frame-ancestors 'self' https://*.webflow.io https://*.webflow.com"
+        );
+        next();
+    });
 } catch (_) {
     console.warn('ℹ️  helmet not installed — run: npm install helmet');
 }
