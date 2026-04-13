@@ -47,6 +47,7 @@ async function initSchema() {
                 ON admin_sessions (expires_at);
         `);
         console.log('✅ Database schema ready');
+        setInterval(() => pool.query('SELECT 1').catch(() => {}), 4 * 60 * 1000); // keep Neon awake
     } catch (err) {
         console.error('❌ Schema init error:', err.message);
         throw err;
