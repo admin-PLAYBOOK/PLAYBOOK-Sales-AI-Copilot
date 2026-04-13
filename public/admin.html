@@ -4,188 +4,213 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PLAYBOOK — Admin</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/admin.css">
 </head>
-<body class="admin-page">
+<body>
 
-    <!-- ── Login Gate ── -->
-    <div id="loginGate" class="login-gate">
-        <div class="login-card">
-            <div class="login-logo">PLAYBOOK</div>
-            <div class="login-title">Admin Access</div>
-            <div class="login-subtitle">Sales Copilot Dashboard</div>
-            <input type="password" id="passwordInput" placeholder="Enter password" autocomplete="current-password">
-            <div id="loginError" class="login-error" style="display:none">Incorrect password</div>
-            <button id="loginBtn">Sign in →</button>
+<!-- ── LOGIN ── -->
+<div id="loginGate" class="login-gate">
+    <div class="login-card">
+        <div class="login-brand">
+            <span class="login-logo">PLAYBOOK</span>
+            <span class="login-dot">·</span>
+            <span class="login-sub">Admin</span>
         </div>
+        <h1 class="login-title">Good to see you.</h1>
+        <p class="login-hint">Enter your password to continue.</p>
+        <div class="login-field">
+            <input type="password" id="passwordInput" placeholder="Password" autocomplete="current-password">
+            <button id="loginBtn">→</button>
+        </div>
+        <div id="loginError" class="login-error">Incorrect password — try again.</div>
     </div>
+</div>
 
-    <!-- ── Admin Dashboard ── -->
-    <div id="adminDash" class="admin-dash" style="display:none">
+<!-- ── DASHBOARD ── -->
+<div id="adminDash" class="dashboard" style="display:none">
 
-        <div class="admin-sidebar">
-            <div class="sidebar-header">
-                <div class="sidebar-logo">PLAYBOOK</div>
-                <div class="sidebar-label">Sales Copilot</div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="sidebar-top">
+            <div class="sidebar-brand">
+                <span class="brand-name">PLAYBOOK</span>
+                <button id="themeToggle" class="theme-btn" title="Toggle theme">☀️</button>
             </div>
 
-            <!-- Stats bar -->
-            <div class="stats-bar" id="statsBar">
-                <div class="stat-item">
-                    <span class="stat-value" id="statTotal">—</span>
-                    <span class="stat-label">Total</span>
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-num" id="statTotal">—</span>
+                    <span class="stat-lbl">Total</span>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-value stat-high" id="statHigh">—</span>
-                    <span class="stat-label">High</span>
+                <div class="stat-card stat-card--high">
+                    <span class="stat-num" id="statHigh">—</span>
+                    <span class="stat-lbl">High</span>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-value stat-medium" id="statMedium">—</span>
-                    <span class="stat-label">Medium</span>
+                <div class="stat-card stat-card--med">
+                    <span class="stat-num" id="statMedium">—</span>
+                    <span class="stat-lbl">Medium</span>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-value stat-low" id="statLow">—</span>
-                    <span class="stat-label">Low</span>
+                <div class="stat-card stat-card--low">
+                    <span class="stat-num" id="statLow">—</span>
+                    <span class="stat-lbl">Low</span>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-value stat-email" id="statEmails">—</span>
-                    <span class="stat-label">Emails</span>
+                <div class="stat-card stat-card--email">
+                    <span class="stat-num" id="statEmails">—</span>
+                    <span class="stat-lbl">Emails</span>
                 </div>
             </div>
 
-            <div class="sidebar-section-label">Live Conversations</div>
-
-            <!-- ── Search ── -->
-            <div class="search-bar">
-                <input type="text" id="searchInput" class="search-input" placeholder="Search name or email…" autocomplete="off" aria-label="Search conversations">
+            <!-- Search -->
+            <div class="search-wrap">
+                <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search name or email…" autocomplete="off">
             </div>
 
-            <!-- ── Filters ── -->
-            <div class="filter-bar">
-                <button class="filter-pill filter-pill-active" data-intent="all">All</button>
-                <button class="filter-pill" data-intent="High">🔴 High</button>
-                <button class="filter-pill" data-intent="Medium">🟡 Medium</button>
-                <button class="filter-pill" data-intent="Low">⚪ Low</button>
-                <label class="filter-checkbox" id="filterEmailLabel">
-                    <input type="checkbox" id="filterEmail">
-                    <span class="filter-checkbox-box"></span>
-                    ✉️ Has email
-                </label>
+            <!-- Filters -->
+            <div class="filter-row">
+                <button class="pill pill--active" data-intent="all">All</button>
+                <button class="pill" data-intent="High">🔴 High</button>
+                <button class="pill" data-intent="Medium">🟡 Med</button>
+                <button class="pill" data-intent="Low">⚪ Low</button>
             </div>
-
-            <div id="conversationFeed" class="conversation-feed" role="list"></div>
-
-            <div class="sidebar-footer">
-                <div id="liveCount" class="live-count">
-                    <span class="status-dot"></span>
-                    <span id="countText">0 conversations</span>
-                </div>
-                <button class="refresh-btn" id="refreshBtn" type="button">⟳</button>
-                <button class="logout-btn" id="logoutBtn" type="button">Sign out</button>
-            </div>
+            <label class="email-filter">
+                <input type="checkbox" id="filterEmail">
+                <span class="email-filter-box"></span>
+                Has email
+            </label>
         </div>
 
-        <div class="admin-main">
-            <div id="emptyState" class="admin-empty-state" role="status">
-                <div class="empty-icon">📊</div>
-                <div class="empty-title">Select a conversation</div>
-                <div class="empty-sub">Click any entry on the left to see full analysis</div>
+        <!-- Feed -->
+        <div id="conversationFeed" class="feed" role="list"></div>
+
+        <!-- Footer -->
+        <div class="sidebar-footer">
+            <span class="live-dot"></span>
+            <span id="countText">0 conversations</span>
+            <button id="refreshBtn" class="icon-btn" title="Refresh">⟳</button>
+            <button id="logoutBtn" class="icon-btn" title="Sign out">⏏</button>
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main" id="mainArea">
+
+        <!-- Empty state -->
+        <div id="emptyState" class="empty-state">
+            <div class="empty-icon">📊</div>
+            <div class="empty-title">Select a conversation</div>
+            <div class="empty-sub">Pick one from the sidebar to see the full breakdown.</div>
+        </div>
+
+        <!-- Detail view -->
+        <div id="convDetail" class="detail" style="display:none">
+
+            <!-- Detail header -->
+            <div class="detail-header">
+                <div class="detail-header-left">
+                    <div class="detail-name" id="detailName">—</div>
+                    <div class="detail-meta" id="detailMeta">—</div>
+                </div>
+                <div class="detail-header-right">
+                    <span id="detailChannel" class="badge badge--channel"></span>
+                    <span id="detailVibe" class="badge badge--vibe"></span>
+                    <span id="detailIntent" class="badge badge--intent"></span>
+                    <span id="slackBadge" class="badge badge--slack" style="display:none">✅ Slack alerted</span>
+                    <button id="deleteBtn" class="delete-btn">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        Delete
+                    </button>
+                </div>
             </div>
 
-            <div id="convDetail" class="conv-detail" style="display:none">
+            <!-- Cards grid -->
+            <div class="cards-grid">
 
-                <div class="detail-header" id="detailHeader">
-                    <div class="detail-header-left">
-                        <div class="detail-name" id="detailName">—</div>
-                        <div class="detail-meta" id="detailMeta">—</div>
-                    </div>
-                    <div class="detail-header-right">
-                        <span id="detailChannel" class="channel-badge"></span>
-                        <span id="detailVibeBadge" class="vibe-badge"></span>
-                        <span id="detailPriority" class="priority-badge"></span>
-                        <button id="deleteConvBtn" class="delete-conv-btn" title="Delete this conversation">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-                                <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg> Delete
-                        </button>
-                    </div>
+                <!-- Lead Data -->
+                <div class="card">
+                    <div class="card-title">Lead Data</div>
+                    <div id="leadGrid" class="lead-grid"></div>
                 </div>
 
-                <div class="detail-grid">
-                    <div class="detail-card">
-                        <div class="detail-card-title">📋 Lead Data</div>
-                        <div class="lead-grid" id="leadGrid"></div>
-                        <div class="intent-row" id="intentRow"></div>
-                        <div class="vibe-note" id="intentSignals"></div>
-                    </div>
+                <!-- Vibe -->
+                <div class="card">
+                    <div class="card-title">Conversation Vibe</div>
+                    <div id="vibeCard"></div>
+                </div>
 
-                    <div class="detail-card">
-                        <div class="detail-card-title">🎭 Conversation Vibe</div>
-                        <div id="vibeDetail"></div>
-                    </div>
-
-                    <div class="detail-card span-2">
-                        <div class="detail-card-title collapsible-toggle" id="salesToggle" role="button" tabindex="0" aria-expanded="false">
-                            🎯 Sales Recommendations <span class="collapsible-chevron">▶</span>
-                        </div>
-                        <div id="salesContent" class="collapsible-content collapsed">
-                            <div class="rec-grid">
-                                <div>
-                                    <div class="rec-label">Next Action</div>
-                                    <div class="rec-box" id="nextAction">—</div>
-                                </div>
-                                <div>
-                                    <div class="rec-label">Suggested Follow-up Email</div>
-                                    <div class="rec-box" id="followUp">—</div>
-                                </div>
+                <!-- Sales Recs -->
+                <div class="card card--wide">
+                    <button class="card-title card-title--toggle" id="salesToggle" aria-expanded="false">
+                        Sales Recommendations
+                        <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    </button>
+                    <div id="salesBody" class="collapsible" style="display:none">
+                        <div class="rec-row">
+                            <div>
+                                <div class="rec-label">Next Action</div>
+                                <div class="rec-box" id="nextAction">—</div>
+                            </div>
+                            <div>
+                                <div class="rec-label">Follow-up Email</div>
+                                <div class="rec-box" id="followUp">—</div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="detail-card">
-                        <div class="detail-card-title collapsible-toggle" id="hubspotToggle" role="button" tabindex="0" aria-expanded="false">
-                            🔄 HubSpot
-                            <span id="slackAlertIndicator" class="slack-tick" title="Slack alert was sent" style="display:none">✅ Slack alerted</span>
-                            <span class="collapsible-chevron">▶</span>
-                        </div>
-                        <div id="hubspotContent" class="collapsible-content collapsed">
-                            <div id="hubspotStatus"></div>
-                            <div class="rec-label" id="convTimestamp" style="margin-top:12px"></div>
-                            <div class="rec-label" id="convModel" style="margin-top:4px"></div>
-                        </div>
-                    </div>
-
-                    <div class="detail-card" id="runningSummaryWrap" style="display:none">
-                        <div class="detail-card-title collapsible-toggle" id="summaryToggle" role="button" tabindex="0" aria-expanded="false">
-                            📝 Conversation Summary <span class="collapsible-chevron">▶</span>
-                        </div>
-                        <div id="runningSummaryText" class="collapsible-content running-summary collapsed"></div>
-                    </div>
-
-                    <div class="detail-card span-2">
-                        <div class="detail-card-title">💬 Conversation Transcript</div>
-                        <div class="transcript" id="transcript" role="log"></div>
+                <!-- HubSpot -->
+                <div class="card">
+                    <button class="card-title card-title--toggle" id="hubspotToggle" aria-expanded="false">
+                        HubSpot
+                        <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    </button>
+                    <div id="hubspotBody" class="collapsible" style="display:none">
+                        <div id="hubspotStatus"></div>
+                        <div class="meta-row" id="convTimestamp"></div>
+                        <div class="meta-row" id="convModel"></div>
                     </div>
                 </div>
+
+                <!-- Running Summary -->
+                <div class="card" id="summaryCard" style="display:none">
+                    <button class="card-title card-title--toggle" id="summaryToggle" aria-expanded="false">
+                        Conversation Summary
+                        <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    </button>
+                    <div id="summaryBody" class="collapsible summary-text" style="display:none"></div>
+                </div>
+
+                <!-- Transcript -->
+                <div class="card card--wide card--transcript">
+                    <div class="card-title">Transcript</div>
+                    <div id="transcript" class="transcript" role="log"></div>
+                </div>
+
             </div>
         </div>
-    </div>
+    </main>
+</div>
 
-    <script src="/js/theme.js"></script>
-    <script src="/js/admin.js"></script>
-
-    <!-- ── Delete confirmation modal ── -->
-    <div id="deleteModal" class="modal-backdrop" style="display:none" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-        <div class="modal-card">
-            <div class="modal-icon">🗑️</div>
-            <div class="modal-title" id="modalTitle">Delete conversation?</div>
-            <div class="modal-body">This will permanently remove the conversation and all its data. This cannot be undone.</div>
-            <div class="modal-actions">
-                <button class="modal-btn modal-btn-cancel" id="modalCancel">Cancel</button>
-                <button class="modal-btn modal-btn-confirm" id="modalConfirm">Delete</button>
-            </div>
+<!-- Delete modal -->
+<div id="deleteModal" class="modal-backdrop" style="display:none">
+    <div class="modal">
+        <div class="modal-icon">🗑️</div>
+        <div class="modal-title">Delete this conversation?</div>
+        <div class="modal-body">This is permanent and cannot be undone.</div>
+        <div class="modal-actions">
+            <button id="modalCancel" class="modal-btn modal-btn--cancel">Cancel</button>
+            <button id="modalConfirm" class="modal-btn modal-btn--confirm">Delete</button>
         </div>
     </div>
+</div>
+
+<script src="/js/theme.js"></script>
+<script src="/js/admin.js"></script>
 </body>
 </html>

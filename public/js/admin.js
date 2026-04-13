@@ -1,57 +1,86 @@
 // ─────────────────────────────────────────────
-// ADMIN DASHBOARD — admin.js
+// PLAYBOOK Admin — admin.js (rebuilt)
 // ─────────────────────────────────────────────
 
 let currentConvId    = null;
 let allConversations = [];
 let activeFilters    = { intent: 'all', emailOnly: false, search: '' };
+let refreshTimer     = null;
+let isLoading        = false;
 
-let refreshInterval = null;
+// ─────────────────────────────────────────────
+// THEME
+// ─────────────────────────────────────────────
+
+function initTheme() {
+    const saved  = localStorage.getItem('pb_theme');
+    const system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    applyTheme(saved || system);
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+}
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('pb_theme', theme);
+    const btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
 
 // ─────────────────────────────────────────────
 // LOGIN
 // ─────────────────────────────────────────────
 
-async function adminLogin() {
-    const password = document.getElementById('passwordInput').value.trim();
-    const errorEl  = document.getElementById('loginError');
-    const loginBtn = document.getElementById('loginBtn');
+async function login() {
+    const pw  = document.getElementById('passwordInput').value.trim();
+    const err = document.getElementById('loginError');
+    const btn = document.getElementById('loginBtn');
+    if (!pw) return;
 
-    if (!password) return;
-
-    loginBtn.disabled    = true;
-    loginBtn.textContent = 'Signing in…';
-    errorEl.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = '…';
+    err.style.display = 'none';
 
     try {
         const res = await fetch('/api/admin/login', {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify({ password }),
+            body:    JSON.stringify({ password: pw }),
         });
 
         if (res.ok) {
             document.getElementById('loginGate').style.display = 'none';
             document.getElementById('adminDash').style.display = 'flex';
-            await loadStats();
-            await loadConversations();
-            if (refreshInterval) clearInterval(refreshInterval);
-            refreshInterval = setInterval(async () => {
-                await loadStats();
-                await loadConversations();
-            }, 30_000);
+            boot();
         } else {
-            errorEl.style.display = 'block';
+            err.style.display = 'block';
             document.getElementById('passwordInput').value = '';
             document.getElementById('passwordInput').focus();
         }
-    } catch (err) {
-        errorEl.textContent   = 'Connection error — try again';
-        errorEl.style.display = 'block';
+    } catch (_) {
+        err.textContent   = 'Connection error — try again.';
+        err.style.display = 'block';
     } finally {
-        loginBtn.disabled    = false;
-        loginBtn.textContent = 'Sign in →';
+        btn.disabled = false;
+        btn.textContent = '→';
     }
+}
+
+// ─────────────────────────────────────────────
+// BOOT (post-login)
+// ─────────────────────────────────────────────
+
+async function boot() {
+    await loadStats();
+    await loadConversations();
+    refreshTimer = setInterval(async () => {
+        await loadStats();
+        await loadConversations();
+        if (currentConvId) openConversation(currentConvId);
+    }, 10_000);
 }
 
 // ─────────────────────────────────────────────
@@ -60,131 +89,111 @@ async function adminLogin() {
 
 async function loadStats() {
     try {
-        const res  = await fetch('/api/admin/stats');
+        const res = await fetch('/api/admin/stats');
+        if (res.status === 401) { handleExpiry(); return; }
         if (!res.ok) return;
-        const data = await res.json();
-
-        document.getElementById('statTotal').textContent  = data.total           ?? '—';
-        document.getElementById('statHigh').textContent   = data.high_intent     ?? '—';
-        document.getElementById('statMedium').textContent = data.medium_intent   ?? '—';
-        document.getElementById('statLow').textContent    = data.low_intent      ?? '—';
-        document.getElementById('statEmails').textContent = data.emails_captured ?? '—';
+        const d = await res.json();
+        document.getElementById('statTotal').textContent  = d.total           ?? '—';
+        document.getElementById('statHigh').textContent   = d.high_intent     ?? '—';
+        document.getElementById('statMedium').textContent = d.medium_intent   ?? '—';
+        document.getElementById('statLow').textContent    = d.low_intent      ?? '—';
+        document.getElementById('statEmails').textContent = d.emails_captured ?? '—';
     } catch (_) {}
 }
 
 // ─────────────────────────────────────────────
-// FILTERS
-// ─────────────────────────────────────────────
-
-function applyFilters() {
-    let filtered = allConversations;
-
-    if (activeFilters.intent !== 'all') {
-        filtered = filtered.filter(c =>
-            (c.lead_data?.intent_level || 'Low') === activeFilters.intent
-        );
-    }
-
-    if (activeFilters.emailOnly) {
-        filtered = filtered.filter(c => c.lead_data?.email);
-    }
-
-    if (activeFilters.search) {
-        const q = activeFilters.search;
-        filtered = filtered.filter(c =>
-            (c.lead_data?.name              || '').toLowerCase().includes(q) ||
-            (c.lead_data?.email             || '').toLowerCase().includes(q) ||
-            (c.lead_data?.main_interest     || '').toLowerCase().includes(q) ||
-            (c.lead_data?.conversation_vibe || '').toLowerCase().includes(q) ||
-            (c.lead_data?.lead_type         || '').toLowerCase().includes(q)
-        );
-    }
-
-    renderFeed(filtered);
-
-    // Only update count label when a filter is active — otherwise loadConversations owns it
-    if (activeFilters.intent !== 'all' || activeFilters.emailOnly || activeFilters.search) {
-        document.getElementById('countText').textContent =
-            `${filtered.length} conversation${filtered.length !== 1 ? 's' : ''}`;
-    }
-}
-
-function setIntentFilter(value) {
-    activeFilters.intent = value;
-    document.querySelectorAll('.filter-pill[data-intent]').forEach(btn => {
-        btn.classList.toggle('filter-pill-active', btn.dataset.intent === value);
-    });
-    applyFilters();
-}
-
-function toggleEmailFilter() {
-    activeFilters.emailOnly = document.getElementById('filterEmail').checked;
-    applyFilters();
-}
-
-// ─────────────────────────────────────────────
-// CONVERSATION FEED
+// CONVERSATIONS LIST
 // ─────────────────────────────────────────────
 
 async function loadConversations() {
-    try {
-        const res  = await fetch('/api/admin/conversations?limit=200');
-        if (!res.ok) return;
-        const data = await res.json();
+    if (isLoading) return;
+    isLoading = true;
 
+    const btn = document.getElementById('refreshBtn');
+    btn?.classList.add('spinning');
+
+    try {
+        const res = await fetch('/api/admin/conversations?limit=200');
+        if (res.status === 401) { handleExpiry(); return; }
+        if (!res.ok) { renderFeedError(`Failed to load (${res.status})`); return; }
+
+        const data      = await res.json();
         allConversations = data.conversations || [];
-        // Use server-reported total (accurate even with pagination)
-        const serverTotal = data.total ?? allConversations.length;
+        const total     = data.total ?? allConversations.length;
         document.getElementById('countText').textContent =
-            `${serverTotal} conversation${serverTotal !== 1 ? 's' : ''}`;
+            `${total} conversation${total !== 1 ? 's' : ''}`;
         applyFilters();
-    } catch (_) {}
+    } catch (_) {
+        renderFeedError('Network error');
+    } finally {
+        isLoading = false;
+        btn?.classList.remove('spinning');
+    }
 }
 
-function renderFeed(conversations) {
-    const feed = document.getElementById('conversationFeed');
+function applyFilters() {
+    let list = allConversations;
 
-    // Preserve scroll position across re-renders
+    if (activeFilters.intent !== 'all') {
+        list = list.filter(c => (c.lead_data?.intent_level || 'Low') === activeFilters.intent);
+    }
+    if (activeFilters.emailOnly) {
+        list = list.filter(c => c.lead_data?.email);
+    }
+    if (activeFilters.search) {
+        const q = activeFilters.search;
+        list = list.filter(c =>
+            (c.lead_data?.name              || '').toLowerCase().includes(q) ||
+            (c.lead_data?.email             || '').toLowerCase().includes(q) ||
+            (c.lead_data?.main_interest     || '').toLowerCase().includes(q) ||
+            (c.lead_data?.conversation_vibe || '').toLowerCase().includes(q)
+        );
+    }
+
+    renderFeed(list);
+}
+
+function renderFeedError(msg) {
+    document.getElementById('conversationFeed').innerHTML =
+        `<div class="feed-empty">⚠️ ${esc(msg)}</div>`;
+}
+
+function renderFeed(list) {
+    const feed      = document.getElementById('conversationFeed');
     const prevScroll = feed.scrollTop;
+    feed.innerHTML  = '';
 
-    feed.innerHTML = '';
-
-    if (!conversations.length) {
-        feed.innerHTML = '<div class="feed-empty">No conversations match</div>';
+    if (!list.length) {
+        feed.innerHTML = '<div class="feed-empty">No conversations match.</div>';
         return;
     }
 
-    conversations.forEach(conv => {
-        const name      = conv.lead_data?.name  || 'Anonymous';
-        const intent    = conv.lead_data?.intent_level || 'Low';
-        const vibe      = conv.lead_data?.conversation_vibe || '';
-        const vibeEmoji = getVibeEmoji(vibe);
-        const time      = formatTime(conv.timestamp);
-        const channel   = conv.lead_data?.channel || 'Web';
-        const channelTag = channel === 'WhatsApp'
-            ? `<span class="feed-channel feed-channel-whatsapp">📱</span>`
-            : `<span class="feed-channel feed-channel-web">🌐</span>`;
+    list.forEach(conv => {
+        const name   = conv.lead_data?.name  || 'Anonymous';
+        const intent = conv.lead_data?.intent_level || 'Low';
+        const vibe   = conv.lead_data?.conversation_vibe || '';
+        const time   = relativeTime(conv.timestamp);
+        const channel = conv.lead_data?.channel || 'Web';
 
-        const item      = document.createElement('div');
-        item.className  = 'feed-item' + (conv.id === currentConvId ? ' feed-item-active' : '');
-        item.setAttribute('role', 'listitem');
+        const item = document.createElement('div');
+        item.className = 'feed-item' + (conv.id === currentConvId ? ' feed-item--active' : '');
         item.dataset.id = conv.id;
+        item.setAttribute('role', 'listitem');
 
         item.innerHTML = `
             <div class="feed-item-top">
-                <div class="feed-name">${escapeHtml(name)}</div>
-                <div class="feed-time">${channelTag}${time}</div>
+                <div class="feed-name">${esc(name)}</div>
+                <div class="feed-time">${channel === 'WhatsApp' ? '📱 ' : '🌐 '}${time}</div>
             </div>
             <div class="feed-item-bottom">
-                <div class="feed-vibe">${vibeEmoji} ${escapeHtml(vibe)}</div>
-                <div class="feed-intent intent-${intent.toLowerCase()}">${intent}</div>
+                <div class="feed-vibe">${vibeEmoji(vibe)} ${esc(vibe)}</div>
+                <div class="feed-intent feed-intent--${intent.toLowerCase()}">${intent}</div>
             </div>`;
 
         item.addEventListener('click', () => openConversation(conv.id));
         feed.appendChild(item);
     });
 
-    // Restore scroll position so auto-refresh doesn't jump
     feed.scrollTop = prevScroll;
 }
 
@@ -195,19 +204,22 @@ function renderFeed(conversations) {
 async function openConversation(id) {
     currentConvId = id;
 
+    // Highlight active item
     document.querySelectorAll('.feed-item').forEach(el => {
-        el.classList.toggle('feed-item-active', el.dataset.id === id);
+        el.classList.toggle('feed-item--active', el.dataset.id === id);
     });
 
     try {
-        const res  = await fetch(`/api/admin/conversations/${id}`);
+        const res = await fetch(`/api/admin/conversations/${id}`);
+        if (res.status === 401) { handleExpiry(); return; }
         if (!res.ok) return;
-        const { conversation: conv } = await res.json();
+        const { conversation } = await res.json();
 
-        renderDetail(conv);
+        renderDetail(conversation);
 
         document.getElementById('emptyState').style.display = 'none';
-        document.getElementById('convDetail').style.display = 'block';
+        document.getElementById('convDetail').style.display = 'flex';
+        document.getElementById('convDetail').style.flexDirection = 'column';
     } catch (_) {}
 }
 
@@ -217,139 +229,101 @@ function renderDetail(conv) {
     const hubspot = conv.hubspot      || {};
     const history = conv.history      || [];
 
-    // Header
-    const dialectMap = {
-        gulf:      { flag: '🇸🇦', label: 'Gulf',      cls: 'dialect-badge-gulf'     },
-        levantine: { flag: '🇱🇧', label: 'Levantine', cls: 'dialect-badge-levant'   },
-        egyptian:  { flag: '🇪🇬', label: 'Egyptian',  cls: 'dialect-badge-egypt'    },
-        moroccan:  { flag: '🇲🇦', label: 'Moroccan',  cls: 'dialect-badge-moroccan' },
-        msa:       { flag: '📖',  label: 'MSA',       cls: 'dialect-badge-msa'      },
-        unknown:   { flag: '🌍',  label: 'Unknown',   cls: 'dialect-badge-unknown'  },
-    };
-    const countryFlagMap = {
-        'bahrain':      '🇧🇭', 'saudi arabia': '🇸🇦', 'kuwait':   '🇰🇼',
-        'uae':          '🇦🇪', 'oman':         '🇴🇲', 'qatar':    '🇶🇦',
-        'jordan':       '🇯🇴', 'lebanon':      '🇱🇧', 'syria':    '🇸🇾',
-        'palestine':    '🇵🇸', 'egypt':        '🇪🇬', 'morocco':  '🇲🇦',
-        'iraq':         '🇮🇶', 'libya':        '🇱🇾', 'tunisia':  '🇹🇳',
-    };
-    const dialectKey   = (lead.dialect || '').toLowerCase();
-    const dialectInfo  = dialectMap[dialectKey] || null;
-    const country      = lead.dialect_country || '';
-    const countryFlag  = countryFlagMap[country.toLowerCase()] || '';
-    const countryLabel = (country && country !== 'Unknown') ? ` · ${countryFlag} ${country}` : '';
-    const dialectLabel = dialectInfo
-        ? ` <span class="dialect-badge ${dialectInfo.cls}">${dialectInfo.flag} ${dialectInfo.label}${escapeHtml(countryLabel)}</span>`
-        : '';
-    document.getElementById('detailName').innerHTML = escapeHtml(lead.name || 'Anonymous') + dialectLabel;
-    document.getElementById('detailMeta').textContent = lead.email
-        ? `${lead.email} · ${formatFull(conv.timestamp)}`
-        : formatFull(conv.timestamp);
+    // ── Header ──
+    document.getElementById('detailName').textContent = lead.name || 'Anonymous';
+    document.getElementById('detailMeta').textContent = [
+        lead.email,
+        conv.timestamp ? fullDate(conv.timestamp) : null,
+    ].filter(Boolean).join('  ·  ');
 
-    // Vibe badge
-    const vibe = lead.conversation_vibe || '';
-    document.getElementById('detailVibeBadge').textContent = `${getVibeEmoji(vibe)} ${vibe}`;
+    const channel = lead.channel || 'Web';
+    const chEl    = document.getElementById('detailChannel');
+    chEl.textContent = channel === 'WhatsApp' ? '📱 WhatsApp' : '🌐 Web';
 
-    // Channel badge
-    const channel    = lead.channel || conv.channel || 'Web';
-    const channelEl  = document.getElementById('detailChannel');
-    channelEl.className   = `channel-badge channel-${channel.toLowerCase()}`;
-    channelEl.textContent = channel === 'WhatsApp' ? '📱 WhatsApp' : '🌐 Web';
+    const vibe  = lead.conversation_vibe || '';
+    const vibeEl = document.getElementById('detailVibe');
+    vibeEl.textContent = vibe ? `${vibeEmoji(vibe)} ${vibe}` : '';
+    vibeEl.style.display = vibe ? '' : 'none';
 
-    // Priority badge
-    const pri   = (sales.priority || 'Low').toLowerCase();
-    const priEl = document.getElementById('detailPriority');
-    priEl.className   = `priority-badge priority-${pri}`;
-    priEl.textContent = sales.priority || 'Low';
+    const intent    = lead.intent_level || 'Low';
+    const intentEl  = document.getElementById('detailIntent');
+    intentEl.textContent  = intent;
+    intentEl.className    = `badge badge--intent-${intent.toLowerCase()}`;
 
-    // Lead data grid
+    const slackEl = document.getElementById('slackBadge');
+    slackEl.style.display = (lead.slack_alert_sent || conv.slack_alert_sent) ? '' : 'none';
+
+    // Delete
+    document.getElementById('deleteBtn').onclick = () => openDeleteModal(conv.id);
+
+    // ── Lead data ──
     const fields = [
-        { label: 'Name',      value: lead.name          || '—' },
-        { label: 'Email',     value: lead.email         || '—' },
-        { label: 'Lead Type', value: lead.lead_type     || '—' },
-        { label: 'Interest',  value: lead.main_interest || '—' },
-        { label: 'Blocker',   value: lead.blocker       || 'None identified' },
-    ];
+        { label: 'Name',      value: lead.name          },
+        { label: 'Email',     value: lead.email         },
+        { label: 'Lead Type', value: lead.lead_type     },
+        { label: 'Interest',  value: lead.main_interest },
+        { label: 'Blocker',   value: lead.blocker && lead.blocker !== 'none identified' ? lead.blocker : null },
+        { label: 'Pillar',    value: lead.pillar_interest },
+    ].filter(f => f.value);
+
     document.getElementById('leadGrid').innerHTML = fields.map(f => `
         <div class="lead-field">
-            <div class="lead-label">${f.label}</div>
-            <div class="lead-value">${escapeHtml(String(f.value))}</div>
-        </div>`).join('');
+            <div class="lead-label">${esc(f.label)}</div>
+            <div class="lead-value">${esc(String(f.value))}</div>
+        </div>`).join('') || '<div class="lead-field"><div class="lead-value" style="color:var(--text-3)">No data extracted yet.</div></div>';
 
-    // Intent row — intent level + pillar_interest pill
-    const intentLevel = lead.intent_level || 'Low';
-    const intentColor = intentLevel === 'High' ? 'error' : intentLevel === 'Medium' ? 'warning' : 'success';
-    const pillar      = (lead.pillar_interest || '').toLowerCase();
-    const pillarHtml  = pillar
-        ? `<span class="pillar-pill pillar-${pillar}">${escapeHtml(lead.pillar_interest)}</span>`
-        : '';
-    document.getElementById('intentRow').innerHTML =
-        `<span class="status-badge status-${intentColor}">${intentLevel} Intent</span>${pillarHtml}`;
-    document.getElementById('intentSignals').textContent = lead.intent_signals || '';
+    // ── Vibe ──
+    document.getElementById('vibeCard').innerHTML = `
+        <div class="vibe-big">${vibeEmoji(vibe)}</div>
+        <div class="vibe-name">${esc(vibe || '—')}</div>
+        <div class="vibe-note">${esc(lead.vibe_note || lead.intent_signals || '—')}</div>`;
 
-    // Vibe detail
-    document.getElementById('vibeDetail').innerHTML = `
-        <div class="vibe-badge-large">${getVibeEmoji(vibe)} ${escapeHtml(vibe)}</div>
-        <div class="vibe-note">${escapeHtml(lead.vibe_note || '—')}</div>`;
-
-    // Sales recs
+    // ── Sales ──
     document.getElementById('nextAction').textContent = sales.recommended_next_action || '—';
     document.getElementById('followUp').textContent   = sales.follow_up_message       || '—';
 
-    // HubSpot
-    const hs = document.getElementById('hubspotStatus');
+    // ── HubSpot ──
+    const hsEl = document.getElementById('hubspotStatus');
     if (hubspot.success) {
-        hs.innerHTML = `
-            <span class="status-badge status-success">✅ ${escapeHtml(hubspot.message || 'Synced')}</span>
-            ${hubspot.contactId ? `<div class="lead-label" style="margin-top:8px">Contact ID: ${hubspot.contactId}</div>` : ''}`;
+        hsEl.innerHTML = `<div class="hs-status hs-status--ok">✅ ${esc(hubspot.message || 'Synced')}${hubspot.contactId ? ` · ID ${hubspot.contactId}` : ''}</div>`;
     } else {
-        hs.innerHTML = `<span class="status-badge status-warning">⏳ ${escapeHtml(hubspot.message || 'Not synced')}</span>`;
+        hsEl.innerHTML = `<div class="hs-status hs-status--no">⏳ ${esc(hubspot.message || 'Not synced yet')}</div>`;
     }
-
-    // Timestamp + model
-    document.getElementById('convTimestamp').textContent = `Conversation: ${formatFull(conv.timestamp)}`;
+    document.getElementById('convTimestamp').textContent = conv.timestamp ? `Saved: ${fullDate(conv.timestamp)}` : '';
     document.getElementById('convModel').textContent     = conv.model_used ? `Model: ${conv.model_used}` : '';
 
-    // Running summary
-    const summaryEl  = document.getElementById('runningSummaryText');
-    const summaryWrap = document.getElementById('runningSummaryWrap');
-    const summary = lead.running_summary || conv.running_summary || '';
+    // ── Running summary ──
+    const summary     = lead.running_summary || conv.running_summary || '';
+    const summaryCard = document.getElementById('summaryCard');
+    const summaryBody = document.getElementById('summaryBody');
     if (summary) {
-        summaryEl.textContent   = summary;
-        summaryWrap.style.display = 'block';
+        summaryCard.style.display = '';
+        summaryBody.textContent   = summary;
     } else {
-        summaryWrap.style.display = 'none';
+        summaryCard.style.display = 'none';
     }
 
-    // Slack alert tick
-    const slackEl = document.getElementById('slackAlertIndicator');
-    const slackSent = lead.slack_alert_sent || conv.slack_alert_sent || false;
-    slackEl.style.display = slackSent ? 'inline-flex' : 'none';
-
-    // Transcript
-    const transcriptEl = document.getElementById('transcript');
+    // ── Transcript ──
+    const tEl = document.getElementById('transcript');
     if (!history.length) {
-        transcriptEl.innerHTML = '<div class="transcript-empty">No transcript available</div>';
+        tEl.innerHTML = '<div class="t-empty">No transcript available.</div>';
     } else {
-        transcriptEl.innerHTML = history.map(m => {
+        tEl.innerHTML = history.map(m => {
             const isAI = m.role === 'assistant';
-            return `<div class="transcript-msg ${isAI ? 'transcript-ai' : 'transcript-user'}">
-                        <div class="transcript-sender">${isAI ? 'Layla' : 'User'}</div>
-                        <div class="transcript-text">${escapeHtml(m.content)}</div>
+            return `<div class="t-msg t-msg--${isAI ? 'ai' : 'user'}">
+                        <div class="t-sender">${isAI ? 'Layla' : 'User'}</div>
+                        <div class="t-bubble">${esc(m.content)}</div>
                     </div>`;
         }).join('');
-        transcriptEl.scrollTop = 0;
+        tEl.scrollTop = 0;
     }
-
-    // Delete button
-    document.getElementById('deleteConvBtn').onclick = () => showDeleteModal(conv.id);
 }
 
 // ─────────────────────────────────────────────
-// DELETE MODAL
+// DELETE
 // ─────────────────────────────────────────────
 
-function showDeleteModal(id) {
+function openDeleteModal(id) {
     const modal = document.getElementById('deleteModal');
     modal.style.display = 'flex';
 
@@ -381,11 +355,40 @@ async function deleteConversation(id) {
 }
 
 // ─────────────────────────────────────────────
-// LOGOUT
+// COLLAPSIBLES
 // ─────────────────────────────────────────────
 
-async function adminLogout() {
-    if (refreshInterval) { clearInterval(refreshInterval); refreshInterval = null; }
+function initCollapsibles() {
+    [
+        ['salesToggle',   'salesBody'],
+        ['hubspotToggle', 'hubspotBody'],
+        ['summaryToggle', 'summaryBody'],
+    ].forEach(([toggleId, bodyId]) => {
+        const toggle = document.getElementById(toggleId);
+        const body   = document.getElementById(bodyId);
+        if (!toggle || !body) return;
+
+        toggle.addEventListener('click', () => {
+            const open = toggle.getAttribute('aria-expanded') === 'true';
+            toggle.setAttribute('aria-expanded', String(!open));
+            body.style.display = open ? 'none' : '';
+        });
+    });
+}
+
+// ─────────────────────────────────────────────
+// SESSION EXPIRY / LOGOUT
+// ─────────────────────────────────────────────
+
+function handleExpiry() {
+    clearInterval(refreshTimer);
+    document.getElementById('conversationFeed').innerHTML =
+        '<div class="feed-empty">Session expired — reloading…</div>';
+    setTimeout(() => location.reload(), 2000);
+}
+
+async function logout() {
+    clearInterval(refreshTimer);
     try { await fetch('/api/admin/logout', { method: 'POST' }); } catch (_) {}
     location.reload();
 }
@@ -394,32 +397,30 @@ async function adminLogout() {
 // HELPERS
 // ─────────────────────────────────────────────
 
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = String(text || '');
-    return div.innerHTML;
+function esc(text) {
+    const d = document.createElement('div');
+    d.textContent = String(text ?? '');
+    return d.innerHTML;
 }
 
-function getVibeEmoji(vibe) {
-    const map = {
+function vibeEmoji(vibe) {
+    return {
         serious: '🎯', excited: '🔥', curious: '🤔', skeptical: '🧐',
         funny: '😄', annoyed: '😤', trolling: '🧌', distracted: '💭',
         overwhelmed: '😰', cold: '🧊',
-    };
-    return map[vibe] || '💬';
+    }[vibe] || '💬';
 }
 
-function formatTime(ts) {
+function relativeTime(ts) {
     if (!ts) return '';
-    const d    = new Date(ts);
-    const mins = Math.floor((Date.now() - d) / 60000);
+    const mins = Math.floor((Date.now() - new Date(ts)) / 60000);
     if (mins < 1)    return 'just now';
     if (mins < 60)   return `${mins}m ago`;
     if (mins < 1440) return `${Math.floor(mins / 60)}h ago`;
-    return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    return new Date(ts).toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
 
-function formatFull(ts) {
+function fullDate(ts) {
     if (!ts) return '';
     return new Date(ts).toLocaleString([], {
         month: 'short', day: 'numeric', year: 'numeric',
@@ -432,56 +433,47 @@ function formatFull(ts) {
 // ─────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    initCollapsibles();
+
     // Login
-    document.getElementById('loginBtn').addEventListener('click', adminLogin);
+    document.getElementById('loginBtn').addEventListener('click', login);
     document.getElementById('passwordInput').addEventListener('keydown', e => {
-        if (e.key === 'Enter') adminLogin();
+        if (e.key === 'Enter') login();
     });
 
-    // Logout & refresh
-    document.getElementById('logoutBtn').addEventListener('click', adminLogout);
+    // Logout + refresh
+    document.getElementById('logoutBtn').addEventListener('click', logout);
     document.getElementById('refreshBtn').addEventListener('click', async () => {
         await loadStats();
         await loadConversations();
         if (currentConvId) openConversation(currentConvId);
     });
 
-    // Filter pills — intent
-    document.querySelectorAll('.filter-pill[data-intent]').forEach(btn => {
-        btn.addEventListener('click', () => setIntentFilter(btn.dataset.intent));
+    // Intent filter pills
+    document.querySelectorAll('.pill[data-intent]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            activeFilters.intent = btn.dataset.intent;
+            document.querySelectorAll('.pill[data-intent]').forEach(b =>
+                b.classList.toggle('pill--active', b === btn)
+            );
+            applyFilters();
+        });
     });
 
-    // Filter checkbox — email only
-    document.getElementById('filterEmail').addEventListener('change', toggleEmailFilter);
+    // Email filter
+    document.getElementById('filterEmail').addEventListener('change', e => {
+        activeFilters.emailOnly = e.target.checked;
+        applyFilters();
+    });
 
-    // Search input
+    // Search
     document.getElementById('searchInput').addEventListener('input', e => {
         activeFilters.search = e.target.value.toLowerCase().trim();
         applyFilters();
     });
 
-    // Collapsible cards — Sales, HubSpot, Conversation Summary
-    function makeCollapsible(toggleId, contentId) {
-        const toggle  = document.getElementById(toggleId);
-        const content = document.getElementById(contentId);
-        if (!toggle || !content) return;
-        const chevron = toggle.querySelector('.collapsible-chevron');
-
-        toggle.addEventListener('click', () => {
-            const expanded = toggle.getAttribute('aria-expanded') === 'true';
-            toggle.setAttribute('aria-expanded', String(!expanded));
-            content.classList.toggle('collapsed', expanded);
-        });
-        toggle.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle.click(); }
-        });
-    }
-
-    makeCollapsible('salesToggle',   'salesContent');
-    makeCollapsible('hubspotToggle', 'hubspotContent');
-    makeCollapsible('summaryToggle', 'runningSummaryText');
-
-    // Close delete modal on backdrop click
+    // Modal: close on backdrop click or Escape
     document.getElementById('deleteModal').addEventListener('click', e => {
         if (e.target === document.getElementById('deleteModal'))
             document.getElementById('deleteModal').style.display = 'none';
@@ -489,5 +481,5 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape')
             document.getElementById('deleteModal').style.display = 'none';
-    })
+    });
 });

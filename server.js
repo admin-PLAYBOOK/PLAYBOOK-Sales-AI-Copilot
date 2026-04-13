@@ -520,7 +520,11 @@ app.get('/api/chat/:id', async (req, res) => {
     try {
         const conv = await db.getConversation(id);
         if (!conv) return res.status(404).json({ error: 'Conversation not found' });
-        res.json({ history: conv.history || [] });
+        // Return lead_data along with history for client restoration
+        res.json({ 
+            history: conv.history || [],
+            lead_data: conv.lead_data || {}
+        });
     } catch (err) {
         console.error('Error fetching conversation:', err.message);
         res.status(500).json({ error: 'Failed to fetch conversation' });
@@ -654,12 +658,80 @@ app.post('/api/chat', async (req, res) => {
             leadData: clientLeadData || {},
         })}\n\n`);
 
-        // ── Step 2: Conditional extraction ──
-        // Skip all post-processing if the client already disconnected
-        if (clientGone) { res.end(); return; }
+        // ── Fast contact capture — scan every message for email and name instantly.
+        // No AI call. Guarantees contact info is saved even if extraction is skipped.
+        const emailMatch = message.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
+        const capturedEmail = emailMatch ? emailMatch[0].toLowerCase() : null;
 
+        let capturedName = null;
+        // Stop capture before conjunctions: "my name is Alya and my email..." → "Alya" only
+        const namePatterns = [
+            /(?:my name is|i['\u2019]?m called|call me)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)(?=\s*[,!.\n]|\s+and\b|\s+my\b|\s+i\b|$)/i,
+            /^(?:i['\u2019]?m|i am)\s+([A-Z][a-z]+)\s*[,!.]?\s*$/i,
+            /^(?:hi|hey|hello)[,\s]+(?:i['\u2019]?m\s+)?([A-Z][a-z]+)\s*(?:here|speaking)?\s*[,!.]?\s*$/i,
+            /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s+(?:is|will be)\s+my\s+name/i,
+            /^(?:it['\u2019]?s|this is)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s*[,!.]?\s*$/i,
+        ];
+        for (const re of namePatterns) {
+            const m = message.match(re);
+            if (m) {
+                capturedName = (m[1] || m[2])?.trim() || null;
+                if (capturedName) break;
+            }
+        }
+
+        const resolvedEmail = capturedEmail || clientLeadData?.email || null;
+        const resolvedName  = capturedName  || clientLeadData?.name  || null;
+        if (capturedEmail || capturedName) {
+            console.log(`📇 Contact capture — name: ${resolvedName}, email: ${resolvedEmail}`);
+        }
+
+        // ── Minimal save immediately after stream — guarantees conversation appears in admin
+        // even if the client disconnects before extraction completes.
+        const immediateHistory = [
+            ...history,
+            { role: 'user', content: message },
+            { role: 'assistant', content: botReply },
+        ];
+        const immediateLeadData = {
+            name:              resolvedName  || clientLeadData?.name  || null,
+            email:             resolvedEmail || clientLeadData?.email || null,
+            lead_type:         clientLeadData?.lead_type         || 'Community',
+            main_interest:     clientLeadData?.main_interest     || null,
+            intent_level:      clientLeadData?.intent_level      || 'Low',
+            intent_signals:    clientLeadData?.intent_signals    || null,
+            conversation_vibe: clientLeadData?.conversation_vibe || 'curious',
+            vibe_note:         clientLeadData?.vibe_note         || null,
+            blocker:           clientLeadData?.blocker           || null,
+            pillar_interest:   clientLeadData?.pillar_interest   || null,
+            dialect:           sessionMemory[convId]?.dialect    || clientLeadData?.dialect || null,
+            channel:           req.body.channel || clientLeadData?.channel || 'Web',
+            running_summary:   sessionMemory[convId]?.runningSummary || clientLeadData?.running_summary || null,
+            slack_alert_sent:  clientLeadData?.slack_alert_sent  || false,
+        };
+        db.saveConversation({
+            id: convId, timestamp: new Date().toISOString(),
+            history: immediateHistory, lead_data: immediateLeadData,
+            sales_output: {
+                recommended_next_action: clientLeadData?.recommended_next_action || 'Review conversation manually',
+                follow_up_message:       clientLeadData?.follow_up_message       || '',
+                priority:                clientLeadData?.priority                || 'Low',
+            },
+            hubspot:    clientLeadData?.hubspot    || { success: false, message: 'No email yet — continuing conversation' },
+            model_used: model,
+        }).catch(err => console.warn('⚠️ Immediate save failed:', err.message));
+
+        // ── Step 2: Conditional extraction ──
+        // NOTE: we do NOT skip extraction if clientGone — the proxy/platform
+        // often closes the SSE connection during the quiet period between
+        // sending `done` and running extraction, which would cause us to
+        // lose all lead data. We always run extraction and save to DB.
+        // clientGone only prevents us from writing to res (handled below).
+
+        // Always extract if we just captured a new email or name — never miss contact info
+        const contactJustArrived = (capturedEmail && !previousLead.email) || (capturedName && !previousLead.name);
         const likelyHasData = message.length > 15 || /[@.]/.test(message);
-        const runExtraction = likelyHasData && shouldExtract(turnCount, message, previousLead);
+        const runExtraction = contactJustArrived || (likelyHasData && shouldExtract(turnCount, message, previousLead));
 
         let leadData = {
             name: previousLead.name || null,
@@ -674,7 +746,7 @@ app.post('/api/chat', async (req, res) => {
             pillar_interest:  previousLead.pillar_interest  || null,
             dialect:          sessionMemory[convId]?.dialect || previousLead.dialect || null,
             channel:          req.body.channel || previousLead.channel || 'Web',
-            running_summary:  null,
+            running_summary:  sessionMemory[convId]?.runningSummary || previousLead.running_summary || null,
             slack_alert_sent: previousLead.slack_alert_sent || false,
         };
         let salesOutput = {
@@ -682,13 +754,22 @@ app.post('/api/chat', async (req, res) => {
             follow_up_message: previousLead.follow_up_message || '',
             priority: previousLead.priority || 'Low',
         };
+        
+        console.log(`🔍 turn:${turnCount} runExtraction:${runExtraction} capturedName:"${capturedName}" capturedEmail:"${capturedEmail}" shouldExtract:${likelyHasData && shouldExtract(turnCount, message, previousLead)}`);
 
         if (runExtraction) {
             try {
+                // Include full exchange so extractor sees Layla's reply too
+                const fullHistoryForExtraction = [
+                    ...history,
+                    { role: 'user', content: message },
+                    { role: 'assistant', content: botReply },
+                ];
+                
                 const { text: extractionText } = await callClaude(
                     EXTRACTION_SYSTEM,
-                    [{ role: 'user', content: buildExtractionPrompt(history, message, previousLead) }],
-                    600
+                    [{ role: 'user', content: buildExtractionPrompt(fullHistoryForExtraction, previousLead) }],
+                    1000
                 );
                 const jsonMatch = extractionText.match(/\{[\s\S]*\}/);
                 const parsed    = JSON.parse(jsonMatch ? jsonMatch[0] : extractionText);
@@ -703,11 +784,11 @@ app.post('/api/chat', async (req, res) => {
                     conversation_vibe: parsed.conversation_vibe || leadData.conversation_vibe,
                     vibe_note:         parsed.vibe_note         || leadData.vibe_note,
                     blocker:           parsed.blocker           || leadData.blocker,
-                    pillar_interest:  parsed.pillar_interest  || leadData.pillar_interest,
-                    dialect:          sessionMemory[convId]?.dialect || leadData.dialect,
-                    channel:          leadData.channel,
-                    running_summary:  sessionMemory[convId]?.runningSummary || null,
-                    slack_alert_sent: leadData.slack_alert_sent,
+                    pillar_interest:   parsed.pillar_interest   || leadData.pillar_interest,
+                    dialect:           sessionMemory[convId]?.dialect || leadData.dialect,
+                    channel:           leadData.channel,
+                    running_summary:   sessionMemory[convId]?.runningSummary || null,
+                    slack_alert_sent:  leadData.slack_alert_sent,
                 };
                 salesOutput = {
                     recommended_next_action: parsed.recommended_next_action || salesOutput.recommended_next_action,
@@ -718,11 +799,11 @@ app.post('/api/chat', async (req, res) => {
 
                 // ── Slack alert for high-intent leads — only when email is known ──
                 if (leadData.intent_level === 'High' && previousLead.intent_level !== 'High' && leadData.email) {
-                    const fullHistory = [
+                    const fullHistoryForSlack = [
                         ...history,
                         { role: 'user', content: message },
                     ];
-                    sendSlackAlert({ ...leadData, ...salesOutput }, fullHistory)
+                    sendSlackAlert({ ...leadData, ...salesOutput }, fullHistoryForSlack)
                         .catch(err => console.warn('⚠️ Slack alert error:', err.message));
                     leadData.slack_alert_sent = true;
                 }
@@ -733,6 +814,10 @@ app.post('/api/chat', async (req, res) => {
                 }
             } catch (e) {
                 console.warn('⚠️ Extraction failed:', e.message);
+                // Log more details if it's a JSON parsing error
+                if (e.message.includes('JSON')) {
+                    console.warn('   Last extraction attempt may have had malformed JSON');
+                }
             }
         }
 

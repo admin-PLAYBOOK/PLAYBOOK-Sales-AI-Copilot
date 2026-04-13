@@ -185,6 +185,8 @@ class ChatInstance {
                             // Commit to history
                             this.addToHistory('assistant', fullText);
                             // Seed leadData with whatever the server echoed back (pre-extraction)
+                            // Note: we do NOT saveSession() here — wait for lead_update with
+                            // fully-extracted data so localStorage is never stale.
                             if (evt.leadData) {
                                 this.leadData = { ...this.leadData, ...evt.leadData };
                                 if (evt.leadData.name) {
@@ -194,11 +196,13 @@ class ChatInstance {
                         }
 
                         // lead_update arrives after extraction completes — update with fresh data
+                        // and only now persist to localStorage so we never cache stale pre-extraction data.
                         if (evt.lead_update && evt.leadData) {
                             this.leadData = { ...this.leadData, ...evt.leadData };
                             if (evt.leadData.name) {
                                 ChatManager.updateTabLabel(this.instanceIndex, evt.leadData.name);
                             }
+                            this.saveSession();
                         }
 
                         if (evt.error) {

@@ -328,65 +328,83 @@ const EXTRACTION_SYSTEM = `You are a silent data extractor. Given a conversation
 /**
  * Build the extraction user-turn message.
  *
- * @param {Array}  conversationHistory  Previous turns (already includes the latest user message)
- * @param {string} latestMessage        The newest user message
- * @param {Object} previousLeadData     The last known lead data — only update fields that changed
+ * @param {Array}  fullHistory        All turns including the latest user message and Layla's reply
+ * @param {Object} previousLeadData   The last known lead data — only update fields that changed
  */
-function buildExtractionPrompt(conversationHistory, latestMessage, previousLeadData = {}) {
-    // Only send the last 6 messages — extraction needs recent context, not full history
-    const transcript = conversationHistory
-        .slice(-6)
+function buildExtractionPrompt(fullHistory, previousLeadData = {}) {
+    // Send the last 8 messages for context
+    const transcript = fullHistory
+        .slice(-8)
         .map(m => `${m.role === 'user' ? 'User' : 'Layla'}: ${m.content}`)
         .join('\n');
 
     const prevJson = JSON.stringify(previousLeadData, null, 2);
 
-    return `You are updating a lead record after a new message. Only change fields where the conversation provides new or better information. If a field already has a good value and nothing contradicts it, keep it as-is.
+    return `You are updating a lead record after a new message. 
 
-Previous lead data:
+IMPORTANT RULES:
+1. ONLY update a field if the user explicitly provides NEW information in the conversation
+2. If a field already has a value and the user hasn't said anything contradictory or new about it, KEEP the existing value
+3. For name: Extract the first name (and last name if given) when the user introduces themselves naturally — "my name is X", "I'm X", "it's X", "hi I'm X", "call me X". CRITICAL: only capture the actual name word(s), stop before any conjunction like "and", "my", "i". Example: "my name is Alya and my email is..." → name is "Alya" only. Do NOT extract descriptive words like "interested", "a founder", "happy".
+4. For email: Only extract if user provides an email address pattern (contains @ and domain)
+5. For intent_level: Update based on user's explicit interest signals
+6. For all other fields: Only change if conversation clearly indicates a change
+
+Previous lead data (keep these unless new info contradicts):
 ${prevJson}
 
 Full conversation so far:
 ${transcript}
-User: ${latestMessage}
 
-Return ONLY valid JSON — no markdown, no explanation:
+Return ONLY valid JSON — no markdown, no explanation, no extra text. Use null for unknown fields:
 {
   "name": "full name or null",
   "email": "email or null",
   "lead_type": "Membership" | "Learning" | "Investing" | "Partnerships" | "Community" | "Mentorship",
   "main_interest": "specific interest based on conversation or null",
-  "pillar_interest": "connect | learn | invest | membership | event | unknown",
-  "dialect": "gulf | levant | egypt | msa | unknown",
+  "pillar_interest": "connect" | "learn" | "invest" | "membership" | "event" | "unknown",
+  "dialect": "gulf" | "levant" | "egypt" | "msa" | "unknown",
   "intent_level": "High" | "Medium" | "Low",
-  "intent_signals": "1-sentence explanation of why you assessed this intent level, quoting specific things they said",
+  "intent_signals": "quote specific things they said that indicate intent level",
   "conversation_vibe": "serious" | "excited" | "curious" | "skeptical" | "funny" | "annoyed" | "trolling" | "distracted" | "overwhelmed" | "cold",
-  "vibe_note": "1-sentence observation about tone that would help a sales rep prepare — be specific and direct",
-  "blocker": "the main reason they haven't converted yet — price / time / relevance / trust / not decision-maker / none identified",
-  "recommended_next_action": "specific next step for sales team — be concrete, reference what they said",
-  "follow_up_message": "2-3 sentence email. Start with something specific they said (not generic). Reference one relevant PLAYBOOK offering. End with one clear CTA. Match the tone of the conversation — don't be formal if they weren't.",
+  "vibe_note": "one specific observation about their tone",
+  "blocker": "price" | "time" | "relevance" | "trust" | "not decision-maker" | "none identified",
+  "recommended_next_action": "specific concrete next step",
+  "follow_up_message": "2-3 sentence personalized email",
   "priority": "High" | "Medium" | "Low"
 }`;
 }
 
 /**
  * Decide whether extraction is worth running this turn.
- * Skip the first 2 turns (not enough signal) and skip turns
- * where nothing meaningful changed.
  *
  * @param {number} turnCount           How many user turns have happened (1-indexed)
  * @param {string} latestMessage       The newest user message
  * @param {Object} previousLeadData    The last known lead data
  */
 function shouldExtract(turnCount, latestMessage, previousLeadData) {
-    // Always skip the first 2 turns — too little signal
-    if (turnCount <= 2) return false;
+    const msg = latestMessage.toLowerCase().trim();
 
-    const msg = latestMessage.toLowerCase();
+    // ALWAYS extract if email pattern is detected - highest priority
+    if (!previousLeadData.email && /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/.test(msg)) {
+        return true;
+    }
 
-    // Always extract if we might be getting contact info for the first time
-    if (!previousLeadData.email && (msg.includes('@') || msg.includes('email'))) return true;
-    if (!previousLeadData.name && msg.split(' ').length >= 2 && msg.length < 60) return true;
+    // ALWAYS extract if name pattern is detected (explicit introduction)
+    if (!previousLeadData.name) {
+        const explicitNamePatterns = [
+            /(?:my name is|i['\u2019]?m called|this is|call me)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})/i,
+            /^([A-Z][a-z]+)\s+(?:is|will be)\s+my\s+name/i,
+        ];
+        for (const re of explicitNamePatterns) {
+            if (re.test(msg)) return true;
+        }
+    }
+
+    // Don't skip first turn if there's meaningful content (not just "hi")
+    if (turnCount <= 1 && msg.length < 8 && /^(hi|hey|hello|yo|sup)$/i.test(msg)) {
+        return false;
+    }
 
     // Always extract on high-signal phrases
     const highSignal = [
@@ -394,12 +412,12 @@ function shouldExtract(turnCount, latestMessage, previousLeadData) {
         'invest', 'founder', 'partner', 'enterprise', 'team', 'company',
         'interested', 'tell me more', 'i want', "i'd like", 'ready',
         'connect', 'network', 'mentor', 'learn', 'bootcamp', 'masterclass',
-        'hr', 'programme', 'program', 'organisation', 'organization'
+        'hr', 'programme', 'program', 'organisation', 'organization',
     ];
     if (highSignal.some(s => msg.includes(s))) return true;
 
-    // Extract every 3 turns regardless (keeps data fresh without running every turn)
-    if (turnCount % 3 === 0) return true;
+    // Extract every 5 turns regardless (reduced frequency to save API calls)
+    if (turnCount % 5 === 0) return true;
 
     return false;
 }
