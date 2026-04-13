@@ -216,7 +216,8 @@ class ChatInstance {
             // Final scroll
             this.el('messages').scrollTop = this.el('messages').scrollHeight;
 
-        } catch (_) {
+        } catch (err) {
+            console.error('Stream error:', err?.message || err);
             const bubble = aiMsgEl.querySelector('.msg-bubble');
             if (bubble) bubble.textContent = 'Connection issue — please try again.';
             this.conversationHistory.pop();

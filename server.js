@@ -74,6 +74,7 @@ async function callClaude(systemPrompt, messages, maxTokens = 600) {
                         'anthropic-version':   '2023-06-01',
                         'content-type':        'application/json',
                     },
+                    timeout: 25000,
                 }
             );
             return { text: response.data.content[0].text, model };
@@ -722,11 +723,9 @@ app.post('/api/chat', async (req, res) => {
         }).catch(err => console.warn('⚠️ Immediate save failed:', err.message));
 
         // ── Step 2: Conditional extraction ──
-        // NOTE: we do NOT skip extraction if clientGone — the proxy/platform
-        // often closes the SSE connection during the quiet period between
-        // sending `done` and running extraction, which would cause us to
-        // lose all lead data. We always run extraction and save to DB.
-        // clientGone only prevents us from writing to res (handled below).
+        // NOTE: do NOT early-return here even if clientGone — the proxy often
+        // closes the SSE connection during the quiet gap between sending `done`
+        // and running extraction, which would silently skip all lead data saves.
 
         // Always extract if we just captured a new email or name — never miss contact info
         const contactJustArrived = (capturedEmail && !previousLead.email) || (capturedName && !previousLead.name);
@@ -755,8 +754,6 @@ app.post('/api/chat', async (req, res) => {
             priority: previousLead.priority || 'Low',
         };
         
-        console.log(`🔍 turn:${turnCount} runExtraction:${runExtraction} capturedName:"${capturedName}" capturedEmail:"${capturedEmail}" shouldExtract:${likelyHasData && shouldExtract(turnCount, message, previousLead)}`);
-
         if (runExtraction) {
             try {
                 // Include full exchange so extractor sees Layla's reply too
