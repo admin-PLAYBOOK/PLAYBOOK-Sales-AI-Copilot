@@ -23,8 +23,6 @@ An intelligent AI-powered sales assistant that engages with potential members, c
 - [API Endpoints](#api-endpoints)
 - [HubSpot Integration](#hubspot-integration)
 - [Deployment](#deployment)
-- [Troubleshooting](#troubleshooting)
-- [License](#license)
 
 ## Prerequisites
 
@@ -52,8 +50,18 @@ DATABASE_URL=postgresql://username:password@host:port/database?sslmode=require
 CLAUDE_API_KEY=your_anthropic_claude_api_key
 HUBSPOT_ACCESS_TOKEN=your_hubspot_private_app_token
 
+- HubSpot (Optional — contacts still created without this)
+HUBSPOT_LIST_ID=your_hubspot_list_id
+
+- Slack (Optional — high-intent lead alerts)
+SLACK_WEBHOOK_URL=your_slack_incoming_webhook_url
+
+- Redis (Optional — cross-session user memory)
+UPSTASH_REDIS_URL=your_upstash_redis_url
+UPSTASH_REDIS_TOKEN=your_upstash_redis_token
+
 - Admin 
-ADMIN_TOKEN= ENTERPASSWORDHERE
+ADMIN_TOKEN=ENTERPASSWORDHERE
 
 - Environment
 NODE_ENV=development
@@ -69,6 +77,8 @@ PORT=3000
 - Create a new private app with these scopes:
 ``crm.objects.contacts.read``
 ``crm.objects.contacts.write``
+``crm.lists.read``
+``crm.lists.write``
 - Copy the access token
 
 3. Database Setup

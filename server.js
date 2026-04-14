@@ -382,9 +382,9 @@ async function requireAdminSession(req, res, next) {
 async function addContactToList(contactId) {
     if (!HUBSPOT_LIST_ID || !HUBSPOT_TOKEN) return;
     try {
-        await axios.post(
-            `https://api.hubapi.com/contacts/v1/lists/${HUBSPOT_LIST_ID}/add`,
-            { vids: [parseInt(contactId, 10)] },
+        await axios.put(
+            `https://api.hubapi.com/crm/v3/lists/${HUBSPOT_LIST_ID}/memberships/add`,
+            { recordIds: [String(contactId)] },
             { headers: { Authorization: `Bearer ${HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' } }
         );
         console.log(`📋 Added contact ${contactId} to HubSpot list ${HUBSPOT_LIST_ID}`);
