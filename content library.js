@@ -1,6 +1,3 @@
-// Content library — auto-generated from Playbook Learning Library CSV
-// 331 items with thumbnail URLs
-
 const CONTENT_LIBRARY = [
   {
     "title": "Hacking Motherhood & Your Career",

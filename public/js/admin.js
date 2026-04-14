@@ -1,34 +1,9 @@
-// ─────────────────────────────────────────────
-// PLAYBOOK Admin — admin.js (rebuilt)
-// ─────────────────────────────────────────────
-
 let currentConvId    = null;
 let allConversations = [];
 let activeFilters    = { intent: 'all', emailOnly: false, search: '' };
 let refreshTimer     = null;
 let isLoading        = false;
 
-// ─────────────────────────────────────────────
-// THEME
-// ─────────────────────────────────────────────
-
-function initTheme() {
-    const saved  = localStorage.getItem('pb_theme');
-    const system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    applyTheme(saved || system);
-
-    document.getElementById('themeToggle').addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme');
-        applyTheme(current === 'dark' ? 'light' : 'dark');
-    });
-}
-
-function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('pb_theme', theme);
-    const btn = document.getElementById('themeToggle');
-    if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
-}
 
 // ─────────────────────────────────────────────
 // LOGIN
@@ -433,7 +408,6 @@ function fullDate(ts) {
 // ─────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
-    initTheme();
     initCollapsibles();
 
     // Login

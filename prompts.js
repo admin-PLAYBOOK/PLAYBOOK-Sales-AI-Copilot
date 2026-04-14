@@ -1,11 +1,4 @@
 // ─────────────────────────────────────────────
-// prompts.js — All AI prompt definitions
-// Edit this file to tune Layla's behaviour,
-// knowledge, or extraction logic without
-// touching any server code.
-// ─────────────────────────────────────────────
-
-// ─────────────────────────────────────────────
 // SYSTEM PROMPT — Layla's full persona & knowledge
 // ─────────────────────────────────────────────
 

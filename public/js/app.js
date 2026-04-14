@@ -36,6 +36,7 @@ class ChatInstance {
         localStorage.setItem(key, JSON.stringify({
             conversationId: this.conversationId,
             leadData:       this.leadData,
+            language:       this.language,
             savedAt:        Date.now(),
         }));
     }
@@ -51,6 +52,7 @@ class ChatInstance {
                 return null;
             }
             if (data.leadData) this.leadData = data.leadData;
+            if (data.language) this.language = data.language;
             return data.conversationId;
         } catch (_) { return null; }
     }
@@ -87,6 +89,10 @@ class ChatInstance {
                 this.renderMessage(m.content, m.role === 'user' ? 'user' : 'ai', false);
             });
             messagesEl.scrollTop = messagesEl.scrollHeight;
+
+            // Re-apply language so toggle button and dir attribute are correct
+            if (this.language && this.language !== 'en') this.setLanguage(this.language);
+
             return true;
         } catch (_) { return false; }
     }
@@ -465,7 +471,7 @@ class ChatInstance {
             if (!counter) return;
             if (len >= 1800) {
                 counter.textContent = `${len}/2000`;
-                counter.style.color = len >= 1950 ? 'var(--color-error, #e74c3c)' : 'var(--color-warning, #f39c12)';
+                counter.style.color = len >= 1950 ? 'var(--error)' : 'var(--warning)';
             } else {
                 counter.textContent = '';
             }

@@ -8,8 +8,6 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
-    "@supabase/ssr": "^0.10.2",
-    "@supabase/supabase-js": "^2.103.0",
     "@upstash/redis": "^1.37.0",
     "axios": "^1.6.0",
     "dotenv": "^16.6.1",

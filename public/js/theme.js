@@ -1,53 +1,54 @@
-// Theme management
 const ThemeManager = {
+    STORAGE_KEY: 'pb_theme',
+
     init() {
-        // Load saved theme or use system preference
-        const savedTheme = localStorage.getItem('theme');
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        if (savedTheme) {
-            this.setTheme(savedTheme);
-        } else if (systemPrefersDark) {
-            this.setTheme('dark');
-        } else {
-            this.setTheme('light');
-        }
-        
-        this.createToggleButton();
+        const saved  = localStorage.getItem(this.STORAGE_KEY);
+        const system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        this.setTheme(saved || system, false);
+        this._attachButtons();
     },
-    
-    setTheme(theme) {
+
+    setTheme(theme, persist = true) {
         document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        
-        // Update toggle button icon if it exists
-        const toggleBtn = document.getElementById('themeToggle');
-        if (toggleBtn) {
-            toggleBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
-            toggleBtn.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`);
-        }
+        if (persist) localStorage.setItem(this.STORAGE_KEY, theme);
+
+        const icon  = theme === 'dark' ? '☀️' : '🌙';
+        const label = `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`;
+        document.querySelectorAll('.js-theme-toggle').forEach(btn => {
+            btn.textContent = icon;
+            btn.setAttribute('aria-label', label);
+        });
     },
-    
+
     toggle() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        this.setTheme(newTheme);
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        this.setTheme(current === 'dark' ? 'light' : 'dark');
     },
-    
-    createToggleButton() {
-        const toggleBtn = document.createElement('button');
-        toggleBtn.id = 'themeToggle';
-        toggleBtn.className = 'theme-toggle';
-        toggleBtn.onclick = () => this.toggle();
-        document.body.appendChild(toggleBtn);
-        
-        // Set initial icon
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        toggleBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+
+    _attachButtons() {
+        const isAdmin = !!document.getElementById('adminDash');
+
+        if (!isAdmin) {
+            // Client page: inject floating button if not already present
+            if (!document.querySelector('.js-theme-toggle')) {
+                const btn = document.createElement('button');
+                btn.className = 'theme-toggle js-theme-toggle';
+                btn.setAttribute('aria-label', 'Toggle theme');
+                document.body.appendChild(btn);
+            }
+        }
+
+        // Wire all .js-theme-toggle buttons (floating or inline)
+        document.querySelectorAll('.js-theme-toggle').forEach(btn => {
+            btn.addEventListener('click', () => this.toggle());
+        });
+
+        // Sync icons now that buttons exist
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        this.setTheme(current, false);
     }
 };
 
-// Initialize when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => ThemeManager.init());
 } else {
