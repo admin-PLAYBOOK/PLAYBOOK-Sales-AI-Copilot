@@ -14,7 +14,7 @@ const {
     shouldExtract 
 } = require('./prompts');
 const { Redis } = require('@upstash/redis');
-const { findContent, formatContentLink } = require('./content_library');
+const { findContent, formatContentLink } = require('./content library');
 
 const app = express();
 
