@@ -382,9 +382,9 @@ async function requireAdminSession(req, res, next) {
 async function addContactToList(contactId) {
     if (!HUBSPOT_LIST_ID || !HUBSPOT_TOKEN) return;
     try {
-        await axios.put(
-            `https://api.hubapi.com/crm/v3/lists/${HUBSPOT_LIST_ID}/memberships/add`,
-            { recordIds: [String(contactId)] },
+        await axios.post(
+            `https://api.hubapi.com/contacts/v1/lists/${HUBSPOT_LIST_ID}/add`,
+            { vids: [parseInt(contactId, 10)] },
             { headers: { Authorization: `Bearer ${HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' } }
         );
         console.log(`📋 Added contact ${contactId} to HubSpot list ${HUBSPOT_LIST_ID}`);
@@ -635,7 +635,7 @@ app.post('/api/chat', async (req, res) => {
         } catch (_) {}
 
         // Use summary to justify shorter history window
-        const historyLimit = runningSummary ? 8 : 18;
+        const historyLimit = runningSummary ? 6 : 12;
         const conversationMessages = [
             ...history.slice(-historyLimit).map(m => ({ role: m.role, content: m.content })),
             { role: 'user', content: message },
@@ -645,7 +645,7 @@ app.post('/api/chat', async (req, res) => {
             enrichedSystemPrompt,
             conversationMessages,
             res,
-            1400
+            600
         );
 
         console.log('💬 Layla:', botReply);
