@@ -104,7 +104,7 @@ function escapeXml(str) {
 // INIT — registers routes on the Express app
 // ─────────────────────────────────────────────
 
-function init(app, { callClaude, syncToHubspot, sendSlackAlert }) {
+function init(app, { callClaude, syncToHubspot, sendSlackAlert, sendSlackBotDownAlert, needsHumanHandoff, sendSlackHandoffAlert }) {
     // Twilio sends URL-encoded form data, not JSON
     app.use('/webhook/whatsapp', require('express').urlencoded({ extended: false }));
 
@@ -164,6 +164,12 @@ function init(app, { callClaude, syncToHubspot, sendSlackAlert }) {
                 { role: 'assistant', content: botReply },
             ];
             session.turnCount++;
+
+            // ── Human handoff detection ──
+            if (needsHumanHandoff && needsHumanHandoff(incomingMsg) && !session.leadData.handoff_alert_sent) {
+                sendSlackHandoffAlert(session.leadData, incomingMsg, 'WhatsApp').catch(() => {});
+                session.leadData.handoff_alert_sent = true;
+            }
 
             // ── Extraction (same logic as web route) ──
             const previousLead = { ...session.leadData };
@@ -248,6 +254,9 @@ function init(app, { callClaude, syncToHubspot, sendSlackAlert }) {
 
         } catch (err) {
             console.error('❌ WhatsApp handler error:', err.message);
+            if (err.message?.includes('All Claude models failed') && sendSlackBotDownAlert) {
+                sendSlackBotDownAlert(err.message, `WhatsApp: ${phone}`).catch(() => {});
+            }
             const fallback = isArabic(incomingMsg)
                 ? 'عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.'
                 : 'Sorry, something went wrong. Please try again in a moment.';

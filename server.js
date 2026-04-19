@@ -513,11 +513,76 @@ async function sendSlackAlert(leadData, conversationHistory) {
 }
 
 // ─────────────────────────────────────────────
+// SLACK — Bot down alert
+// ─────────────────────────────────────────────
+
+async function sendSlackBotDownAlert(errorMessage, context = '') {
+    const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+    if (!webhookUrl) return;
+
+    try {
+        await axios.post(webhookUrl, {
+            text: [
+                '🚨 *LAYLA IS DOWN* — All Claude models failed',
+                `*Error:* ${errorMessage}`,
+                context ? `*Context:* ${context}` : '',
+                `*Time:* ${new Date().toLocaleString()}`,
+                '→ Check the Railway deployment and Claude API status.',
+            ].filter(Boolean).join('\n'),
+        }, { headers: { 'Content-Type': 'application/json' } });
+        console.log('🔔 Slack bot-down alert sent');
+    } catch (err) {
+        console.warn('⚠️ Slack bot-down alert failed:', err.message);
+    }
+}
+
+// ─────────────────────────────────────────────
+// SLACK — Human handoff alert
+// ─────────────────────────────────────────────
+
+const HANDOFF_SIGNALS = [
+    'speak to someone', 'speak to a person', 'talk to someone', 'talk to a human',
+    'real person', 'human agent', 'not a bot', 'transfer me', 'connect me to',
+    'can i call', 'phone number', 'customer service', 'this is ridiculous',
+    'not helpful', "you're useless", 'escalate', 'manager', 'complaint',
+    'أريد التحدث', 'شخص حقيقي', 'مدير', 'شكوى',
+];
+
+function needsHumanHandoff(message) {
+    const lower = message.toLowerCase();
+    return HANDOFF_SIGNALS.some(s => lower.includes(s));
+}
+
+async function sendSlackHandoffAlert(leadData, lastMessage, channel) {
+    const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+    if (!webhookUrl) return;
+
+    try {
+        await axios.post(webhookUrl, {
+            text: [
+                '🙋 *HUMAN NEEDED* — User is asking for a real person',
+                `*Channel:* ${channel || leadData.channel || 'Web'}`,
+                leadData.whatsapp_phone ? `*WhatsApp:* ${leadData.whatsapp_phone}` : '',
+                `*Name:* ${leadData.name || 'Unknown'}`,
+                `*Email:* ${leadData.email || 'Not captured'}`,
+                `*Message:* "${lastMessage.slice(0, 300)}"`,
+                `*Intent:* ${leadData.intent_level || 'Unknown'}`,
+                `*Time:* ${new Date().toLocaleString()}`,
+                '→ Jump in on the conversation or reach out directly.',
+            ].filter(Boolean).join('\n'),
+        }, { headers: { 'Content-Type': 'application/json' } });
+        console.log('🔔 Slack handoff alert sent');
+    } catch (err) {
+        console.warn('⚠️ Slack handoff alert failed:', err.message);
+    }
+}
+
+// ─────────────────────────────────────────────
 // WHATSAPP — Twilio webhook
 // ─────────────────────────────────────────────
 
 const whatsapp = require('./whatsapp');
-whatsapp.init(app, { callClaude, syncToHubspot, sendSlackAlert });
+whatsapp.init(app, { callClaude, syncToHubspot, sendSlackAlert, sendSlackBotDownAlert, needsHumanHandoff, sendSlackHandoffAlert });
 
 // ─────────────────────────────────────────────
 // GET /api/chat/:id  — restore a conversation
@@ -668,6 +733,13 @@ app.post('/api/chat', async (req, res) => {
             timestamp: new Date().toISOString(),
             leadData: clientLeadData || {},
         })}\n\n`);
+
+        // ── Human handoff detection ──
+        if (needsHumanHandoff(message) && !clientLeadData?.handoff_alert_sent) {
+            sendSlackHandoffAlert(clientLeadData || {}, message, req.body.channel || 'Web')
+                .catch(() => {});
+            if (clientLeadData) clientLeadData.handoff_alert_sent = true;
+        }
 
         // ── Fast contact capture — scan every message for email and name instantly.
         // No AI call. Guarantees contact info is saved even if extraction is skipped.
@@ -894,6 +966,10 @@ app.post('/api/chat', async (req, res) => {
 
     } catch (error) {
         console.error('❌ Server error:', error.message);
+        // Fire bot-down alert if it's a Claude failure
+        if (error.message?.includes('All Claude models failed')) {
+            sendSlackBotDownAlert(error.message, `Conv: ${convId}`).catch(() => {});
+        }
         // Only write error to client if stream hasn't been closed yet
         if (!res.writableEnded) {
             try {

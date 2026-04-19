@@ -1,6 +1,6 @@
 let currentConvId    = null;
 let allConversations = [];
-let activeFilters    = { intent: 'all', emailOnly: false, search: '' };
+let activeFilters    = { intent: 'all', channel: 'all', emailOnly: false, search: '' };
 let refreshTimer     = null;
 let isLoading        = false;
 
@@ -111,6 +111,9 @@ function applyFilters() {
 
     if (activeFilters.intent !== 'all') {
         list = list.filter(c => (c.lead_data?.intent_level || 'Low') === activeFilters.intent);
+    }
+    if (activeFilters.channel !== 'all') {
+        list = list.filter(c => (c.lead_data?.channel || 'Web') === activeFilters.channel);
     }
     if (activeFilters.emailOnly) {
         list = list.filter(c => c.lead_data?.email);
@@ -429,6 +432,17 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => {
             activeFilters.intent = btn.dataset.intent;
             document.querySelectorAll('.pill[data-intent]').forEach(b =>
+                b.classList.toggle('pill--active', b === btn)
+            );
+            applyFilters();
+        });
+    });
+
+    // Channel filter pills
+    document.querySelectorAll('.pill[data-channel]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            activeFilters.channel = btn.dataset.channel;
+            document.querySelectorAll('.pill[data-channel]').forEach(b =>
                 b.classList.toggle('pill--active', b === btn)
             );
             applyFilters();

@@ -186,6 +186,10 @@ class ChatInstance {
                             // Stream complete — now parse full markdown including images
                             if (typeof marked !== 'undefined') {
                                 bubble.innerHTML = marked.parse(fullText);
+                                bubble.querySelectorAll('a[href]').forEach(a => {
+                                    a.target = '_blank';
+                                    a.rel = 'noopener noreferrer';
+                                });
                             }
                             this.el('messages').scrollTop = this.el('messages').scrollHeight;
                             // Commit to history
@@ -356,6 +360,10 @@ class ChatInstance {
                     <div class="msg-bubble">${typeof marked !== 'undefined' ? marked.parse(text) : escapeHtml(text)}</div>
                     <div class="msg-time">${time}</div>
                 </div>`;
+            div.querySelectorAll('a[href]').forEach(a => {
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+            });
         } else {
             div.innerHTML = `
                 <div class="msg-body">
