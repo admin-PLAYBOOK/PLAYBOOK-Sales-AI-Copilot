@@ -60,7 +60,7 @@ const redis = process.env.UPSTASH_REDIS_URL
   : null;
 
 /**
- * Non-streaming call — used for extraction only.
+ * Non-streaming call — used for extraction and WhatsApp replies.
  */
 async function callClaude(systemPrompt, messages, maxTokens = 600) {
     for (const model of [CLAUDE_MODEL, ...FALLBACK_MODELS]) {
@@ -439,17 +439,18 @@ async function syncToHubspot(leadData, salesOutput) {
 
         // Add note
         const noteBody = [
-            `Source: PLAYBOOK Copilot (Layla)`,
+            `Source: PLAYBOOK Copilot (Layla) — ${leadData.channel || 'Web'}`,
             `Name: ${leadData.name || 'Unknown'}`,
             `Email: ${leadData.email}`,
             `Intent: ${leadData.intent_level}`,
             `Interest: ${leadData.main_interest || 'N/A'}`,
             `Lead Type: ${leadData.lead_type}`,
             `Vibe: ${leadData.conversation_vibe}`,
+            leadData.whatsapp_phone ? `WhatsApp: ${leadData.whatsapp_phone}` : '',
             ``,
             `Next Action: ${salesOutput.recommended_next_action}`,
             `Timestamp: ${new Date().toLocaleString()}`,
-        ].join('\n');
+        ].filter(Boolean).join('\n');
 
         await axios.post(
             'https://api.hubapi.com/crm/v3/objects/notes',
@@ -487,6 +488,8 @@ async function sendSlackAlert(leadData, conversationHistory) {
     const message = {
         text: [
             '🔥 *HOT LEAD* — Layla captured a High Intent conversation',
+            `*Channel:* ${leadData.channel || 'Web'}`,
+            leadData.whatsapp_phone ? `*WhatsApp:* ${leadData.whatsapp_phone}` : '',
             `*Name:* ${leadData.name || 'Unknown'}`,
             `*Email:* ${leadData.email || 'Not captured yet'}`,
             `*Interest:* ${leadData.main_interest || 'unclear'}`,
@@ -496,7 +499,7 @@ async function sendSlackAlert(leadData, conversationHistory) {
             `*Last message:* "${lastMsg.slice(0, 200)}"`,
             `*Suggested next action:* ${leadData.recommended_next_action || ''}`,
             '→ Check HubSpot and follow up within 30 minutes.',
-        ].join('\n'),
+        ].filter(Boolean).join('\n'),
     };
 
     try {
@@ -508,6 +511,13 @@ async function sendSlackAlert(leadData, conversationHistory) {
         console.warn('⚠️ Slack alert failed:', err.response?.data || err.message);
     }
 }
+
+// ─────────────────────────────────────────────
+// WHATSAPP — Twilio webhook
+// ─────────────────────────────────────────────
+
+const whatsapp = require('./whatsapp');
+whatsapp.init(app, { callClaude, syncToHubspot, sendSlackAlert });
 
 // ─────────────────────────────────────────────
 // GET /api/chat/:id  — restore a conversation
@@ -957,6 +967,7 @@ app.get('/test', (req, res) => res.json({
     hubspot:     HUBSPOT_TOKEN                 ? 'configured' : 'not configured',
     hubspotList: HUBSPOT_LIST_ID               ? HUBSPOT_LIST_ID : 'not configured',
     slack:       process.env.SLACK_WEBHOOK_URL ? 'configured' : 'not configured',
+    whatsapp:    process.env.TWILIO_AUTH_TOKEN ? 'configured' : 'not configured',
 }));
 
 // Serve admin page
@@ -991,13 +1002,15 @@ async function startServer() {
     if (!HUBSPOT_TOKEN)   console.warn('⚠️  HUBSPOT_ACCESS_TOKEN not set');
     if (!HUBSPOT_LIST_ID) console.warn('ℹ️  HUBSPOT_LIST_ID not set — contacts won\'t be added to a list');
     if (!process.env.SLACK_WEBHOOK_URL) console.warn('ℹ️  SLACK_WEBHOOK_URL not set — Slack alerts disabled');
+    if (!process.env.TWILIO_AUTH_TOKEN) console.warn('ℹ️  TWILIO_AUTH_TOKEN not set — WhatsApp webhook unvalidated');
 
     app.listen(PORT, () => {
         console.log('\n' + '='.repeat(50));
         console.log('✅ PLAYBOOK AI Copilot — Layla');
         console.log('='.repeat(50));
-        console.log(`📍 Chat:  http://localhost:${PORT}`);
-        console.log(`🔐 Admin: http://localhost:${PORT}/admin`);
+        console.log(`📍 Chat:      http://localhost:${PORT}`);
+        console.log(`🔐 Admin:     http://localhost:${PORT}/admin`);
+        console.log(`📱 WhatsApp:  http://localhost:${PORT}/webhook/whatsapp`);
         console.log('='.repeat(50));
     });
 }
